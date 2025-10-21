@@ -2,278 +2,368 @@
 
 ## Table of Contents
 1. [Git with Claude Code](#git-with-claude-code)
-2. [Creating Commits](#creating-commits)
-3. [Creating Pull Requests](#creating-pull-requests)
-4. [Best Practices](#best-practices)
+2. [Banking IT Policy: Manual Git Operations](#banking-it-policy-manual-git-operations)
+3. [Claude's Role in Git Workflow](#claudes-role-in-git-workflow)
+4. [Manual Commit Workflow](#manual-commit-workflow)
+5. [Manual Pull Request Workflow](#manual-pull-request-workflow)
+6. [Best Practices](#best-practices)
 
 ---
 
 ## Git with Claude Code
 
-Claude Code integrates seamlessly with Git for version control.
+### 🏦 Banking IT Policy
 
-### What Claude Can Do
+**IMPORTANT: Git automation via Claude Code is NOT approved for banking environments.**
 
-- View git status and diffs
-- Create commits with descriptive messages
-- Create branches
-- Generate pull requests
-- Resolve merge conflicts
-- Generate release notes from commit history
-
-### What You Control
-
-- Pushing to remote (Claude asks for approval)
-- Merging pull requests
-- Git configuration
-- Branch protection rules
+All git operations (commit, push, pull, merge) MUST be performed manually by developers. This section documents how to work with Claude Code while maintaining manual control of all version control operations.
 
 ---
 
-## Creating Commits
+## Banking IT Policy: Manual Git Operations
 
-### Basic Commit Workflow
+### What is NOT Allowed
 
+Claude Code must **NEVER** execute the following commands:
+- ❌ `git add`
+- ❌ `git commit`
+- ❌ `git push`
+- ❌ `git pull`
+- ❌ `git merge`
+- ❌ `git checkout`
+- ❌ `git branch`
+- ❌ `gh pr create`
+- ❌ Any other git write operations
+
+### Why Manual Git Operations?
+
+Banking IT requirements:
+1. **Audit Trail**: All git operations must be traceable to individual developers
+2. **Approval Workflow**: Code changes require manual review before commit
+3. **Compliance**: SOX, PCI-DSS regulations require human oversight
+4. **Security**: Prevent accidental commits of sensitive data
+5. **Accountability**: Developers are personally responsible for commits
+
+### Enforcement
+
+Configure `.claude/settings.json` to prevent git automation:
+
+```json
+{
+  "permissions": {
+    "deny": ["Bash"]
+  }
+}
 ```
-> Add feature X
 
-Claude: [makes code changes]
+This prevents Claude from executing any shell commands, including git operations.
 
-> Create a commit for these changes
+---
 
-Claude will:
-1. Run git status
-2. Run git diff to see changes
-3. Review commit history for style
-4. Draft a commit message
-5. Ask for approval
-6. Run git add and git commit
+## Claude's Role in Git Workflow
+
+### What Claude CAN Do (Read-Only)
+
+Claude can help you **understand** your git state:
+- ✅ **Suggest** commit messages (you copy and use manually)
+- ✅ **Generate** PR descriptions (you copy to GitHub/GitLab)
+- ✅ **Explain** git diff output (if you paste it)
+- ✅ **Draft** release notes from commit history (if you paste it)
+- ✅ **Help** resolve merge conflicts (you make final changes)
+
+### What You MUST Do Manually
+
+All git commands are your responsibility:
+1. Review changes with `git status` and `git diff`
+2. Stage changes with `git add`
+3. Create commits with `git commit`
+4. Push to remote with `git push`
+5. Create PRs via GitHub/GitLab UI or `gh` CLI manually
+
+---
+
+## Manual Commit Workflow
+
+### Step 1: Development with Claude
+
+```bash
+# Work with Claude
+claude
+
+> Implement password reset functionality
 ```
 
-### Commit Message Format
+Claude makes code changes (with your approval).
 
-Claude follows your project's commit message conventions:
+### Step 2: Review Changes Manually
 
-**Conventional Commits:**
+```bash
+# Exit Claude
+Ctrl+D
+
+# Review what changed
+git status
+git diff
+
+# Review specific files
+git diff src/auth/reset.ts
+```
+
+### Step 3: Ask Claude for Commit Message
+
+```bash
+# Start Claude in read-only mode
+claude --permission-mode plan
+
+> I made the following changes:
+> [paste git diff or describe changes]
+>
+> Please draft a commit message following Conventional Commits format
+> for our banking project
+```
+
+Claude suggests:
 ```
 feat(auth): add password reset functionality
 
-- Implement password reset email
-- Add reset token generation
-- Create reset form UI
+- Implement password reset email workflow
+- Add secure token generation (expires 1 hour)
+- Create password reset form with validation
+- Add audit logging for reset attempts
 
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>
+Compliance: Implements security requirement SEC-4.2
 ```
 
-**Simple Format:**
-```
-Add password reset feature
+### Step 4: Create Commit Manually
 
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
+```bash
+# Exit Claude
+Ctrl+D
 
-### Customizing Commit Format
+# Stage changes
+git add src/auth/reset.ts src/email/templates/reset.html tests/auth/reset.test.ts
 
-Add to `CLAUDE.md`:
-```markdown
-## Git Commit Standards
+# Commit with message (copy from Claude's suggestion)
+git commit -m "feat(auth): add password reset functionality
 
-Use Conventional Commits format:
-- feat: New feature
-- fix: Bug fix
-- refactor: Code refactoring
-- test: Adding tests
-- docs: Documentation
-- chore: Maintenance
+- Implement password reset email workflow
+- Add secure token generation (expires 1 hour)
+- Create password reset form with validation
+- Add audit logging for reset attempts
 
-Example:
-```
-feat(payments): add Stripe integration
-
-- Implement payment processing
-- Add webhook handling
-- Create invoice generation
-
-Closes #123
-```
+Compliance: Implements security requirement SEC-4.2"
 ```
 
-### Banking Example
+### Step 5: Push Manually
 
-```
-> Implement transaction validation
-
-[Claude makes changes]
-
-> Commit these changes
-
-Claude creates:
-```
-feat(transactions): add balance validation
-
-- Validate sufficient funds before transfer
-- Add overdraft limit checking
-- Implement fraud detection rules
-- Add audit logging for failed transactions
-
-Compliance: Implements SOX requirement 4.2.1
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
+```bash
+# Push to remote
+git push origin feature/password-reset
 ```
 
 ---
 
-## Creating Pull Requests
+## Manual Pull Request Workflow
 
-### PR Creation Workflow
+### Step 1: Prepare PR
 
-```
-> Create a pull request for this feature
+```bash
+# Ensure all changes are committed
+git status
 
-Claude will:
-1. Check current branch
-2. Run git diff main...HEAD (or base branch)
-3. Review ALL commits in branch
-4. Generate comprehensive PR description
-5. Push branch to remote (with approval)
-6. Create PR using gh CLI
+# Check branch status
+git log --oneline origin/main..HEAD
 ```
 
-### PR Description Format
+### Step 2: Ask Claude for PR Description
 
+```bash
+claude --permission-mode plan
+
+> I have the following commits on my branch:
+> [paste git log output]
+>
+> Please generate a comprehensive pull request description
+> for our banking IT code review process
+```
+
+Claude generates:
 ```markdown
 ## Summary
-- Implemented password reset functionality
-- Added email notification system
-- Created user-facing reset form
+Implementation of password reset functionality with security and compliance features.
 
 ## Changes
-- `src/auth/reset.ts`: Password reset logic
-- `src/email/templates/reset.html`: Email template
-- `tests/auth/reset.test.ts`: Unit tests
+- **src/auth/reset.ts**: Password reset logic with secure token generation
+- **src/email/templates/reset.html**: Email template for reset links
+- **tests/auth/reset.test.ts**: Comprehensive unit tests (95% coverage)
+- **docs/api/auth.md**: API documentation update
 
-## Testing
-- [x] Unit tests passing
-- [x] Integration tests passing
-- [x] Manual testing completed
-- [x] Security review completed
+## Security Considerations
+- Reset tokens expire after 1 hour
+- Tokens are cryptographically secure (32 bytes random)
+- Rate limiting: 3 attempts per hour per email
+- Passwords hashed with bcrypt (cost factor: 12)
+- Email sent over TLS 1.3
 
 ## Compliance
-- Passwords hashed with bcrypt (cost: 12)
-- Reset tokens expire after 1 hour
-- Email sent over encrypted connection
-- Audit logging implemented
+- **SOX**: Audit trail for all password resets (requirement 4.2.1)
+- **PCI-DSS**: Secure authentication mechanisms (requirement 8.2)
+- **GDPR**: User consent for email notification (requirement 7.2)
 
-🤖 Generated with Claude Code
+## Testing Completed
+- [x] Unit tests passing (127 tests, 95% coverage)
+- [x] Integration tests passing
+- [x] Manual QA testing completed
+- [x] Security review by security team
+- [x] Performance testing (handles 1000 requests/min)
+
+## Deployment Notes
+- No database migrations required
+- New environment variable: `PASSWORD_RESET_TOKEN_EXPIRY` (default: 3600)
+- Email template requires approval from compliance team
+
+## Reviewers
+@security-team @compliance-team
 ```
 
-### Using GitHub CLI
+### Step 3: Create PR Manually
 
+**Option A: GitHub Web UI**
+1. Go to GitHub repository
+2. Click "New Pull Request"
+3. Select your branch
+4. Copy Claude's description into PR body
+5. Add reviewers
+6. Create PR
+
+**Option B: GitHub CLI (Manual)**
 ```bash
-# Install gh CLI
-brew install gh
-
-# Authenticate
-gh auth login
-
-# Create PR with Claude
-> Create a PR for this feature
-```
-
-Claude executes:
-```bash
+# Create PR manually using gh CLI
 gh pr create \
-  --title "feat: Add password reset functionality" \
-  --body "$(cat <<'EOF'
-## Summary
-...
-EOF
-)"
+  --title "feat(auth): Add password reset functionality" \
+  --body-file pr-description.md \
+  --reviewer @security-team,@compliance-team
+
+# Where pr-description.md contains Claude's generated description
 ```
 
 ---
 
 ## Best Practices
 
-### 1. Work in Feature Branches
+### 1. Always Work in Feature Branches
 
 ```bash
-# Create branch
-git checkout -b feature/password-reset
+# Create branch manually
+git checkout -b feature/transaction-validation
 
-# Work with Claude
+# Develop with Claude
 claude
+> Implement transaction validation logic
 
-> Implement password reset
-> Run tests
-> Commit changes
+# Commit manually (as described above)
+git add .
+git commit -m "feat(transactions): add validation logic"
 
-# Create PR
-> Create a pull request
-
-# Merge via GitHub/GitLab UI (not Claude)
+# Push manually
+git push origin feature/transaction-validation
 ```
 
-### 2. Review Before Committing
+### 2. Review Every Change Before Committing
 
-```
-> Show me what changes will be committed
+```bash
+# Always review
+git status
+git diff
 
-Claude runs:
-git diff --staged
-
-Review carefully before approving commit!
-```
-
-### 3. Atomic Commits
-
-```
-# Good: One feature per commit
-> Commit the password reset feature
-
-# Bad: Multiple unrelated changes
-> Commit everything
+# For specific concerns, ask Claude
+claude --permission-mode plan
+> Review the changes in src/payment.ts for security issues
 ```
 
-### 4. Never Auto-Push to Main
+### 3. Use Atomic Commits
 
-Add to `CLAUDE.md`:
+```bash
+# Good: Separate commits for separate concerns
+git add src/auth/
+git commit -m "feat(auth): add 2FA support"
+
+git add tests/auth/
+git commit -m "test(auth): add 2FA tests"
+
+# Bad: Everything in one commit
+git add .
+git commit -m "add 2FA"
+```
+
+### 4. Leverage Claude for Commit Message Quality
+
+```bash
+# Before each commit, ask Claude
+claude --permission-mode plan
+
+> I changed the following files:
+> - src/payments/processor.ts: Add retry logic
+> - src/payments/validator.ts: Add amount validation
+>
+> Draft a commit message following our Conventional Commits standard
+```
+
+### 5. Document Git Standards in CLAUDE.md
+
+`.claude/CLAUDE.md`:
 ```markdown
-## Git Rules
+## Git Commit Standards
 
-NEVER push directly to:
-- main
-- master
-- production
-- release/*
+### Format
+Use Conventional Commits format:
+- `feat(scope)`: New feature
+- `fix(scope)`: Bug fix
+- `refactor(scope)`: Code refactoring
+- `test(scope)`: Adding tests
+- `docs(scope)`: Documentation
+- `chore(scope)`: Maintenance
 
-Always use feature branches and pull requests.
+### Example
+```
+feat(payments): add Stripe webhook handling
+
+- Implement webhook endpoint
+- Add signature verification
+- Handle payment success/failure events
+- Add error logging
+
+Compliance: PCI-DSS requirement 12.8.2
 ```
 
-### 5. Pre-Commit Hooks
+### Scopes
+- auth: Authentication
+- payments: Payment processing
+- transactions: Transaction handling
+- audit: Audit logging
+- compliance: Compliance features
+```
 
-Use hooks to enforce standards:
+### 6. Use Pre-Commit Hooks (Manual)
 
-`.claude/settings.json`:
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash.*git commit",
-        "hooks": [{
-          "type": "command",
-          "command": "npm run lint && npm test",
-          "description": "Run tests before commit"
-        }]
-      }
-    ]
-  }
-}
+Set up git hooks to run before commit:
+
+`.git/hooks/pre-commit`:
+```bash
+#!/bin/bash
+# Run linting
+npm run lint || exit 1
+
+# Run tests
+npm test || exit 1
+
+# Check for secrets
+./scripts/detect-secrets.sh || exit 1
+```
+
+Make executable:
+```bash
+chmod +x .git/hooks/pre-commit
 ```
 
 ---
@@ -283,83 +373,164 @@ Use hooks to enforce standards:
 ### Workflow 1: Feature Development
 
 ```bash
-1. Create branch:
-   git checkout -b feature/add-2fa
+# 1. Create branch manually
+git checkout -b feature/add-2fa
 
-2. Develop with Claude:
-   > Implement 2FA using TOTP
-   > Add tests
-   > Update documentation
+# 2. Develop with Claude
+claude
+> Implement 2FA using TOTP
+> Add tests for 2FA
 
-3. Commit:
-   > Create a commit for the 2FA feature
+# 3. Exit and review
+Ctrl+D
+git status
+git diff
 
-4. Push and PR:
-   > Create a pull request
+# 4. Get commit message from Claude
+claude --permission-mode plan
+> Draft commit message for 2FA implementation
+
+# 5. Commit manually
+git add .
+git commit -m "[paste Claude's suggested message]"
+
+# 6. Push manually
+git push origin feature/add-2fa
+
+# 7. Get PR description from Claude
+claude --permission-mode plan
+> Generate PR description for 2FA feature
+
+# 8. Create PR manually via GitHub UI
 ```
 
 ### Workflow 2: Bug Fix
 
 ```bash
-1. Create branch:
-   git checkout -b fix/login-timeout
+# 1. Create branch manually
+git checkout -b fix/login-timeout
 
-2. Fix with Claude:
-   > Fix the login timeout issue in src/auth/session.ts
+# 2. Fix with Claude
+claude
+> Fix the session timeout issue in src/auth/session.ts
 
-3. Commit:
-   > Commit the bug fix
+# 3. Review and commit manually
+Ctrl+D
+git diff
+git add src/auth/session.ts
+git commit -m "fix(auth): prevent session timeout on active users"
 
-4. Push and PR:
-   > Create a pull request with the fix
+# 4. Push manually
+git push origin fix/login-timeout
+
+# 5. Create PR manually
 ```
 
-### Workflow 3: Merge Conflict Resolution
+### Workflow 3: Code Review Assistance
 
+```bash
+# You receive PR review comments
+# Use Claude to help address them
+
+claude
+> I received this review comment on PR #123:
+> "The error handling in payment.ts could be more specific"
+>
+> Please improve the error handling in src/payments/processor.ts
+
+# Claude makes changes
+
+# Review and commit manually
+Ctrl+D
+git add src/payments/processor.ts
+git commit -m "refactor(payments): improve error handling specificity"
+git push
 ```
-> I have a merge conflict in src/payment.ts. Help me resolve it.
 
-Claude will:
-1. Read the conflicted file
-2. Show both versions
-3. Suggest resolution
-4. Make the changes
-5. Help you commit the resolution
+---
+
+## Configuration for Banking IT
+
+### Recommended Settings
+
+`.claude/settings.json`:
+```json
+{
+  "permissions": {
+    "allow": ["Read", "Write", "Edit", "Grep", "Glob"],
+    "deny": ["Bash"]
+  },
+
+  "defaultModel": "sonnet",
+
+  "env": {
+    "GIT_OPERATIONS": "MANUAL_ONLY"
+  }
+}
+```
+
+### Project Memory
+
+`.claude/CLAUDE.md`:
+```markdown
+# Git Operations Policy
+
+## CRITICAL: Manual Git Only
+
+ALL git operations MUST be performed manually by developers.
+
+When asked to commit or push:
+1. Suggest commit message
+2. Suggest git commands
+3. NEVER execute git commands
+4. Remind user to perform git operations manually
+
+## Workflow
+1. Claude makes code changes (with approval)
+2. Developer reviews changes manually (git diff)
+3. Developer asks Claude for commit message
+4. Developer executes git commands manually
+5. Developer creates PR manually (can use Claude's description)
 ```
 
 ---
 
 ## Summary
 
-In this section, you learned:
+### Banking IT Git Policy
+- ✅ Claude helps write code
+- ✅ Claude suggests commit messages
+- ✅ Claude generates PR descriptions
+- ❌ Claude NEVER executes git commands
+- ✅ All git operations performed manually by developers
 
-### Core Concepts
-- Git integration for commits and PRs
-- Claude follows your commit conventions
-- Approval required for push operations
+### Developer Workflow
+1. **Develop**: Work with Claude to write/modify code
+2. **Review**: Manually review changes with `git diff`
+3. **Draft**: Ask Claude for commit message/PR description
+4. **Commit**: Manually execute git commands
+5. **Push**: Manually push to remote
+6. **PR**: Manually create pull request
 
-### Implementation
-- Creating commits with Claude
-- Generating pull requests
-- Using GitHub CLI integration
-- Customizing commit messages
-
-### Best Practices
-- Feature branch workflow
-- Atomic commits
-- Pre-commit validation
-- Never push directly to main
+### Key Benefits
+- Maintains audit trail and accountability
+- Complies with banking regulations
+- Prevents accidental commits
+- Developer retains full control
+- Leverages Claude for quality commit messages
 
 ---
 
 ## Next Steps
 
 1. **[Continue to Section 13: Standards & Best Practices](./13-standards-best-practices.md)** - Team standards
-2. **Try creating a commit** - Make a change and let Claude commit it
+2. **Configure your project** - Set up `.claude/settings.json` to deny Bash
+3. **Update CLAUDE.md** - Document manual git policy
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** 2025-10-19
+**Document Version:** 1.1
+**Last Updated:** 2025-10-21
 **Target Audience:** Banking IT - Data Chapter
 **Prerequisites:** Sections 1-11
+**Policy Status:** Manual Git Operations REQUIRED

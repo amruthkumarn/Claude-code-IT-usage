@@ -95,20 +95,28 @@ claude
 [Approve]
 ```
 
-**Create commit:**
+**🏦 Banking IT: Git Operations (Manual Only):**
 ```bash
+# 1. Make changes with Claude
 claude
-> Create a commit for these changes
-[Review commit message]
-[Approve]
-```
+> Fix the login bug
 
-**Create PR:**
-```bash
-claude
-> Create a pull request
-[Review PR description]
-[Approve]
+# 2. Exit and review
+Ctrl+D
+git diff
+
+# 3. Ask Claude for commit message
+claude --permission-mode plan
+> Draft commit message for login bug fix
+
+# 4. Commit MANUALLY
+git add .
+git commit -m "[paste Claude's message]"
+
+# 5. Push MANUALLY
+git push
+
+# NOTE: Git automation NOT approved for banking
 ```
 
 ## Permission Modes

@@ -136,10 +136,10 @@ Claude Code is an AI-powered coding assistant that:
   - Banking integrations (databases, APIs, Jira)
 
 - **[Section 12: Version Control Integration](./05-integration/12-git-integration.md)**
-  - Git with Claude Code
-  - Creating commits
-  - Creating pull requests
-  - Best practices
+  - Git with Claude Code (Manual Operations Only)
+  - Banking IT Policy: Manual Git Workflow
+  - Generating commit messages and PR descriptions
+  - Best practices for manual git operations
 
 - **[Section 13: Standards & Best Practices](./05-integration/13-standards-best-practices.md)**
   - Organizational standards
@@ -236,7 +236,7 @@ claude
    - Read [Section 3](./02-basics/03-getting-started.md)
    - Fix a real bug
    - Explore your codebase
-   - Create a commit with Claude
+   - Use Claude to draft commit messages (git operations manual)
 
 ### For Developers (Week 2-3)
 
@@ -297,8 +297,8 @@ claude
 **Do:**
 - Fix a bug with Claude
 - Refactor existing code
-- Create git commits
-- Use different models
+- Draft commit messages with Claude (execute git commands manually)
+- Explore Sonnet model capabilities
 
 **Outcome:** Comfortable using Claude Code for common tasks
 
