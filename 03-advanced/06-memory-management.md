@@ -545,14 +545,17 @@ Use the database properly and follow best practices for optimal performance and 
 ### 5. Team Collaboration on Memory
 
 ```bash
+# Execute these commands manually (banking IT policy)
 # Create project memory collaboratively
 git checkout -b feature/update-claude-memory
-# Edit ./CLAUDE.md
+# Edit ./CLAUDE.md with your editor or with Claude's help
 git add ./CLAUDE.md
 git commit -m "docs: update Claude Code memory with new security requirements"
 git push
-# Create PR for team review
+# Create PR manually via GitHub UI
 ```
+
+**Note**: All git commands must be executed manually per banking IT policy. Claude can help edit CLAUDE.md content, but you execute git commands yourself.
 
 ### 6. Version Control Memory Files
 

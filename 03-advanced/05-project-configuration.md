@@ -817,13 +817,16 @@ Ready-to-use templates for banking projects.
 
 ### 1. Version Control Settings
 
-**Commit to Git:**
+**Commit to Git (Execute Manually):**
 ```bash
+# Execute these commands manually (banking IT policy)
 git add .claude/settings.json
 git add .claude/CLAUDE.md
 git add .claude/commands/
 git commit -m "Add Claude Code configuration"
 ```
+
+**Note**: Per banking IT policy, all git operations must be executed manually by developers. Claude Code does NOT execute git commands.
 
 **Add to .gitignore:**
 ```gitignore

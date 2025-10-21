@@ -574,6 +574,7 @@ Provide before/after performance estimates.
 ### 7. Version Control
 
 ```bash
+# Execute these commands manually (banking IT policy)
 # Commit custom commands
 git add .claude/commands/
 git commit -m "docs: add custom Claude Code commands for team"
@@ -582,6 +583,8 @@ git commit -m "docs: add custom Claude Code commands for team"
 echo "## Claude Code Commands" >> README.md
 echo "Run \`/help\` to see available custom commands" >> README.md
 ```
+
+**Note**: Per banking IT policy, execute all git commands manually. Claude Code does NOT run git operations.
 
 ---
 

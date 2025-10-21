@@ -225,9 +225,10 @@ Claude Code uses a **read-only by default** permission model with explicit appro
 
 #### 3. Command Execution (Requires Approval)
 - Running shell commands
-- Git operations (commit, push)
 - Package manager operations (npm install)
 - Running tests or builds
+
+**Note**: Git operations (commit, push, pull) are NOT executed by Claude per banking IT policy. See [Section 12](../05-integration/12-git-integration.md) for manual git workflow.
 
 #### 4. Network Operations (Requires Approval)
 - Fetching URLs

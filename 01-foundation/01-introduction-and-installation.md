@@ -26,9 +26,11 @@ Claude Code is Anthropic's official agentic coding tool that brings AI-powered a
 Claude Code operates in your terminal and can:
 - Read and understand your codebase
 - Edit files directly (with your approval)
-- Run commands (git, npm, testing frameworks, etc.)
+- Run commands (npm, testing frameworks, etc.)
 - Search through code and documentation
 - Integrate with external tools via MCP (Model Context Protocol)
+
+🏦 **Banking IT Policy**: Git operations (commit, push, pull) must be executed **manually by developers**. Claude can draft commit messages and PR descriptions, but YOU execute the git commands. See [Section 12](../05-integration/12-git-integration.md) for full git workflow.
 
 ### Architecture
 
@@ -47,8 +49,8 @@ Claude Code operates in your terminal and can:
 │  │        Your Codebase               │    │
 │  │  • Read files                       │    │
 │  │  • Edit files (with approval)       │    │
-│  │  • Run commands                     │    │
-│  │  • Git operations                   │    │
+│  │  • Run commands (npm, tests)        │    │
+│  │  • Draft git messages (manual exec) │    │
 │  └─────────────────────────────────────┘    │
 └─────────────────────────────────────────────┘
 ```
@@ -92,7 +94,9 @@ Work conversationally with Claude in your terminal, maintaining context througho
 Claude can read, search, and edit files in your working directory (with your approval).
 
 ### 3. Command Execution
-Run shell commands, git operations, tests, and build processes.
+Run shell commands, tests, and build processes (npm, pytest, etc.).
+
+**Note**: Git operations must be executed manually per banking IT policy.
 
 ### 4. Plan Mode
 Explore code safely without making any changes - perfect for understanding new codebases.
