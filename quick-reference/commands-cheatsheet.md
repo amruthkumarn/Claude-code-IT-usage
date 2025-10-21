@@ -2,14 +2,19 @@
 
 ## Installation
 
+**npm (Node.js 18+):**
 ```bash
-# npm
 npm install -g @anthropic-ai/claude-code
+```
 
-# Homebrew (macOS/Linux)
-brew install --cask claude-code
+**Native Windows:**
+```powershell
+# Run in PowerShell as Administrator
+irm https://install.claude.ai/claude-code/windows | iex
+```
 
-# Verify
+**Verify:**
+```bash
 claude --version
 ```
 
@@ -142,10 +147,17 @@ git push
 
 ## Troubleshooting
 
-**"command not found":**
+**"command not found" (PowerShell):**
+```powershell
+$npmPath = npm config get prefix
+$env:Path += ";$npmPath"
+Add-Content $PROFILE "`$env:Path += `";$(npm config get prefix)`""
+```
+
+**"command not found" (WSL2):**
 ```bash
-echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 **Authentication failed:**

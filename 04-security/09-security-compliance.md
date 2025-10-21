@@ -130,12 +130,19 @@ Claude Code is designed with **security-first** principles for enterprise enviro
 ### Credential Security
 
 **Secure credential storage:**
-```bash
-# Stored in system keychain (macOS/Linux)
-# Windows Credential Manager (Windows)
-claude /login
 
-# API key (environment variable)
+Windows Credential Manager stores credentials securely:
+```bash
+# Login - credentials stored in Windows Credential Manager
+claude /login
+```
+
+For API key authentication:
+```powershell
+# PowerShell - Environment variable
+$env:ANTHROPIC_API_KEY = "sk-ant-..."
+
+# WSL2 - Environment variable
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
 

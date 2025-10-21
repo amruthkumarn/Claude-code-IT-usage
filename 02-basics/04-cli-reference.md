@@ -562,9 +562,22 @@ claude
 
 ### Banking IT Environment Setup
 
-```bash
-# Add to ~/.bashrc or ~/.zshrc
+**PowerShell Profile ($PROFILE):**
+```powershell
+# Corporate proxy
+Set-Item -Path Env:HTTP_PROXY -Value "http://proxy.bank.com:8080"
+Set-Item -Path Env:HTTPS_PROXY -Value "http://proxy.bank.com:8080"
+Set-Item -Path Env:NO_PROXY -Value "localhost,127.0.0.1,.bank.internal"
 
+# Corporate SSL certificate
+Set-Item -Path Env:NODE_EXTRA_CA_CERTS -Value "C:\certs\bank-ca-bundle.crt"
+
+# Claude API key (or use /login for interactive auth)
+Set-Item -Path Env:ANTHROPIC_API_KEY -Value "your-api-key-here"
+```
+
+**WSL2 Profile (~/.bashrc):**
+```bash
 # Corporate proxy
 export HTTP_PROXY="http://proxy.bank.com:8080"
 export HTTPS_PROXY="http://proxy.bank.com:8080"

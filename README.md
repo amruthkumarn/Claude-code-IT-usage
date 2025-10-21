@@ -49,7 +49,7 @@ Claude Code is an AI-powered coding assistant that:
 
 - **[Section 1: Introduction & Installation](./01-foundation/01-introduction-and-installation.md)**
   - What is Claude Code and why use it
-  - Installation methods (npm, Homebrew, native)
+  - Installation methods (npm, native Windows)
   - Authentication and login
   - Troubleshooting installation
 
@@ -196,14 +196,19 @@ Located in `./templates/`:
 
 ### 1. Install Claude Code
 
+**Option 1: npm (requires Node.js 18+)**
 ```bash
-# npm (requires Node.js 18+)
 npm install -g @anthropic-ai/claude-code
+```
 
-# Homebrew (macOS/Linux)
-brew install --cask claude-code
+**Option 2: Native Windows**
+```powershell
+# Run in PowerShell as Administrator
+irm https://install.claude.ai/claude-code/windows | iex
+```
 
-# Verify
+**Verify Installation:**
+```bash
 claude --version
 ```
 

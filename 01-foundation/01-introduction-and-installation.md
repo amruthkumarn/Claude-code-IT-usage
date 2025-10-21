@@ -128,14 +128,10 @@ Before installing Claude Code, ensure you have:
 ### Required
 
 1. **Operating System**
-   - macOS (10.15 or later)
-   - Linux (Ubuntu 20.04+, Debian, Fedora, RHEL, etc.)
    - Windows 10/11 (with WSL2 recommended)
 
 2. **Terminal/Command Prompt**
-   - macOS: Terminal, iTerm2, or any terminal emulator
-   - Linux: bash, zsh, or compatible shell
-   - Windows: PowerShell, Command Prompt, or WSL2
+   - Windows: PowerShell (recommended), Command Prompt, or WSL2
 
 3. **Claude Account**
    - Claude.ai account (for individual use) OR
@@ -163,7 +159,7 @@ Before installing Claude Code, ensure you have:
 
 ## Installation
 
-Claude Code can be installed in three ways. Choose the method that works best for your environment.
+Claude Code can be installed in two ways. Choose the method that works best for your environment.
 
 ### Method 1: npm (Node.js Package Manager)
 
@@ -211,66 +207,7 @@ npm install -g @anthropic-ai/claude-code
 
 ---
 
-### Method 2: Homebrew (macOS/Linux)
-
-**Best for:** macOS users and Linux users with Homebrew
-
-#### Prerequisites
-```bash
-# Check if Homebrew is installed
-brew --version
-
-# If not installed, visit: https://brew.sh
-```
-
-#### Installation Steps
-
-```bash
-# Install Claude Code
-brew install --cask claude-code
-
-# Verify installation
-claude --version
-```
-
-**Note**: Homebrew installation includes native binaries and doesn't require Node.js.
-
----
-
-### Method 3: Native Install (Platform-Specific)
-
-**Best for:** Users who don't have Node.js or Homebrew
-
-#### macOS (Intel/Apple Silicon)
-
-```bash
-# Download and install (auto-detects architecture)
-curl -fsSL https://install.claude.ai/claude-code | sh
-
-# Or download manually from:
-# Intel: https://download.claude.ai/claude-code/macos/x64/latest
-# Apple Silicon: https://download.claude.ai/claude-code/macos/arm64/latest
-```
-
-#### Linux
-
-```bash
-# Download and install
-curl -fsSL https://install.claude.ai/claude-code | sh
-
-# Or specify architecture:
-# x64:
-curl -fsSL https://install.claude.ai/claude-code/linux/x64/latest -o claude-code.tar.gz
-
-# ARM64:
-curl -fsSL https://install.claude.ai/claude-code/linux/arm64/latest -o claude-code.tar.gz
-
-# Extract and install
-tar -xzf claude-code.tar.gz
-sudo mv claude /usr/local/bin/
-```
-
-#### Windows
+### Method 2: Native Install (Windows)
 
 **Option A: PowerShell (Native)**
 ```powershell
@@ -284,7 +221,7 @@ irm https://install.claude.ai/claude-code/windows | iex
 curl -fsSL https://install.claude.ai/claude-code | sh
 ```
 
-**Banking IT Note**: WSL2 provides better isolation and is recommended for Windows users in banking environments.
+**Banking IT Note**: WSL2 provides better isolation and is recommended for banking environments.
 
 ---
 
@@ -339,12 +276,22 @@ This will:
 
 For enterprise users or CI/CD environments:
 
+**PowerShell:**
+```powershell
+# Set API key as environment variable (current session)
+$env:ANTHROPIC_API_KEY = "your-api-key-here"
+
+# Or add to PowerShell profile (persistent)
+Add-Content $PROFILE 'Set-Item -Path Env:ANTHROPIC_API_KEY -Value "your-api-key-here"'
+```
+
+**WSL2/Linux:**
 ```bash
 # Set API key as environment variable
 export ANTHROPIC_API_KEY="your-api-key-here"
 
-# Or add to your shell profile (~/.bashrc, ~/.zshrc)
-echo 'export ANTHROPIC_API_KEY="your-api-key-here"' >> ~/.zshrc
+# Or add to shell profile
+echo 'export ANTHROPIC_API_KEY="your-api-key-here"' >> ~/.bashrc
 ```
 
 ### Enterprise SSO (Banking IT)
@@ -423,19 +370,29 @@ Ctrl+D (or type /exit)
 
 ### Issue: "command not found: claude"
 
-**Solution:**
+**Solution (PowerShell):**
+
+```powershell
+# Check if Claude is in PATH
+Get-Command claude
+
+# If not found, add npm global path to PATH (npm installation)
+$npmPath = npm config get prefix
+$env:Path += ";$npmPath"
+
+# Add to PowerShell profile for persistence
+Add-Content $PROFILE "`$env:Path += `";$(npm config get prefix)`""
+```
+
+**Solution (WSL2):**
 
 ```bash
 # Check if Claude is in PATH
 which claude
 
 # If not found, add to PATH (npm installation)
-echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.zshrc
-source ~/.zshrc
-
-# For Homebrew installation
-echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ### Issue: "Node version not supported"
@@ -456,17 +413,24 @@ nvm use 18
 
 ### Issue: "Permission denied" during npm install
 
-**Solution:**
+**Solution (PowerShell - Run as Administrator):**
+
+```powershell
+# Run PowerShell as Administrator, then install
+npm install -g @anthropic-ai/claude-code
+```
+
+**Solution (WSL2):**
 
 ```bash
-# Option 1: Use sudo (not recommended)
+# Option 1: Use sudo
 sudo npm install -g @anthropic-ai/claude-code
 
 # Option 2: Fix npm permissions (recommended)
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
-echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # Then install again
 npm install -g @anthropic-ai/claude-code
@@ -474,7 +438,22 @@ npm install -g @anthropic-ai/claude-code
 
 ### Issue: "Cannot connect to api.anthropic.com"
 
-**Banking IT Solutions:**
+**Banking IT Solutions (PowerShell):**
+
+```powershell
+# Check network connectivity
+curl -I https://api.anthropic.com
+
+# If behind corporate proxy, set proxy
+$env:HTTP_PROXY = "http://proxy.bank.com:8080"
+$env:HTTPS_PROXY = "http://proxy.bank.com:8080"
+
+# Add to PowerShell profile for persistence
+Add-Content $PROFILE 'Set-Item -Path Env:HTTP_PROXY -Value "http://proxy.bank.com:8080"'
+Add-Content $PROFILE 'Set-Item -Path Env:HTTPS_PROXY -Value "http://proxy.bank.com:8080"'
+```
+
+**Banking IT Solutions (WSL2):**
 
 ```bash
 # Check network connectivity
@@ -485,8 +464,8 @@ export HTTP_PROXY=http://proxy.bank.com:8080
 export HTTPS_PROXY=http://proxy.bank.com:8080
 
 # Add to shell profile for persistence
-echo 'export HTTP_PROXY=http://proxy.bank.com:8080' >> ~/.zshrc
-echo 'export HTTPS_PROXY=http://proxy.bank.com:8080' >> ~/.zshrc
+echo 'export HTTP_PROXY=http://proxy.bank.com:8080' >> ~/.bashrc
+echo 'export HTTPS_PROXY=http://proxy.bank.com:8080' >> ~/.bashrc
 ```
 
 ### Issue: "Authentication failed"
@@ -506,7 +485,18 @@ echo $ANTHROPIC_API_KEY
 
 ### Issue: SSL/TLS Certificate Errors
 
-**Banking IT Solution:**
+**Banking IT Solution (PowerShell):**
+
+```powershell
+# If using corporate SSL inspection
+# Set custom CA certificate
+$env:NODE_EXTRA_CA_CERTS = "C:\path\to\corporate-ca-bundle.crt"
+
+# Add to PowerShell profile
+Add-Content $PROFILE 'Set-Item -Path Env:NODE_EXTRA_CA_CERTS -Value "C:\path\to\corporate-ca-bundle.crt"'
+```
+
+**Banking IT Solution (WSL2):**
 
 ```bash
 # If using corporate SSL inspection
@@ -514,7 +504,7 @@ echo $ANTHROPIC_API_KEY
 export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca-bundle.crt
 
 # Add to shell profile
-echo 'export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca-bundle.crt' >> ~/.zshrc
+echo 'export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca-bundle.crt' >> ~/.bashrc
 ```
 
 ### Issue: Windows Installation Fails
@@ -550,7 +540,7 @@ In this section, you learned:
 - What Claude Code is and its key features
 - Why Claude Code is valuable for banking IT teams
 - Prerequisites for installation
-- Three installation methods (npm, Homebrew, native)
+- Two installation methods (npm, native Windows)
 - Authentication and login process
 - How to verify installation
 - Common troubleshooting solutions

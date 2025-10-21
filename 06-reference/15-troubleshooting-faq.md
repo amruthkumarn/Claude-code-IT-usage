@@ -16,18 +16,28 @@
 
 **Cause:** Claude not in PATH
 
-**Solution:**
+**Solution (PowerShell):**
+```powershell
+# Check if installed
+Get-Command claude
+
+# If not found, add to PATH (npm installation)
+$npmPath = npm config get prefix
+$env:Path += ";$npmPath"
+Add-Content $PROFILE "`$env:Path += `";$(npm config get prefix)`""
+
+# Verify
+claude --version
+```
+
+**Solution (WSL2):**
 ```bash
 # Check if installed
 which claude
 
 # If not found, add to PATH (npm installation)
-echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.zshrc
-source ~/.zshrc
-
-# Or for Homebrew
-echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.bashrc
+source ~/.bashrc
 
 # Verify
 claude --version
@@ -58,13 +68,22 @@ node --version  # Should be 18.0+
 
 **Cause:** Insufficient permissions
 
-**Solution:**
+**Solution (PowerShell):**
+```powershell
+# Run PowerShell as Administrator, then install
+npm install -g @anthropic-ai/claude-code
+```
+
+**Solution (WSL2):**
 ```bash
-# Option 1: Fix npm permissions (recommended)
+# Option 1: Use sudo
+sudo npm install -g @anthropic-ai/claude-code
+
+# Option 2: Fix npm permissions (recommended)
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
-echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # Then install
 npm install -g @anthropic-ai/claude-code
@@ -236,7 +255,22 @@ claude
 
 **Cause:** Network or firewall blocking
 
-**Solution:**
+**Solution (PowerShell):**
+```powershell
+# Test connectivity
+curl -I https://api.anthropic.com
+
+# If behind corporate proxy
+$env:HTTP_PROXY = "http://proxy.company.com:8080"
+$env:HTTPS_PROXY = "http://proxy.company.com:8080"
+$env:NO_PROXY = "localhost,127.0.0.1"
+
+# Add to PowerShell profile
+Add-Content $PROFILE 'Set-Item -Path Env:HTTP_PROXY -Value "http://proxy.company.com:8080"'
+Add-Content $PROFILE 'Set-Item -Path Env:HTTPS_PROXY -Value "http://proxy.company.com:8080"'
+```
+
+**Solution (WSL2):**
 ```bash
 # Test connectivity
 curl -I https://api.anthropic.com
@@ -247,7 +281,8 @@ export HTTPS_PROXY="http://proxy.company.com:8080"
 export NO_PROXY="localhost,127.0.0.1"
 
 # Add to shell profile
-echo 'export HTTP_PROXY="..."' >> ~/.zshrc
+echo 'export HTTP_PROXY="http://proxy.company.com:8080"' >> ~/.bashrc
+echo 'export HTTPS_PROXY="http://proxy.company.com:8080"' >> ~/.bashrc
 ```
 
 ### Issue: "SSL certificate error"
