@@ -104,6 +104,12 @@ Claude Code is an AI-powered coding assistant that:
   - Banking agent examples
   - Best practices
 
+- **[Section 16: Prompt Engineering](./03-advanced/16-prompt-engineering.md)**
+  - Fundamentals of effective prompts
+  - Intermediate and advanced techniques
+  - Banking-specific prompt examples
+  - Prompt templates library
+
 ### Phase 4: Enterprise & Security (Week 4-5)
 **Implement enterprise-grade security**
 

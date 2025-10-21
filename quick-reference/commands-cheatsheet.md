@@ -178,13 +178,47 @@ echo "# Project Standards" > .claude/CLAUDE.md
 echo ".claude/settings.local.json" >> .gitignore
 ```
 
+## Prompt Engineering Tips
+
+### Be Specific
+```
+❌ Fix the bug
+✅ The login endpoint returns 500 when password is missing.
+   Add validation and return 400 with clear error message.
+```
+
+### Provide Context
+```
+✅ Add JWT authentication to API endpoints.
+   Use existing UserService for validation.
+   Token expiry: 15 minutes.
+   Follow pattern in src/auth/middleware.ts
+```
+
+### Request Format
+```
+✅ Scan for secrets and return JSON:
+   { "findings": [{"file": "...", "line": 42, "type": "api_key"}] }
+```
+
+### Chain of Thought
+```
+✅ Debug the transaction rollback issue.
+   Think step by step:
+   1. Identify where transactions start
+   2. Trace error handling
+   3. Check rollback calls
+   4. Suggest fix
+```
+
 ## Documentation
 
 - **Official Docs**: https://docs.claude.com/en/docs/claude-code/overview
 - **Quickstart**: https://docs.claude.com/en/docs/claude-code/quickstart
 - **CLI Reference**: https://docs.claude.com/en/docs/claude-code/cli-reference
+- **Prompt Engineering**: https://github.com/anthropics/prompt-eng-interactive-tutorial
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2025-10-19
+**Version:** 1.1
+**Last Updated:** 2025-10-21

@@ -35,6 +35,7 @@ Master advanced capabilities
 - [Section 6: Memory Management](./03-advanced/06-memory-management.md)
 - [Section 7: Slash Commands](./03-advanced/07-slash-commands.md)
 - [Section 8: Agents & Sub-agents](./03-advanced/08-agents-subagents.md)
+- [Section 16: Prompt Engineering](./03-advanced/16-prompt-engineering.md)
 
 ### Phase 4: Enterprise & Security
 Implement enterprise-grade security
