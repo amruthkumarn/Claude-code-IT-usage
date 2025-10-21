@@ -77,6 +77,7 @@ Ready-to-use resources
 ## 📖 Additional Resources
 
 - **[Quick Reference Cheatsheet](./quick-reference/commands-cheatsheet.md)** - One-page command reference
+- **[Dos and Don'ts for Banking IT](./quick-reference/dos-and-donts.md)** - Essential guidelines (60+ items)
 - **[Official Claude Code Docs](https://docs.claude.com/en/docs/claude-code/overview)** - Anthropic's documentation
 - **[Complete README](./README.md)** - Full navigation guide
 

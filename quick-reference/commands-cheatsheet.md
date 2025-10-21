@@ -223,12 +223,101 @@ echo ".claude/settings.local.json" >> .gitignore
    4. Suggest fix
 ```
 
+## 🏦 Banking IT: Dos and Don'ts (Quick Reference)
+
+**See [Full Dos and Don'ts Guide](./dos-and-donts.md) for detailed explanations**
+
+### Top 10 Critical DOs
+
+1. ✅ **Review EVERY change before approval** - No blind approvals
+2. ✅ **Execute ALL git commands manually** - Banking policy, no automation
+3. ✅ **Start in specific project directory** - Never in ~/ (home)
+4. ✅ **Use plan mode for exploration** - `--permission-mode plan`
+5. ✅ **Deny Bash tool** - In `.claude/settings.json`
+6. ✅ **Enable audit logging** - Use hooks for compliance
+7. ✅ **Be specific in requests** - Detail > vague
+8. ✅ **Review for PII/secrets** - Before every approval
+9. ✅ **Document standards** - In `CLAUDE.md`
+10. ✅ **Start fresh sessions regularly** - Every 1-2 hours
+
+### Top 10 Critical DON'Ts
+
+1. ❌ **NEVER use auto-approve** - Violates compliance
+2. ❌ **NEVER let Claude run git** - Manual only!
+3. ❌ **NEVER start in home directory** - `cd ~/project` first
+4. ❌ **NEVER paste customer data/PII** - Use synthetic data
+5. ❌ **NEVER commit secrets** - Use environment variables
+6. ❌ **NEVER skip security review** - Always check changes
+7. ❌ **NEVER use vague requests** - Be specific
+8. ❌ **NEVER ignore warnings** - Claude's warnings are real
+9. ❌ **NEVER use production creds** - Keep separate
+10. ❌ **NEVER approve without understanding** - Ask questions
+
+### Quick Security Checklist
+
+Before approving ANY change:
+```
+□ Did I review all changes?
+□ No secrets/API keys exposed?
+□ No customer data/PII?
+□ Security requirements met?
+□ Tests included/passing?
+□ Do I understand the change?
+```
+
+### Git Operations (Manual Only)
+
+```bash
+# 1. Code with Claude
+claude
+> Fix the bug
+
+# 2. Exit and review
+Ctrl+D
+git diff
+
+# 3. Get commit message
+claude --permission-mode plan
+> Draft commit message
+
+# 4. Execute manually
+git add .
+git commit -m "[paste message]"
+git push
+```
+
+### Emergency: What to Do If...
+
+**Accidentally approved something wrong:**
+```bash
+# Immediately reject next approval or Ctrl+C
+# Review git diff
+# If committed: git reset HEAD~1
+```
+
+**Claude seems slow:**
+```bash
+Ctrl+D  # Exit
+claude  # Start fresh
+```
+
+**Unsure about a change:**
+```bash
+[R]  # Reject
+> Explain what this change does and why
+```
+
+**See [Full Guide](./dos-and-donts.md) for 60+ detailed guidelines**
+
+---
+
 ## Documentation
 
 - **Official Docs**: https://docs.claude.com/en/docs/claude-code/overview
 - **Quickstart**: https://docs.claude.com/en/docs/claude-code/quickstart
 - **CLI Reference**: https://docs.claude.com/en/docs/claude-code/cli-reference
 - **Prompt Engineering**: https://github.com/anthropics/prompt-eng-interactive-tutorial
+- **Dos and Don'ts**: [Full Guide](./dos-and-donts.md)
 
 ---
 

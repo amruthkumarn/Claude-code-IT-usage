@@ -173,6 +173,13 @@ Claude Code is an AI-powered coding assistant that:
   - Common workflows
   - Quick setup guide
 
+- **[Dos and Don'ts for Banking IT](./quick-reference/dos-and-donts.md)**
+  - Security & compliance guidelines
+  - Git operations (manual only)
+  - Data protection best practices
+  - Quick decision trees
+  - 60+ categorized guidelines
+
 ### Templates
 **Ready-to-use configuration files**
 
@@ -384,6 +391,7 @@ claude
 ### Quick Access
 
 - **[Commands Cheatsheet](./quick-reference/commands-cheatsheet.md)** - One-page reference
+- **[Dos and Don'ts Guide](./quick-reference/dos-and-donts.md)** - Banking IT guidelines (60+ items)
 - **[Settings Templates](./templates/settings/)** - Ready-to-use configurations
 - **[Memory Templates](./templates/memory/)** - CLAUDE.md examples
 - **[Slash Commands](./templates/slash-commands/)** - Custom command examples
