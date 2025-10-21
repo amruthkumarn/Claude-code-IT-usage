@@ -35,7 +35,7 @@ claude "What does this project do?"
 claude -p "Generate a regex for email validation"
 
 # With options
-claude --model opus --permission-mode plan
+claude --model sonnet --permission-mode plan
 ```
 
 ---
@@ -284,71 +284,37 @@ Choose which AI model to use with the `--model` flag.
 
 ### Available Models
 
+**Current AWS Bedrock Availability:**
+
 ```bash
-# Use Sonnet (default, balanced)
+# Use Sonnet (default, currently available)
 claude --model sonnet
 
-# Use Opus (most capable)
-claude --model opus
-
-# Use Haiku (fastest, cheapest)
-claude --model haiku
+# Default behavior (uses Sonnet)
+claude
 ```
 
-### Model Comparison
+**🏦 Banking IT Note:** Only Sonnet is currently available in AWS Bedrock environments. Opus is in development, and Haiku is not currently available.
 
-| Model | Speed | Capability | Cost | Best For |
-|-------|-------|------------|------|----------|
-| **Sonnet** | Fast | High | Medium | General development (default) |
-| **Opus** | Slower | Highest | Highest | Complex problems, architecture |
-| **Haiku** | Fastest | Good | Lowest | Quick queries, simple tasks |
+### Model Selection
 
-### Model Selection Strategy
-
-**Use Sonnet for:**
+**Sonnet (Currently Available):**
 ```bash
 claude --model sonnet
-# - Most development tasks
-# - Code reviews
-# - Refactoring
-# - Bug fixes
+
+# Suitable for:
+# - All development tasks
+# - Code reviews and refactoring
+# - Bug fixes and debugging
 # - Feature development
-```
-
-**Use Opus for:**
-```bash
-claude --model opus
-# - Complex architectural decisions
-# - Difficult debugging
-# - Large refactorings
-# - Performance optimization
 # - Security analysis
+# - Performance optimization
+# - Architectural decisions
 ```
 
-**Use Haiku for:**
-```bash
-claude --model haiku -p "What is a closure in JavaScript?"
-# - Quick documentation lookups
-# - Simple code generation
-# - Syntax questions
-# - Fast iterations
-```
+### Future Model Availability
 
-### Cost-Optimized Workflow
-
-```bash
-# Stage 1: Quick exploration (Haiku)
-claude --model haiku --permission-mode plan
-> Give me an overview of this codebase
-
-# Stage 2: Development (Sonnet)
-claude --model sonnet
-> Implement the new payment feature
-
-# Stage 3: Review (Opus)
-claude --model opus --permission-mode plan
-> Perform a security review of the payment implementation
-```
+As additional models become available in AWS Bedrock, they will be documented here with specific use cases and selection strategies.
 
 ---
 
@@ -460,12 +426,12 @@ claude --agents '{
   "architect": {
     "description": "System architecture expert",
     "prompt": "You are a senior architect. Analyze system design and scalability.",
-    "model": "opus"
+    "model": "sonnet"
   }
 }'
 ```
 
-The `architect` agent uses Claude Opus for more sophisticated analysis.
+The `architect` agent uses Claude Sonnet for architectural analysis.
 
 ### Multiple Agents
 
@@ -485,7 +451,7 @@ claude --agents '{
     "description": "Security vulnerability scanner",
     "prompt": "Identify security vulnerabilities and compliance issues.",
     "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "model": "sonnet"
   }
 }'
 ```
@@ -498,7 +464,7 @@ claude --agents '{
     "description": "Banking compliance expert",
     "prompt": "You are a banking compliance expert. Check code for SOX, PCI-DSS, and regulatory compliance.",
     "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "model": "sonnet"
   },
   "sql-auditor": {
     "description": "Database security auditor",
@@ -696,7 +662,7 @@ Comprehensive reference of all flags and options.
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--model` | string | `sonnet` | AI model: `sonnet`, `opus`, `haiku` |
+| `--model` | string | `sonnet` | AI model (currently only `sonnet` available in AWS Bedrock) |
 
 ### Directory Flags
 
@@ -736,9 +702,9 @@ claude --permission-mode plan --model sonnet
 claude -p "Generate regex for phone validation" > phone-validator.js
 ```
 
-**Continue work with specific model:**
+**Continue previous session:**
 ```bash
-claude --continue --model opus
+claude --continue
 ```
 
 **Multi-directory development:**
@@ -751,9 +717,9 @@ claude --add-dir ../shared --add-dir ../config
 claude --agents '{"auditor": {"description": "Security auditor", "tools": ["Read", "Grep"]}}' --permission-mode plan
 ```
 
-**Cost-optimized quick query:**
+**Quick query with output:**
 ```bash
-claude --model haiku -p "Explain async/await"
+claude -p "Explain async/await" > async-explanation.md
 ```
 
 ### Banking IT Examples
@@ -763,7 +729,6 @@ claude --model haiku -p "Explain async/await"
 cd ~/banking/payment-service
 claude \
   --permission-mode plan \
-  --model opus \
   --agents '{
     "compliance": {
       "description": "Compliance checker",
@@ -779,8 +744,7 @@ cd ~/banking/frontend
 claude \
   --add-dir ../backend-api \
   --add-dir ../shared-types \
-  --add-dir ../auth-lib \
-  --model sonnet
+  --add-dir ../auth-lib
 ```
 
 **Automated security scan:**
@@ -788,7 +752,6 @@ claude \
 cd ~/banking/transaction-processor
 claude \
   --permission-mode plan \
-  --model opus \
   -p "Scan for SQL injection vulnerabilities, hardcoded secrets, and authentication bypass" \
   > security-report.txt
 ```
@@ -823,7 +786,7 @@ claude -p "Generate API documentation for all endpoints" > docs/API.md
 claude -p "Generate a comprehensive README based on the codebase" > README.md
 
 # Generate architecture doc
-claude --model opus -p "Create an architecture diagram and explanation" > docs/ARCHITECTURE.md
+claude -p "Create an architecture diagram and explanation" > docs/ARCHITECTURE.md
 
 echo "Documentation generated successfully!"
 ```
@@ -908,7 +871,7 @@ jobs:
 
       - name: Review Changes
         run: |
-          claude --permission-mode plan --model opus -p \
+          claude --permission-mode plan -p \
             "Review the git diff for: security issues, bugs, code quality problems. \
              Provide a structured report." \
             > review-report.txt
@@ -940,7 +903,7 @@ In this section, you learned:
 
 ### Configuration Options
 - Permission modes (interactive, auto-approve, plan, deny)
-- Model selection (sonnet, opus, haiku)
+- Model selection (Sonnet currently available in AWS Bedrock)
 - Working directory management
 - Custom agent configuration
 

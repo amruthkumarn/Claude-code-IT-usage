@@ -178,16 +178,7 @@ claude
 
 **Causes & Solutions:**
 
-**1. Using wrong model:**
-```bash
-# Use faster model
-claude --model haiku  # Fastest
-
-# Instead of:
-claude --model opus   # Slowest
-```
-
-**2. Context too large:**
+**1. Context too large:**
 ```bash
 # Start fresh session
 Ctrl+D
@@ -198,7 +189,7 @@ claude
 # Instead of: > Explain entire codebase
 ```
 
-**3. Network latency:**
+**2. Network latency:**
 ```bash
 # Check network
 ping api.anthropic.com
@@ -389,18 +380,17 @@ Or in settings:
 **Q: Why is Claude slow?**
 
 A: Common causes:
-- Using Opus (slower but more capable)
 - Large context window
 - Network latency
-- Solution: Use Sonnet or Haiku, keep context focused
+- Solution: Keep context focused, start fresh sessions
 
 **Q: How can I speed up Claude?**
 
 A:
-- Use `--model haiku` for simple queries
-- Start fresh sessions regularly
+- Start fresh sessions regularly (Ctrl+D, then `claude`)
 - Be specific in queries
 - Use agents for subtasks
+- Keep working directory scope narrow
 
 **Q: What's the maximum file size Claude can read?**
 

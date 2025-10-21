@@ -41,7 +41,6 @@ Claude Code operates in your terminal and can:
 │                │                              │
 │  ┌─────────────▼──────────────────────┐    │
 │  │   Anthropic Claude AI Models       │    │
-│  │   (Sonnet, Opus, Haiku)            │    │
 │  └─────────────┬──────────────────────┘    │
 │                │                              │
 │  ┌─────────────▼──────────────────────┐    │
@@ -53,6 +52,11 @@ Claude Code operates in your terminal and can:
 │  └─────────────────────────────────────┘    │
 └─────────────────────────────────────────────┘
 ```
+
+**Model Availability (AWS Bedrock):**
+- ✅ **Sonnet** - Currently available (recommended for banking IT use)
+- ⏳ **Opus** - In progress
+- ❌ **Haiku** - Not currently available
 
 ---
 

@@ -36,7 +36,7 @@
 │ Code Reviewer  │    │ Test Generator    │    │ Security Auditor  │
 │ - Review focus │    │ - Test creation   │    │ - Security only   │
 │ - Read-only    │    │ - Generate code   │    │ - Read-only       │
-│ - Opus model   │    │ - Sonnet model    │    │ - Opus model      │
+│ - Sonnet model │    │ - Sonnet model    │    │ - Sonnet model    │
 └────────────────┘    └───────────────────┘    └───────────────────┘
 ```
 
@@ -87,8 +87,7 @@ claude --agents '{
   "code-reviewer": {
     "description": "Expert code reviewer",
     "prompt": "You are a senior code reviewer. Focus on security, performance, and best practices.",
-    "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "tools": ["Read", "Grep", "Glob"]
   }
 }'
 ```
@@ -102,14 +101,12 @@ claude --agents '{
     "code-reviewer": {
       "description": "Expert code reviewer",
       "prompt": "You are a senior code reviewer. Focus on security, performance, and maintainability.",
-      "tools": ["Read", "Grep", "Glob"],
-      "model": "opus"
+      "tools": ["Read", "Grep", "Glob"]
     },
     "test-generator": {
       "description": "Test creation specialist",
       "prompt": "You are a testing expert. Generate comprehensive, maintainable tests.",
-      "tools": ["Read", "Write", "Grep"],
-      "model": "sonnet"
+      "tools": ["Read", "Write", "Grep"]
     }
   }
 }
@@ -135,11 +132,12 @@ claude --agents '{
   "agent-name": {
     "description": "Short description (shown in /help)",
     "prompt": "Detailed instructions for the agent",
-    "tools": ["Tool1", "Tool2"],  // Optional: Restrict tools
-    "model": "sonnet|opus|haiku"  // Optional: Specify model
+    "tools": ["Tool1", "Tool2"]  // Optional: Restrict tools
   }
 }
 ```
+
+**Note:** The `model` field is optional. When omitted, agents use the default model (Sonnet).
 
 ### Available Tools for Restriction
 
@@ -167,8 +165,7 @@ claude --agents '{
   "security-auditor": {
     "description": "Security vulnerability scanner",
     "prompt": "You are a security expert. Identify vulnerabilities, never modify code.",
-    "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "tools": ["Read", "Grep", "Glob"]
   }
 }
 ```
@@ -180,8 +177,7 @@ claude --agents '{
   "feature-builder": {
     "description": "Complete feature implementation",
     "prompt": "You implement complete features including code, tests, and documentation.",
-    "tools": ["Read", "Write", "Edit", "Grep", "Glob", "Bash"],
-    "model": "sonnet"
+    "tools": ["Read", "Write", "Edit", "Grep", "Glob", "Bash"]
   }
 }
 ```
@@ -197,8 +193,7 @@ claude --agents '{
   "compliance-checker": {
     "description": "Banking compliance auditor (PCI-DSS, SOX, GDPR)",
     "prompt": "You are a banking compliance expert specializing in PCI-DSS, SOX, and GDPR regulations.\n\nWhen reviewing code, check for:\n\n## PCI-DSS\n- Credit card number exposure in logs\n- CVV storage (must NEVER be stored)\n- Encryption of cardholder data\n- Tokenization implementation\n- Access control to payment data\n\n## SOX\n- Audit trail for financial transactions\n- Separation of duties in code\n- Change management compliance\n- Database transaction integrity\n\n## GDPR\n- Personal data classification\n- Consent tracking\n- Right to deletion implementation\n- Data retention policies\n- Cross-border data transfer\n\nProvide:\n1. Severity (Critical/High/Medium/Low)\n2. Specific file and line numbers\n3. Regulation violated\n4. Remediation steps\n5. Code examples of fixes",
-    "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "tools": ["Read", "Grep", "Glob"]
   }
 }
 ```
@@ -215,8 +210,7 @@ claude --agents '{
   "sql-auditor": {
     "description": "Database security specialist",
     "prompt": "You are a database security expert. Analyze SQL queries and database interactions for:\n\n1. SQL Injection vulnerabilities\n2. Missing parameterized queries\n3. Exposed sensitive data in queries\n4. Missing indexes on foreign keys\n5. N+1 query problems\n6. Missing transactions for multi-step operations\n7. Improper error handling exposing DB structure\n\nFor each issue found:\n- Show vulnerable code\n- Explain the risk\n- Provide secure alternative\n- Rate severity (Critical/High/Medium/Low)\n\nFocus on banking-critical data: accounts, transactions, customer PII.",
-    "tools": ["Read", "Grep"],
-    "model": "opus"
+    "tools": ["Read", "Grep"]
   }
 }
 ```
@@ -269,8 +263,7 @@ claude --agents '{
   "performance-optimizer": {
     "description": "Performance analysis and optimization specialist",
     "prompt": "You are a performance optimization expert. Analyze code for:\n\n1. Algorithmic inefficiencies (O(n²) → O(n log n))\n2. Database query optimization\n3. Unnecessary API calls\n4. Memory leaks\n5. Blocking operations that should be async\n6. Missing caching opportunities\n7. Unindexed database queries\n\nBanking context:\n- High transaction volume handling\n- Real-time balance calculations\n- Report generation optimization\n- Batch processing efficiency\n\nFor each issue:\n- Current performance profile\n- Bottleneck explanation\n- Optimized solution\n- Expected performance improvement\n- Trade-offs to consider",
-    "tools": ["Read", "Grep", "Glob"],
-    "model": "opus"
+    "tools": ["Read", "Grep", "Glob"]
   }
 }
 ```
@@ -282,8 +275,7 @@ claude --agents '{
   "migration-generator": {
     "description": "Database migration specialist",
     "prompt": "You generate safe, reversible database migrations for PostgreSQL.\n\nRequirements:\n- Wrapped in transactions\n- Include UP and DOWN migrations\n- Add indexes for foreign keys\n- Use banking naming conventions (snake_case)\n- Add descriptive comments\n- Consider data migration if schema changes\n\nInclude:\n- Rollback strategy\n- Data type justification\n- Index rationale\n- Foreign key constraints\n- NOT NULL constraints with defaults\n\nValidate:\n- No data loss\n- Backward compatibility\n- Performance impact assessment",
-    "tools": ["Read", "Write", "Grep"],
-    "model": "sonnet"
+    "tools": ["Read", "Write", "Grep"]
   }
 }
 ```
@@ -337,21 +329,20 @@ claude --agents '{
 }
 ```
 
-### 3. Right Model for the Task
+### 3. Use Default Model
 
 ```json
 {
-  "simple-formatter": {
-    "model": "haiku"  // Fast, cheap
-  },
-  "architect": {
-    "model": "opus"   // Complex decisions
-  },
-  "general-dev": {
-    "model": "sonnet" // Balanced
+  "agent-name": {
+    "description": "Agent description",
+    "prompt": "Agent prompt",
+    "tools": ["Read", "Grep"]
+    // model field is optional - uses Sonnet by default
   }
 }
 ```
+
+**Note:** Agents use Sonnet by default, which is suitable for all development tasks in AWS Bedrock environments.
 
 ### 4. Clear Descriptions
 

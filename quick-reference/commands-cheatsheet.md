@@ -28,7 +28,7 @@ claude --version
 
 | Flag | Description |
 |------|-------------|
-| `--model sonnet\|opus\|haiku` | Select AI model |
+| `--model sonnet` | Select AI model (Sonnet only in AWS Bedrock) |
 | `--permission-mode plan` | Read-only mode |
 | `--permission-mode auto-approve` | Auto-approve (dangerous!) |
 | `--add-dir <path>` | Add directory to scope |
@@ -122,11 +122,15 @@ claude
 
 ## Models
 
-| Model | Speed | Capability | Cost | Use For |
-|-------|-------|------------|------|---------|
-| **Sonnet** | Fast | High | Medium | General dev (default) |
-| **Opus** | Slow | Highest | High | Complex problems |
-| **Haiku** | Fastest | Good | Low | Quick queries |
+**AWS Bedrock Availability:**
+
+| Model | Status | Use For |
+|-------|--------|---------|
+| **Sonnet** | ✅ Available | All development tasks (default) |
+| **Opus** | ⏳ In Progress | Not yet available |
+| **Haiku** | ❌ Not Available | Not available |
+
+**Note:** Sonnet is currently the only model available in AWS Bedrock and is suitable for all development tasks including quick queries, general development, and complex problem-solving.
 
 ## Troubleshooting
 

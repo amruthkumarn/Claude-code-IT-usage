@@ -258,19 +258,22 @@ claude --permission-mode plan
 
 ## Performance Optimization
 
-### 1. Use Appropriate Models
+### 1. Use Available Model
 
 ```bash
-# Quick queries: Haiku (fast, cheap)
-claude --model haiku -p "What does this function do?"
+# Sonnet is currently the only available model in AWS Bedrock
+# Suitable for all development tasks: quick queries, development, complex analysis
+claude
 
-# Development: Sonnet (balanced)
+# Or explicitly specify
 claude --model sonnet
 
-# Complex problems: Opus (powerful, expensive)
-claude --model opus --permission-mode plan
+# For read-only analysis
+claude --permission-mode plan
 > Analyze the architecture and suggest improvements
 ```
+
+**Note:** Only Sonnet is currently available in AWS Bedrock. It provides excellent performance for all development tasks.
 
 ### 2. Manage Context
 

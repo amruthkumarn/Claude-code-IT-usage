@@ -268,7 +268,7 @@ The `.claude/settings.local.json` file contains **personal preferences** that ov
 
 ```json
 {
-  "defaultModel": "opus",
+  "defaultModel": "sonnet",
 
   "env": {
     "MY_LOCAL_API_KEY": "dev-key-12345",
@@ -288,8 +288,8 @@ The `.claude/settings.local.json` file contains **personal preferences** that ov
 **Good use cases:**
 ```json
 {
-  // Personal preference: Use Opus locally
-  "defaultModel": "opus",
+  // Personal preference: Explicit model selection
+  "defaultModel": "sonnet",
 
   // Local development secrets
   "env": {
@@ -767,7 +767,7 @@ Ready-to-use templates for banking projects.
     "deny": ["Edit", "Write", "Bash", "WebFetch", "WebSearch"]
   },
 
-  "defaultModel": "opus",
+  "defaultModel": "sonnet",
 
   "env": {
     "ENVIRONMENT": "production",
@@ -800,7 +800,7 @@ Ready-to-use templates for banking projects.
     "deny": ["Edit", "Write", "Bash", "WebFetch", "WebSearch"]
   },
 
-  "defaultModel": "opus",
+  "defaultModel": "sonnet",
 
   "env": {
     "REVIEW_MODE": "security",
