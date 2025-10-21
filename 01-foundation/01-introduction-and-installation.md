@@ -530,7 +530,7 @@ curl -fsSL https://install.claude.ai/claude-code | sh
 Now that Claude Code is installed and authenticated:
 
 1. **[Continue to Section 2: Core Concepts](./02-core-concepts.md)** - Understand how Claude Code works
-2. **[Jump to Section 3: Getting Started](../phase2-basic-usage/03-getting-started.md)** - Start using Claude Code
+2. **[Jump to Section 3: Getting Started](../02-basics/03-getting-started.md)** - Start using Claude Code
 3. **[Review Quick Reference](../quick-reference/commands-cheatsheet.md)** - Common commands and shortcuts
 
 ---

@@ -789,9 +789,9 @@ In this section, you learned:
 
 Now that you understand the core concepts:
 
-1. **[Continue to Section 3: Getting Started](../phase2-basic-usage/03-getting-started.md)** - Practical hands-on usage
-2. **[Jump to Section 5: Project Configuration](../phase3-advanced-features/05-project-configuration.md)** - Configure Claude Code for your team
-3. **[Review Section 9: Security & Compliance](../phase4-enterprise-security/09-security-compliance.md)** - Deep dive into security
+1. **[Continue to Section 3: Getting Started](../02-basics/03-getting-started.md)** - Practical hands-on usage
+2. **[Jump to Section 5: Project Configuration](../03-advanced/05-project-configuration.md)** - Configure Claude Code for your team
+3. **[Review Section 9: Security & Compliance](../04-security/09-security-compliance.md)** - Deep dive into security
 
 ---
 

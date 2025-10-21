@@ -1,0 +1,21 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-cayman
+title: Claude Code Documentation - Banking IT
+description: Comprehensive guide for using Claude Code in banking environments
+show_downloads: false
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Collections
+collections_dir: .
+
+# Exclude from processing
+exclude:
+  - .git
+  - .gitignore
+  - README.md
+  - IMPLEMENTATION_PLAN.md

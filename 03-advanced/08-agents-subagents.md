@@ -423,7 +423,7 @@ In this section, you learned:
 
 ## Next Steps
 
-1. **[Continue to Section 9: Security & Compliance](../phase4-enterprise-security/09-security-compliance.md)** - Deep dive into security
+1. **[Continue to Section 9: Security & Compliance](../04-security/09-security-compliance.md)** - Deep dive into security
 2. **[Review Agent Documentation](https://docs.claude.com/en/docs/claude-code/agents)** - Official agent guide
 3. **Create your first agent** - Start with a simple code-reviewer
 

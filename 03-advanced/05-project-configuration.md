@@ -963,7 +963,7 @@ In this section, you learned:
 ## Next Steps
 
 1. **[Continue to Section 6: Memory Management](./06-memory-management.md)** - Configure CLAUDE.md files
-2. **[Jump to Section 9: Security & Compliance](../phase4-enterprise-security/09-security-compliance.md)** - Security deep dive
+2. **[Jump to Section 9: Security & Compliance](../04-security/09-security-compliance.md)** - Security deep dive
 3. **[Review Settings Documentation](https://docs.claude.com/en/docs/claude-code/settings)** - Official settings reference
 
 ---

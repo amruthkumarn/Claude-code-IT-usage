@@ -960,8 +960,8 @@ In this section, you learned:
 
 ## Next Steps
 
-1. **[Continue to Section 5: Project Configuration](../phase3-advanced-features/05-project-configuration.md)** - Configure `.claude/` directory
-2. **[Jump to Section 6: Memory Management](../phase3-advanced-features/06-memory-management.md)** - Set up CLAUDE.md files
+1. **[Continue to Section 5: Project Configuration](../03-advanced/05-project-configuration.md)** - Configure `.claude/` directory
+2. **[Jump to Section 6: Memory Management](../03-advanced/06-memory-management.md)** - Set up CLAUDE.md files
 3. **[Review CLI Reference Docs](https://docs.claude.com/en/docs/claude-code/cli-reference)** - Official CLI documentation
 
 ---

@@ -412,7 +412,7 @@ In this section, you learned:
 
 ## Next Steps
 
-1. **[Continue to Section 14: Templates Library](../phase6-reference-templates/14-templates-library.md)** - Ready-to-use templates
+1. **[Continue to Section 14: Templates Library](../06-reference/14-templates-library.md)** - Ready-to-use templates
 2. **Implement these standards** - Adapt for your team
 3. **Create your checklist** - Customize for your needs
 

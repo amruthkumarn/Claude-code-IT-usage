@@ -537,7 +537,7 @@ In this section, you learned:
 
 ## Next Steps
 
-1. **[Continue to Section 11: MCP](../phase5-integration-practices/11-mcp.md)** - External tool integration
+1. **[Continue to Section 11: MCP](../05-integration/11-mcp.md)** - External tool integration
 2. **[Review Hooks Documentation](https://docs.claude.com/en/docs/claude-code/hooks)** - Official hooks guide
 3. **Create your first hook** - Start with audit logging
 

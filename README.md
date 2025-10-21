@@ -47,13 +47,13 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 1: Foundation (Week 1-2)
 **Get up and running with Claude Code**
 
-- **[Section 1: Introduction & Installation](./phase1-foundation/01-introduction-and-installation.md)**
+- **[Section 1: Introduction & Installation](./01-foundation/01-introduction-and-installation.md)**
   - What is Claude Code and why use it
   - Installation methods (npm, Homebrew, native)
   - Authentication and login
   - Troubleshooting installation
 
-- **[Section 2: Core Concepts](./phase1-foundation/02-core-concepts.md)**
+- **[Section 2: Core Concepts](./01-foundation/02-core-concepts.md)**
   - How Claude Code works
   - REPL vs SDK mode
   - Permissions and security model
@@ -62,14 +62,14 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 2: Basic Usage (Week 2-3)
 **Learn essential workflows**
 
-- **[Section 3: Getting Started](./phase2-basic-usage/03-getting-started.md)**
+- **[Section 3: Getting Started](./02-basics/03-getting-started.md)**
   - Your first session
   - Understanding codebases
   - Fixing bugs and refactoring
   - Using Plan Mode
   - Common workflows
 
-- **[Section 4: CLI Reference](./phase2-basic-usage/04-cli-reference.md)**
+- **[Section 4: CLI Reference](./02-basics/04-cli-reference.md)**
   - Complete command reference
   - Flags and options
   - Permission modes
@@ -79,26 +79,26 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 3: Advanced Features (Week 3-4)
 **Master advanced capabilities**
 
-- **[Section 5: Project Configuration](./phase3-advanced-features/05-project-configuration.md)**
+- **[Section 5: Project Configuration](./03-advanced/05-project-configuration.md)**
   - The `.claude/` directory
   - Settings hierarchy
   - Permission configuration
   - Environment variables
   - Output styles
 
-- **[Section 6: Memory Management](./phase3-advanced-features/06-memory-management.md)**
+- **[Section 6: Memory Management](./03-advanced/06-memory-management.md)**
   - Understanding CLAUDE.md files
   - Memory hierarchy
   - Writing effective memory
   - Banking compliance examples
 
-- **[Section 7: Slash Commands](./phase3-advanced-features/07-slash-commands.md)**
+- **[Section 7: Slash Commands](./03-advanced/07-slash-commands.md)**
   - Built-in commands
   - Creating custom commands
   - Command arguments
   - Banking automation examples
 
-- **[Section 8: Agents & Sub-agents](./phase3-advanced-features/08-agents-subagents.md)**
+- **[Section 8: Agents & Sub-agents](./03-advanced/08-agents-subagents.md)**
   - Understanding agents
   - Defining custom agents
   - Banking agent examples
@@ -107,14 +107,14 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 4: Enterprise & Security (Week 4-5)
 **Implement enterprise-grade security**
 
-- **[Section 9: Security & Compliance](./phase4-enterprise-security/09-security-compliance.md)**
+- **[Section 9: Security & Compliance](./04-security/09-security-compliance.md)**
   - Security model overview
   - Permission system
   - Data protection
   - PCI-DSS, SOX, GDPR compliance
   - Audit and monitoring
 
-- **[Section 10: Hooks & Automation](./phase4-enterprise-security/10-hooks-automation.md)**
+- **[Section 10: Hooks & Automation](./04-security/10-hooks-automation.md)**
   - Understanding hooks
   - Hook types and configuration
   - Banking automation examples
@@ -123,19 +123,19 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 5: Integration & Best Practices (Week 5-6)
 **Integrate with your workflow**
 
-- **[Section 11: Model Context Protocol (MCP)](./phase5-integration-practices/11-mcp.md)**
+- **[Section 11: Model Context Protocol (MCP)](./05-integration/11-mcp.md)**
   - What is MCP
   - MCP server types
   - Installing servers
   - Banking integrations (databases, APIs, Jira)
 
-- **[Section 12: Version Control Integration](./phase5-integration-practices/12-git-integration.md)**
+- **[Section 12: Version Control Integration](./05-integration/12-git-integration.md)**
   - Git with Claude Code
   - Creating commits
   - Creating pull requests
   - Best practices
 
-- **[Section 13: Standards & Best Practices](./phase5-integration-practices/13-standards-best-practices.md)**
+- **[Section 13: Standards & Best Practices](./05-integration/13-standards-best-practices.md)**
   - Organizational standards
   - Project setup
   - Team collaboration
@@ -144,14 +144,14 @@ Claude Code is an AI-powered coding assistant that:
 ### Phase 6: Reference & Templates (Week 6)
 **Ready-to-use resources**
 
-- **[Section 14: Templates Library](./phase6-reference-templates/14-templates-library.md)**
+- **[Section 14: Templates Library](./06-reference/14-templates-library.md)**
   - Settings templates
   - Memory templates
   - Slash command templates
   - Hook script templates
   - Agent configurations
 
-- **[Section 15: Troubleshooting & FAQ](./phase6-reference-templates/15-troubleshooting-faq.md)**
+- **[Section 15: Troubleshooting & FAQ](./06-reference/15-troubleshooting-faq.md)**
   - Installation issues
   - Authentication problems
   - Permission errors
@@ -211,7 +211,7 @@ claude
 
 ### 4. Next Steps
 
-- Read [Section 1: Introduction & Installation](./phase1-foundation/01-introduction-and-installation.md)
+- Read [Section 1: Introduction & Installation](./01-foundation/01-introduction-and-installation.md)
 - Follow the [Learning Path](#learning-path) below
 - Copy [templates](./templates/) to your project
 
@@ -222,12 +222,12 @@ claude
 ### For New Users (Week 1)
 
 1. **Day 1-2:** Installation & Basics
-   - Read [Section 1](./phase1-foundation/01-introduction-and-installation.md) and [Section 2](./phase1-foundation/02-core-concepts.md)
+   - Read [Section 1](./01-foundation/01-introduction-and-installation.md) and [Section 2](./01-foundation/02-core-concepts.md)
    - Install Claude Code
    - Try first session in Plan Mode
 
 2. **Day 3-5:** Practical Usage
-   - Read [Section 3](./phase2-basic-usage/03-getting-started.md)
+   - Read [Section 3](./02-basics/03-getting-started.md)
    - Fix a real bug
    - Explore your codebase
    - Create a commit with Claude
@@ -235,26 +235,26 @@ claude
 ### For Developers (Week 2-3)
 
 3. **Week 2:** Configuration & Customization
-   - Read Sections [5](./phase3-advanced-features/05-project-configuration.md), [6](./phase3-advanced-features/06-memory-management.md), [7](./phase3-advanced-features/07-slash-commands.md)
+   - Read Sections [5](./03-advanced/05-project-configuration.md), [6](./03-advanced/06-memory-management.md), [7](./03-advanced/07-slash-commands.md)
    - Set up `.claude/` directory
    - Create CLAUDE.md with coding standards
    - Create custom slash commands
 
 4. **Week 3:** Advanced Features
-   - Read [Section 8](./phase3-advanced-features/08-agents-subagents.md)
+   - Read [Section 8](./03-advanced/08-agents-subagents.md)
    - Create custom agents
    - Integrate with git workflow
 
 ### For DevOps/Security (Week 4-5)
 
 5. **Week 4:** Security & Compliance
-   - Read Sections [9](./phase4-enterprise-security/09-security-compliance.md), [10](./phase4-enterprise-security/10-hooks-automation.md)
+   - Read Sections [9](./04-security/09-security-compliance.md), [10](./04-security/10-hooks-automation.md)
    - Configure permissions
    - Set up audit logging
    - Implement hooks
 
 6. **Week 5:** Integration
-   - Read Sections [11](./phase5-integration-practices/11-mcp.md), [12](./phase5-integration-practices/12-git-integration.md), [13](./phase5-integration-practices/13-standards-best-practices.md)
+   - Read Sections [11](./05-integration/11-mcp.md), [12](./05-integration/12-git-integration.md), [13](./05-integration/13-standards-best-practices.md)
    - Set up MCP servers
    - Integrate with CI/CD
    - Establish team standards

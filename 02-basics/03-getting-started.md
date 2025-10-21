@@ -937,7 +937,7 @@ Now that you know the basics:
 
 1. **Practice**: Try the workflows with your actual codebase
 2. **[Continue to Section 4: CLI Reference](./04-cli-reference.md)** - Learn all command-line options
-3. **[Jump to Section 5: Project Configuration](../phase3-advanced-features/05-project-configuration.md)** - Configure for your team
+3. **[Jump to Section 5: Project Configuration](../03-advanced/05-project-configuration.md)** - Configure for your team
 4. **[Review Common Workflows](https://docs.claude.com/en/docs/claude-code/common-workflows)** - More workflow examples
 
 ---
