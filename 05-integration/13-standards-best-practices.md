@@ -421,7 +421,3 @@ In this section, you learned:
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** 2025-10-19
-**Target Audience:** Banking IT - Data Chapter
-**Prerequisites:** Sections 1-12

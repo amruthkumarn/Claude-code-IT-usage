@@ -89,13 +89,13 @@ The default mode when you type `claude` without arguments.
 ```bash
 $ claude
 Welcome to Claude Code!
-You're in: /Users/yourname/banking-api
+You're in: /Users/yourname/customer-data-pipeline
 
-> Can you explain what the authentication middleware does?
+> Can you explain what the data transformation pipeline does?
 
 [Claude reads relevant files and explains]
 
-> Now can you add rate limiting to it?
+> Now can you add data quality checks to the pipeline?
 
 [Claude makes changes iteratively]
 ```
@@ -276,22 +276,24 @@ When Claude needs to perform an action that requires approval, you'll see an int
 ### Example: File Edit Approval
 
 ```
-Claude wants to edit: src/auth/middleware.js
+Claude wants to edit: src/transformations/customer_data.py
 
 Old:
-  export function authenticate(req, res, next) {
-    const token = req.headers.authorization;
-    // existing code...
-  }
+  def transform_customer_data(df):
+    # Read customer data
+    customer_df = spark.read.parquet(input_path)
+    return customer_df
 
 New:
-  export function authenticate(req, res, next) {
-    const token = req.headers.authorization?.split('Bearer ')[1];
-    if (!token) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
-    // existing code...
-  }
+  def transform_customer_data(df):
+    # Read customer data with schema validation
+    customer_df = spark.read.schema(customer_schema).parquet(input_path)
+
+    # Add data quality checks
+    customer_df = customer_df.filter(col("customer_id").isNotNull())
+    customer_df = customer_df.filter(col("account_balance") >= 0)
+
+    return customer_df
 
 [A]pprove  [R]eject  [E]dit  [V]iew full file  [?] Help
 ```
@@ -312,10 +314,10 @@ For multiple similar operations:
 
 ```
 Claude wants to perform 5 edit operations:
-1. src/auth/middleware.js
-2. src/auth/validator.js
-3. src/auth/types.ts
-4. tests/auth.test.js
+1. src/transformations/customer_data.py
+2. src/transformations/transaction_data.py
+3. src/schemas/customer_schema.py
+4. tests/test_transformations.py
 5. README.md
 
 [A]pprove all  [R]eview individually  [D]eny all
@@ -324,9 +326,10 @@ Claude wants to perform 5 edit operations:
 ### Banking IT Best Practice
 
 **Always Review:**
-- Changes to authentication/authorization code
-- Database queries
-- Security-sensitive operations
+- Changes to data transformation logic
+- Database queries and data access patterns
+- PII/sensitive data handling
+- Schema modifications
 - Configuration files
 - Production deployment scripts
 
@@ -358,13 +361,6 @@ Claude Code has access to various tools to interact with your system:
 |------|---------|------------|
 | Bash | Execute shell commands | Requires approval |
 | NotebookEdit | Edit Jupyter notebooks | Requires approval |
-
-### Information Retrieval
-
-| Tool | Purpose | Permission |
-|------|---------|------------|
-| WebFetch | Fetch web content | Requires approval |
-| WebSearch | Search the web | Requires approval |
 
 ### Task Management
 
@@ -453,28 +449,37 @@ Claude Code uses a three-level memory system:
 
 **Example CLAUDE.md:**
 ```markdown
-# Banking API Project Standards
+# Customer Data Pipeline - Data Engineering Standards
 
 ## Code Style
-- Use TypeScript for all new code
-- Follow Airbnb style guide
-- Always use async/await, never callbacks
+- Use Python 3.9+ for all data pipelines
+- Follow PEP 8 style guide
+- Use PySpark for distributed data processing
+- Use type hints for all function signatures
 
-## Security Requirements
-- All API endpoints must have authentication
-- Use parameterized queries for SQL
-- Log all authentication failures
-- Never log sensitive data (passwords, tokens, SSNs)
+## Data Quality Requirements
+- All pipelines must include schema validation
+- Implement null checks for critical fields (customer_id, account_number)
+- Add data quality metrics (row counts, duplicate checks)
+- Validate data types before transformations
+
+## PII/Sensitive Data Handling
+- Never log customer PII (SSN, account numbers, card numbers)
+- Encrypt PII columns at rest using AES-256
+- Use data masking for non-production environments
+- Implement column-level access controls
 
 ## Testing
-- Minimum 80% code coverage
-- Write tests before implementation (TDD)
-- Mock external API calls
+- Minimum 80% code coverage for transformation logic
+- Write unit tests for all data transformations
+- Include integration tests with sample datasets
+- Validate schema evolution scenarios
 
 ## Compliance
-- All database changes require audit logging
-- PCI-DSS: Never store full credit card numbers
-- SOX: All financial calculations must be auditable
+- GDPR: All customer data must have retention policies
+- PCI-DSS: Never store full credit card numbers or CVV
+- SOX: All financial data transformations must be auditable
+- Log all data pipeline executions with lineage tracking
 ```
 
 ### Continuing Previous Sessions
@@ -551,69 +556,71 @@ Ctrl+D (exit) then restart: claude
 
 Claude Code can use different AI models, each with different capabilities and costs.
 
-### Model Comparison
+### Model Availability (AWS Bedrock)
 
-| Model | Speed | Capability | Cost | Best For |
-|-------|-------|------------|------|----------|
-| **Claude Sonnet** | Fast | High | Medium | General development (default) |
-| **Claude Opus** | Slower | Highest | High | Complex problems, architecture |
-| **Claude Haiku** | Fastest | Basic | Low | Simple tasks, quick queries |
+| Model | Status | Capability | Best For |
+|-------|--------|------------|----------|
+| **Claude Sonnet** | ✅ Available | High | All development tasks (default) |
+| **Claude Opus** | ⏳ In Progress | Highest | Complex problems, architecture (when available) |
 
-### Selecting a Model
+**Note:** Sonnet is currently the only model available and is suitable for all development tasks including data pipeline development, code reviews, debugging, and complex problem-solving.
+
+### Using Models
 
 ```bash
-# Use default (Sonnet)
+# Use default (Sonnet - currently the only available model)
 $ claude
 
-# Use Opus for complex task
+# When Opus becomes available, you can use:
 $ claude --model opus
 
-# Use Haiku for quick query
-$ claude --model haiku -p "What does this function do?"
-
-# Change model mid-session
+# Change model mid-session (when Opus is available)
 > /model opus
 Model changed to Claude Opus
 ```
 
 ### Model Selection Guidelines
 
-**Use Sonnet (default) for:**
-- General development tasks
-- Code reviews
-- Refactoring
-- Bug fixes
-- Most day-to-day work
+**Use Sonnet (currently available) for:**
+- All data pipeline development tasks
+- PySpark transformations and optimizations
+- Code reviews and refactoring
+- Data quality validation logic
+- Schema design and evolution
+- Bug fixes and debugging
+- Performance tuning
+- Complex data processing logic
+- All day-to-day development work
 
-**Use Opus for:**
-- Complex architectural decisions
-- Large-scale refactoring
-- Difficult debugging
-- Understanding complex codebases
-- Performance optimization
+**Use Opus (when available) for:**
+- Complex architectural decisions for data platforms
+- Large-scale data pipeline refactoring
+- Difficult performance optimization problems
+- Understanding complex legacy data systems
+- Multi-source data integration strategies
 
-**Use Haiku for:**
-- Quick syntax questions
-- Code formatting
-- Simple code generation
-- Fast documentation lookups
+### Banking IT Workflow
 
-### Banking IT Cost Considerations
-
+**Current Workflow (Sonnet only):**
 ```bash
-# Cost-conscious development workflow:
+# Use Sonnet for all development tasks
+$ claude
+> Analyze this PySpark transformation pipeline
 
-# 1. Explore with Haiku (cheap, fast)
-$ claude --model haiku --permission-mode plan
-> Give me an overview of this codebase
+# Use plan mode for exploration (read-only, no API costs for edits)
+$ claude --permission-mode plan
+> Give me an overview of this data pipeline codebase
+```
 
-# 2. Plan with Sonnet (balanced)
+**Future Workflow (when Opus is available):**
+```bash
+# 1. Use Sonnet for most development tasks
 $ claude --model sonnet
-> Let's implement feature X
+> Implement data quality checks for customer pipeline
 
-# 3. Review complex parts with Opus (expensive, powerful)
+# 2. Use Opus for complex architectural decisions
 $ claude --model opus
-> Review the security of this authentication flow
+> Review and optimize this multi-source data integration architecture
 ```
 
 ---
@@ -730,30 +737,39 @@ This URL is outside your codebase.
 
 ### Trust Model
 
+The trust model defines who has control at each stage:
+
+**1. You are ALWAYS in control:**
+- You have final authority on all changes
+- You review and approve every action Claude takes
+- You control which files/directories Claude can access
+- You can stop or reject Claude at any time
+
+**2. Claude Code is your assistant:**
+- Claude suggests code changes and solutions
+- Claude CANNOT make changes without your approval (in default mode)
+- Claude can only access files in your current working directory
+- Claude's actions are logged and auditable
+
+**3. Your code remains protected:**
+- All changes require your explicit approval
+- Version control (git) tracks all modifications
+- You manually execute git commits and pushes
+- You can review changes before they're committed
+
+**Visual Trust Flow:**
 ```
-┌─────────────────────────────────────────────┐
-│  You (Developer)                             │
-│  - Final authority                           │
-│  - Review all changes                        │
-│  - Control permissions                       │
-└──────────────────┬──────────────────────────┘
-                   │ trusts
-                   ▼
-┌─────────────────────────────────────────────┐
-│  Claude Code                                 │
-│  - Makes suggestions                         │
-│  - Requires approval for actions             │
-│  - Scoped to working directory               │
-└──────────────────┬──────────────────────────┘
-                   │ operates within
-                   ▼
-┌─────────────────────────────────────────────┐
-│  Your Codebase                               │
-│  - Protected by permissions                  │
-│  - Version controlled (git)                  │
-│  - Can be reviewed before committing         │
-└─────────────────────────────────────────────┘
+You Start Claude → Claude Suggests Action → You Review & Approve → Change Applied
+     ↑                                              ↓
+     └──────────────── You Can Reject ──────────────┘
 ```
+
+**Banking IT Trust Principles:**
+- **Zero Trust**: Never assume Claude's suggestions are perfect
+- **Always Verify**: Review all data transformations and schema changes
+- **Separation of Duties**: Developers approve changes, architects approve designs
+- **Audit Trail**: All Claude actions are logged for compliance
+- **Least Privilege**: Claude only accesses what it needs for the current task
 
 ---
 
@@ -771,8 +787,9 @@ In this section, you learned:
 7. **Context**: Maintained during session, managed automatically
 8. **Memory**: Three-level system (enterprise, project, user) via CLAUDE.md files
 9. **Tokens**: Limited context window, managed automatically
-10. **Models**: Sonnet (default), Opus (powerful), Haiku (fast)
+10. **Models**: Sonnet (available now), Opus (coming soon) - suitable for all data engineering tasks
 11. **Security**: Multiple layers of protection and human oversight
+12. **Trust**: You are always in control; Claude is your assistant, not autonomous
 
 ### Banking IT Takeaways
 
@@ -795,8 +812,3 @@ Now that you understand the core concepts:
 3. **[Review Section 9: Security & Compliance](../04-security/09-security-compliance.md)** - Deep dive into security
 
 ---
-
-**Document Version:** 1.0
-**Last Updated:** 2025-10-19
-**Target Audience:** Banking IT - Data Chapter
-**Prerequisites:** Section 1 (Introduction & Installation)

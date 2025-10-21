@@ -554,8 +554,3 @@ In this section, you learned:
 5. Banking IT environments may require proxy and certificate configuration
 
 ---
-
-**Document Version:** 1.0
-**Last Updated:** 2025-10-19
-**Target Audience:** Banking IT - Data Chapter
-**Prerequisites:** None (entry-level document)
