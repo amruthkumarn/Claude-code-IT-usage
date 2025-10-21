@@ -61,18 +61,18 @@ Claude will:
 
 **Example Response:**
 ```
-This appears to be a Node.js REST API for banking operations. Based on the structure:
+This appears to be a PySpark data pipeline for banking operations. Based on the structure:
 
-- Technology: Node.js with Express
-- Database: PostgreSQL (via pg library)
-- Authentication: JWT tokens
+- Technology: PySpark 3.5+ with Databricks
+- Database: PostgreSQL / Delta Lake
+- Data Access: Column-level access controls
 - Main features:
-  - Account management (src/accounts/)
-  - Transaction processing (src/transactions/)
-  - User authentication (src/auth/)
-  - Payment processing (src/payments/)
+  - Customer data processing (pipelines/customer_data/)
+  - Transaction processing (pipelines/transactions/)
+  - Data validation (utils/validators/)
+  - Payment data transformation (pipelines/payments/)
 
-The project has tests in the test/ directory and uses Jest as the testing framework.
+The project has tests in the tests/ directory and uses pytest as the testing framework.
 ```
 
 ### Step 4: Dive Deeper
@@ -131,7 +131,7 @@ Claude will search for relevant files and show you the implementation.
 ### Understanding a Specific File
 
 ```
-> Explain what src/transactions/processor.js does
+> Explain what pipelines/transactions/processor.py does
 ```
 
 Claude will:
@@ -183,15 +183,15 @@ Claude Code excels at debugging. Here's how to use it effectively.
 
 **You have an error:**
 ```
-TypeError: Cannot read property 'accountId' of undefined
-  at TransactionService.processPayment (src/transactions/service.js:45)
+AttributeError: 'NoneType' object has no attribute 'account_id'
+  at TransactionProcessor.process_payment (pipelines/transactions/processor.py:45)
 ```
 
 **Ask Claude:**
 ```
 > I'm getting this error:
-> TypeError: Cannot read property 'accountId' of undefined
-> at TransactionService.processPayment (src/transactions/service.js:45)
+> AttributeError: 'NoneType' object has no attribute 'account_id'
+> at TransactionProcessor.process_payment (pipelines/transactions/processor.py:45)
 >
 > Can you help me fix it?
 ```
@@ -204,27 +204,31 @@ TypeError: Cannot read property 'accountId' of undefined
 5. Shows you the change
 
 **Example fix:**
-```javascript
-// Before
-processPayment(transaction) {
-  const accountId = transaction.account.accountId;
-  // ...
-}
+```python
+# Before
+def process_payment_transaction(transaction_df):
+    account_id = transaction_df.select("account.account_id").first()[0]
+    # ...
 
-// After
-processPayment(transaction) {
-  if (!transaction || !transaction.account) {
-    throw new Error('Invalid transaction: missing account information');
-  }
-  const accountId = transaction.account.accountId;
-  // ...
-}
+# After
+def process_payment_transaction(transaction_df):
+    from pyspark.sql.functions import col
+
+    # Validate required fields exist
+    if transaction_df.filter(col("account").isNull()).count() > 0:
+        raise ValueError("Invalid transaction: missing account information")
+
+    if transaction_df.filter(col("account.account_id").isNull()).count() > 0:
+        raise ValueError("Invalid transaction: missing account_id")
+
+    account_id = transaction_df.select("account.account_id").first()[0]
+    # ...
 ```
 
 ### Scenario 2: Logic Error
 
 ```
-> The calculateInterest function is returning incorrect values for accounts
+> The calculate_interest_rate UDF is returning incorrect values for accounts
 > with balances over $10,000. Can you investigate?
 ```
 
@@ -250,15 +254,15 @@ Claude will:
 ### Scenario 4: Performance Issue
 
 ```
-> The /api/accounts endpoint is very slow when there are many accounts.
+> The customer account aggregation job is very slow when processing millions of accounts.
 > Can you optimize it?
 ```
 
 Claude will:
-1. Examine the endpoint code
-2. Look for N+1 queries
-3. Check for missing indexes
-4. Suggest optimizations (pagination, caching, query optimization)
+1. Examine the PySpark transformation code
+2. Look for unnecessary shuffles and wide transformations
+3. Check for missing DataFrame caching
+4. Suggest optimizations (partitioning, broadcast joins, caching, query optimization)
 
 ---
 
@@ -269,55 +273,68 @@ Use Claude to improve code quality without changing behavior.
 ### Modernizing Code
 
 ```
-> Refactor src/auth/legacy-validator.js to use modern JavaScript (async/await, ES6+)
+> Refactor pipelines/legacy_customer_validator.py to use modern PySpark patterns
 ```
 
 **Before:**
-```javascript
-function validateUser(userId, callback) {
-  db.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
-    if (err) return callback(err);
-    if (results.length === 0) return callback(new Error('User not found'));
-    callback(null, results[0]);
-  });
-}
+```python
+def validate_customer_data(customer_id):
+    # Old approach: collecting to driver and iterating
+    customers = spark.sql(f"SELECT * FROM customers WHERE id = '{customer_id}'").collect()
+    if len(customers) == 0:
+        raise Exception("Customer not found")
+    return customers[0]
 ```
 
 **After (Claude's suggestion):**
-```javascript
-async function validateUser(userId) {
-  try {
-    const results = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-    if (results.length === 0) {
-      throw new Error('User not found');
-    }
-    return results[0];
-  } catch (error) {
-    throw new Error(`User validation failed: ${error.message}`);
-  }
-}
+```python
+from pyspark.sql.functions import col
+
+def validate_customer_data(customer_id):
+    """
+    Validate customer data using DataFrame operations (more scalable).
+
+    Args:
+        customer_id: Customer ID to validate
+
+    Returns:
+        DataFrame with validated customer data
+
+    Raises:
+        ValueError: If customer not found or invalid
+    """
+    # Use parameterized query with DataFrame API
+    customer_df = (
+        spark.table("customers")
+        .filter(col("id") == customer_id)
+    )
+
+    if customer_df.count() == 0:
+        raise ValueError(f"Customer not found: {customer_id}")
+
+    return customer_df
 ```
 
 ### Extracting Duplicate Code
 
 ```
-> I see a lot of duplicate validation logic in the account controllers.
+> I see a lot of duplicate validation logic in the data transformation pipelines.
 > Can you extract it into reusable functions?
 ```
 
 Claude will:
 1. Identify the duplicate patterns
-2. Create a shared validation module
-3. Update all files to use the new module
+2. Create a shared validation module (e.g., `utils/validators.py`)
+3. Update all pipeline files to import and use the new module
 
 ### Improving Error Handling
 
 ```
-> Add comprehensive error handling to src/payments/processor.js
+> Add comprehensive error handling to pipelines/payments/processor.py
 ```
 
 Claude will add:
-- Try-catch blocks
+- Try-except blocks
 - Proper error messages
 - Error logging
 - Recovery strategies
@@ -325,11 +342,11 @@ Claude will add:
 ### Adding Type Safety
 
 ```
-> Add TypeScript types to src/transactions/types.js
+> Add type hints to pipelines/transactions/types.py
 ```
 
 Claude will:
-- Create proper TypeScript interfaces
+- Add proper Python type hints (typing module)
 - Add type annotations
 - Fix type errors
 
@@ -554,7 +571,7 @@ Step 5: Verify
 # Use plan mode for read-only review
 claude --permission-mode plan
 
-> Review the changes in src/payments/ for:
+> Review the changes in pipelines/payments/ for:
 > - Security issues
 > - Error handling
 > - Code quality
@@ -614,7 +631,7 @@ Day 3 - Contributing:
 > - Verify check digits
 > - Support all EU country formats
 >
-> Create a reusable validator function with tests
+> Create a reusable data validator function with pytest tests
 ```
 
 Claude will:
@@ -785,9 +802,9 @@ Create a CLAUDE.md file in your project:
 # Project Standards
 
 ## Code Style
-- Use TypeScript
-- Follow Airbnb style guide
-- Always use async/await
+- Use Python 3.9+
+- Follow PEP 8 style guide
+- Always use PySpark DataFrame API for distributed processing
 
 ## Security
 - Never log sensitive data
@@ -883,11 +900,11 @@ claude
 
 **Do:**
 ```
-> Refactor the validateUser function to:
-> - Use async/await instead of callbacks
+> Refactor the validate_customer_data function to:
+> - Use PySpark DataFrame operations instead of collect()
 > - Add input validation
 > - Improve error messages
-> - Add JSDoc comments
+> - Add Python docstrings
 ```
 
 ### Mistake 4: Ignoring Context Limits

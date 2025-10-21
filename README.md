@@ -12,12 +12,32 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [🔄 Conversion Status](#-conversion-status)
 - [Documentation Structure](#documentation-structure)
 - [Quick Start](#quick-start)
 - [Learning Path](#learning-path)
 - [Phase-by-Phase Guide](#phase-by-phase-guide)
 - [Templates & References](#templates--references)
 - [Additional Resources](#additional-resources)
+
+---
+
+## 🔄 Conversion Status
+
+**JavaScript/TypeScript → Python/PySpark Conversion: IN PROGRESS**
+
+This documentation is being converted from JavaScript/TypeScript examples to Python/PySpark examples for data engineering use cases.
+
+**Progress:** 2/17 files completed (12%)
+
+📋 **See [CONVERSION_CHECKLIST.md](./CONVERSION_CHECKLIST.md) for detailed conversion status and remaining work.**
+
+### ✅ Converted Files:
+- `02-basics/03-getting-started.md` - All examples now use Python/PySpark
+- `03-advanced/06-memory-management.md` - CLAUDE.md examples converted
+
+### ⏳ In Progress:
+- 15 files remaining (see CONVERSION_CHECKLIST.md for details)
 
 ---
 

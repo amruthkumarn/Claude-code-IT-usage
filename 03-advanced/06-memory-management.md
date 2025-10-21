@@ -300,14 +300,14 @@ Example:
 
 ## Banking IT Memory Examples
 
-### Example 1: Payment Processing Service
+### Example 1: Payment Data Processing Pipeline
 
 `.claude/CLAUDE.md`:
 ```markdown
-# Payment Processing Service
+# Payment Data Processing Pipeline
 
 ## Overview
-Handles payment transactions for retail banking customers.
+Processes payment transaction data for retail banking customers using PySpark.
 
 ## Security Requirements (PCI-DSS Compliance)
 
@@ -316,54 +316,86 @@ Handles payment transactions for retail banking customers.
 - NEVER store CVV codes
 - All payment data must be encrypted in transit and at rest
 - Use tokenization for card storage
-- Log all payment attempts for audit
+- Log all payment processing attempts for audit
 
-### Authentication
-- All endpoints require OAuth2 bearer token
-- Rate limiting: 100 requests per minute per IP
-- Failed auth attempts logged and monitored
+### Data Access Controls
+- All data access requires proper IAM roles
+- Implement column-level encryption for sensitive data
+- Use row-level security for customer data
+- Failed access attempts logged and monitored
 
 ## Coding Standards
 
-### TypeScript
-- Strict null checks enabled
-- No any types allowed
-- Define interfaces for all DTOs
+### Python/PySpark
+- Use Python 3.9+ with type hints
+- Follow PEP 8 style guide
+- Use mypy for static type checking
+- Define Pydantic models or StructType schemas for all data
 
 ### Error Handling
-```typescript
-// Always use this pattern for payment errors:
-try {
-  const result = await processPayment(request);
-  return result;
-} catch (error) {
-  logger.error('Payment failed', {
-    transactionId: request.id,
-    error: error.message,
-    // Never log: card numbers, CVV, passwords
-  });
-  throw new PaymentError({
-    code: 'PAYMENT_FAILED',
-    message: 'Payment could not be processed',
-    statusCode: 402
-  });
-}
+```python
+from pyspark.sql import DataFrame
+import logging
+
+logger = logging.getLogger(__name__)
+
+def process_payment_transactions(payment_df: DataFrame) -> DataFrame:
+    """
+    Process payment transactions with proper error handling.
+
+    Args:
+        payment_df: DataFrame containing payment transactions
+
+    Returns:
+        Processed payment DataFrame
+
+    Raises:
+        ValueError: If required columns are missing
+        RuntimeError: If processing fails
+    """
+    try:
+        # Validate required columns
+        required_cols = ["transaction_id", "amount", "customer_id"]
+        missing_cols = set(required_cols) - set(payment_df.columns)
+        if missing_cols:
+            raise ValueError(f"Missing required columns: {missing_cols}")
+
+        # Process payments (never collect() - use DataFrame operations)
+        processed_df = payment_df.filter("amount > 0")
+
+        logger.info(f"Successfully processed {processed_df.count()} payment transactions")
+        return processed_df
+
+    except Exception as error:
+        logger.error(
+            "Payment processing failed",
+            extra={
+                "error_message": str(error),
+                "error_type": type(error).__name__
+                # Never log: card numbers, CVV, passwords, account numbers
+            }
+        )
+        raise RuntimeError(f"Payment processing failed: {str(error)}")
 ```
 
 ## Testing
-- Mock external payment gateway
+- Mock external payment gateway connections
 - Never use real card numbers in tests
 - Use test card numbers: 4111111111111111
+- Use pytest for unit tests
+- Use pytest-spark for PySpark tests
 
-## Database
-- Use parameterized queries ONLY
-- Enable query logging (sanitized)
-- Transactions required for payment operations
+## Data Storage
+- Use parameterized Spark SQL queries ONLY
+- Enable query logging (with PII masking)
+- Use Delta Lake for ACID transactions
+- Implement data versioning and time travel
 
 ## Compliance
 - SOX: All financial transactions must be auditable
 - PCI-DSS Level 1 certified
 - Annual security audit required
+- Implement data lineage tracking
 ```
 
 ### Example 2: Enterprise-Level Standards
