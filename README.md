@@ -1,220 +1,122 @@
-# Claude Code Documentation - Banking IT (Data Chapter)
+# Claude Code Documentation - Banking IT Data Engineering
 
-**Comprehensive documentation for using Claude Code in banking IT environments**
+**Comprehensive 3-Phase Learning Path for Claude Code in Banking Environments**
 
-**Version:** 1.0
-**Last Updated:** 2025-10-19
-**Target Audience:** Banking IT - Data Chapter
-**Maintained By:** Lead AI Engineer
+**Version:** 2.0
+**Last Updated:** 2025-10-24
+**Target Audience:** Banking IT - Data Engineering Chapter
+**Focus:** PySpark, Delta Lake, Compliance (PCI-DSS, SOX, GDPR)
 
 ---
 
-## Table of Contents
+## 📋 Table of Contents
 
 - [Overview](#overview)
-- [🔄 Conversion Status](#-conversion-status)
-- [Documentation Structure](#documentation-structure)
+- [What's New in v2.0](#whats-new-in-v20)
+- [3-Phase Learning Structure](#3-phase-learning-structure)
 - [Quick Start](#quick-start)
-- [Learning Path](#learning-path)
-- [Phase-by-Phase Guide](#phase-by-phase-guide)
-- [Templates & References](#templates--references)
+- [Phase 1: Onboarding](#phase-1-onboarding-master-claude-code)
+- [Phase 2: Build](#phase-2-build-brd--code--deploy)
+- [Phase 3: Maintenance](#phase-3-maintenance-production-support)
+- [Quick Reference](#quick-reference)
 - [Additional Resources](#additional-resources)
-
----
-
-## 🔄 Conversion Status
-
-**JavaScript/TypeScript → Python/PySpark Conversion: ✅ COMPLETE**
-
-This documentation has been successfully converted from JavaScript/TypeScript examples to Python/PySpark examples for banking data engineering use cases.
-
-**Progress:** 17/17 files completed (100%) ✅
-
-📋 **See [CONVERSION_CHECKLIST.md](./CONVERSION_CHECKLIST.md) for detailed conversion documentation.**
-
-### ✅ All Files Converted:
-All 17 documentation files have been converted from JavaScript/TypeScript to Python/PySpark, including:
-- Foundation documents (Introduction, Core Concepts)
-- Basic usage guides (Getting Started, CLI Reference)
-- Advanced features (Configuration, Memory, Slash Commands, Agents, Prompt Engineering)
-- Security & compliance guides
-- Integration guides (MCP, Git, Standards)
-- Reference materials (Templates, Troubleshooting)
-- Quick reference guides (Commands Cheatsheet, Dos and Don'ts)
-- Prompt templates (Security Review, Compliance Check)
-
-**Technology Stack:** Now fully aligned with Python 3.9+, PySpark 3.4+, pytest, Ruff, Black, mypy, and banking data engineering best practices.
 
 ---
 
 ## Overview
 
-This documentation provides comprehensive guidance for using **Claude Code** - Anthropic's agentic coding tool - in a banking IT environment. It covers everything from basic installation to advanced enterprise features, with specific focus on:
-
-- Banking compliance (PCI-DSS, SOX, GDPR)
-- Security best practices
-- Audit and monitoring
-- Team collaboration
-- Production readiness
+This documentation provides a **progressive learning path** for using **Claude Code** - Anthropic's AI-powered coding assistant - in banking IT data engineering environments.
 
 ### What is Claude Code?
 
-Claude Code is an AI-powered coding assistant that:
-- Works directly in your terminal
-- Reads, edits, and executes code (with your approval)
-- Integrates with version control (Git)
-- Extends via Model Context Protocol (MCP)
-- Enforces security policies and compliance
+Claude Code is an agentic AI coding tool that:
+- 💻 Works directly in your terminal
+- 📖 Reads, analyzes, and understands codebases
+- ✏️ Writes and edits code (with your approval)
+- 🔒 Enforces security policies and compliance
+- 🔗 Integrates with Git, databases, and external tools (via MCP)
+
+### Why This Documentation?
+
+**Banking-Specific Focus:**
+- ✅ All examples in **PySpark** for data engineering
+- ✅ **Compliance-first** approach (PCI-DSS, SOX, GDPR)
+- ✅ **Security best practices** for financial data
+- ✅ **Manual git workflows** (banking IT policy)
+- ✅ **Production-ready** patterns and templates
+
+**Progressive Learning:**
+- 📚 Phase 1: Master the fundamentals (Onboarding)
+- 🏗️ Phase 2: Build data pipelines end-to-end (BRD → Code → Deploy)
+- 🔧 Phase 3: Maintain production systems (Debugging, Optimization)
 
 ---
 
-## Documentation Structure
+## What's New in v2.0
 
-### Phase 1: Foundation (Week 1-2)
-**Get up and running with Claude Code**
+### 🎉 Major Restructuring (October 2024)
 
-- **[Section 1: Introduction & Installation](./01-foundation/01-introduction-and-installation.md)**
-  - What is Claude Code and why use it
-  - Installation methods (npm, native Windows)
-  - Authentication and login
-  - Troubleshooting installation
+**Old Structure (v1.0):**
+- 6 sections (Foundation → Reference)
+- JavaScript/TypeScript examples
+- Reference-manual style
 
-- **[Section 2: Core Concepts](./01-foundation/02-core-concepts.md)**
-  - How Claude Code works
-  - REPL vs SDK mode
-  - Permissions and security model
-  - Context and memory basics
+**New Structure (v2.0):**
+- **3 phases** (Onboarding → Build → Maintenance)
+- **100% Python/PySpark** examples
+- **Progressive learning** path
+- **Modular subsections** (400-800 lines each)
+- **Comprehensive assessment** after Phase 1
 
-### Phase 2: Basic Usage (Week 2-3)
-**Learn essential workflows**
+### ✅ Migration Complete
 
-- **[Section 3: Getting Started](./02-basics/03-getting-started.md)**
-  - Your first session
-  - Understanding codebases
-  - Fixing bugs and refactoring
-  - Using Plan Mode
-  - Common workflows
+- **19 Phase 1 files** created (~250,000 words)
+- **Old content archived** in `_archive/`
+- **All examples converted** from JS/TS to Python/PySpark
+- **Banking compliance** integrated throughout
 
-- **[Section 4: CLI Reference](./02-basics/04-cli-reference.md)**
-  - Complete command reference
-  - Flags and options
-  - Permission modes
-  - Model selection
-  - Scripting with Claude Code
+---
 
-### Phase 3: Advanced Features (Week 3-4)
-**Master advanced capabilities**
+## 3-Phase Learning Structure
 
-- **[Section 5: Project Configuration](./03-advanced/05-project-configuration.md)**
-  - The `.claude/` directory
-  - Settings hierarchy
-  - Permission configuration
-  - Environment variables
-  - Output styles
-
-- **[Section 6: Memory Management](./03-advanced/06-memory-management.md)**
-  - Understanding CLAUDE.md files
-  - Memory hierarchy
-  - Writing effective memory
-  - Banking compliance examples
-
-- **[Section 7: Slash Commands](./03-advanced/07-slash-commands.md)**
-  - Built-in commands
-  - Creating custom commands
-  - Command arguments
-  - Banking automation examples
-
-- **[Section 8: Agents & Sub-agents](./03-advanced/08-agents-subagents.md)**
-  - Understanding agents
-  - Defining custom agents
-  - Banking agent examples
-  - Best practices
-
-- **[Section 16: Prompt Engineering](./03-advanced/16-prompt-engineering.md)**
-  - Fundamentals of effective prompts
-  - Intermediate and advanced techniques
-  - Banking-specific prompt examples
-  - Prompt templates library
-
-### Phase 4: Enterprise & Security (Week 4-5)
-**Implement enterprise-grade security**
-
-- **[Section 9: Security & Compliance](./04-security/09-security-compliance.md)**
-  - Security model overview
-  - Permission system
-  - Data protection
-  - PCI-DSS, SOX, GDPR compliance
-  - Audit and monitoring
-
-- **[Section 10: Hooks & Automation](./04-security/10-hooks-automation.md)**
-  - Understanding hooks
-  - Hook types and configuration
-  - Banking automation examples
-  - Audit logging and compliance
-
-### Phase 5: Integration & Best Practices (Week 5-6)
-**Integrate with your workflow**
-
-- **[Section 11: Model Context Protocol (MCP)](./05-integration/11-mcp.md)**
-  - What is MCP
-  - MCP server types
-  - Installing servers
-  - Banking integrations (databases, APIs, Jira)
-
-- **[Section 12: Version Control Integration](./05-integration/12-git-integration.md)**
-  - Git with Claude Code (Manual Operations Only)
-  - Banking IT Policy: Manual Git Workflow
-  - Generating commit messages and PR descriptions
-  - Best practices for manual git operations
-
-- **[Section 13: Standards & Best Practices](./05-integration/13-standards-best-practices.md)**
-  - Organizational standards
-  - Project setup
-  - Team collaboration
-  - Banking-specific standards
-
-### Phase 6: Reference & Templates (Week 6)
-**Ready-to-use resources**
-
-- **[Section 14: Templates Library](./06-reference/14-templates-library.md)**
-  - Settings templates
-  - Memory templates
-  - Slash command templates
-  - Hook script templates
-  - Agent configurations
-
-- **[Section 15: Troubleshooting & FAQ](./06-reference/15-troubleshooting-faq.md)**
-  - Installation issues
-  - Authentication problems
-  - Permission errors
-  - Performance issues
-  - Frequently asked questions
-
-### Quick Reference
-**One-page cheat sheets**
-
-- **[Commands Cheatsheet](./quick-reference/commands-cheatsheet.md)**
-  - All commands in one place
-  - Keyboard shortcuts
-  - Common workflows
-  - Quick setup guide
-
-- **[Dos and Don'ts for Banking IT](./quick-reference/dos-and-donts.md)**
-  - Security & compliance guidelines
-  - Git operations (manual only)
-  - Data protection best practices
-  - Quick decision trees
-  - 60+ categorized guidelines
-
-### Templates
-**Ready-to-use configuration files**
-
-Located in `./templates/`:
-- Settings templates (development, production, security)
-- Memory file examples
-- Slash command examples
-- Hook scripts
-- Agent configurations
+```
+┌─────────────────────────────────────────────────────────────┐
+│  PHASE 1: ONBOARDING (Master Claude Code)                  │
+│  Duration: 2-3 weeks                                        │
+│  Goal: Master Claude Code fundamentals                      │
+│                                                             │
+│  ✅ Installation & Setup                                    │
+│  ✅ Core Concepts (12 subsections)                          │
+│  ✅ Prompt Engineering (13 subsections)                     │
+│  ✅ Comprehensive Assessment                                │
+└─────────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  PHASE 2: BUILD (BRD → Code → Deploy)                      │
+│  Duration: 3-4 weeks                                        │
+│  Goal: Build production data pipelines                      │
+│                                                             │
+│  📝 BRD → DDT Workflow                                      │
+│  🗺️ Data Mapping & Schema Design                           │
+│  🏗️ Code Generation from Specs                             │
+│  🧪 Testing Strategies                                      │
+│  🚀 CI/CD Integration                                       │
+│  💪 Real-World Coding Challenge                             │
+└─────────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  PHASE 3: MAINTENANCE (Production Support)                 │
+│  Duration: Ongoing                                          │
+│  Goal: Debug, optimize, and maintain pipelines              │
+│                                                             │
+│  🐛 Debugging Techniques                                    │
+│  ⚡ Performance Optimization                                │
+│  🚨 Incident Response                                       │
+│  📊 Monitoring & Alerting                                   │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -222,14 +124,17 @@ Located in `./templates/`:
 
 ### 1. Install Claude Code
 
-**Option 1: pip (requires Python 3.9+)**
+**Option 1: pip (Recommended for Python developers)**
 ```bash
-pip install anthropic-claude-code
+pip install claude-code
 ```
 
-**Option 2: Native Windows**
-```powershell
-# Run in PowerShell as Administrator
+**Option 2: Native Installation**
+```bash
+# macOS/Linux
+curl -fsSL https://install.anthropic.com/claude-code | sh
+
+# Windows (PowerShell as Administrator)
 irm https://install.claude.ai/claude-code/windows | iex
 ```
 
@@ -238,244 +143,378 @@ irm https://install.claude.ai/claude-code/windows | iex
 claude --version
 ```
 
-### 2. Login
+### 2. Authenticate
 
 ```bash
 claude /login
+# Follow the prompts to authenticate with your Anthropic API key
 ```
 
-### 3. Start Your First Session
+### 3. Start Learning
 
 ```bash
-cd ~/projects/your-project
-claude
+# Navigate to this documentation
+cd claude-code-documentation
 
-> What is this project about?
+# Start with Phase 1
+cd phase-1-onboarding
+
+# Read the introduction
+cat 01-introduction-getting-started.md
 ```
 
-### 4. Next Steps
+### 4. Your First Session
 
-- Read [Section 1: Introduction & Installation](./01-foundation/01-introduction-and-installation.md)
-- Follow the [Learning Path](#learning-path) below
-- Copy [templates](./templates/) to your project
+```bash
+# Navigate to your data engineering project
+cd ~/projects/banking-data-pipelines
 
----
+# Start Claude Code in read-only mode (safe for exploration)
+claude --permission-mode plan
 
-## Learning Path
-
-### For New Users (Week 1)
-
-1. **Day 1-2:** Installation & Basics
-   - Read [Section 1](./01-foundation/01-introduction-and-installation.md) and [Section 2](./01-foundation/02-core-concepts.md)
-   - Install Claude Code
-   - Try first session in Plan Mode
-
-2. **Day 3-5:** Practical Usage
-   - Read [Section 3](./02-basics/03-getting-started.md)
-   - Fix a real bug
-   - Explore your codebase
-   - Use Claude to draft commit messages (git operations manual)
-
-### For Developers (Week 2-3)
-
-3. **Week 2:** Configuration & Customization
-   - Read Sections [5](./03-advanced/05-project-configuration.md), [6](./03-advanced/06-memory-management.md), [7](./03-advanced/07-slash-commands.md)
-   - Set up `.claude/` directory
-   - Create CLAUDE.md with coding standards
-   - Create custom slash commands
-
-4. **Week 3:** Advanced Features
-   - Read [Section 8](./03-advanced/08-agents-subagents.md)
-   - Create custom agents
-   - Integrate with git workflow
-
-### For DevOps/Security (Week 4-5)
-
-5. **Week 4:** Security & Compliance
-   - Read Sections [9](./04-security/09-security-compliance.md), [10](./04-security/10-hooks-automation.md)
-   - Configure permissions
-   - Set up audit logging
-   - Implement hooks
-
-6. **Week 5:** Integration
-   - Read Sections [11](./05-integration/11-mcp.md), [12](./05-integration/12-git-integration.md), [13](./05-integration/13-standards-best-practices.md)
-   - Set up MCP servers
-   - Integrate with CI/CD
-   - Establish team standards
+> Explain the PySpark pipeline in pipelines/transaction_processing.py
+```
 
 ---
 
-## Phase-by-Phase Guide
+## Phase 1: Onboarding (Master Claude Code)
 
-### Phase 1: Foundation ⏱️ Week 1-2
+**📂 Location:** `/phase-1-onboarding/`
+**⏱️ Time:** 2-3 weeks (8-12 hours total)
+**🎯 Goal:** Comprehensive understanding of Claude Code
 
-**Goal:** Understand Claude Code and get it running
+### Structure
 
-**Read:**
-- Section 1: Introduction & Installation
-- Section 2: Core Concepts
+**1.1 Introduction & Getting Started** *(30 min)*
+- What is Claude Code and why use it
+- Key concepts and terminology
+- When to use (and not use) Claude Code
 
-**Do:**
-- Install Claude Code
-- Complete first session
-- Understand permissions model
+**1.2 Installation** *(30 min)*
+- Installation methods (pip, native)
+- Authentication setup
+- Troubleshooting common issues
+- Banking IT environment setup
 
-**Outcome:** Successfully run Claude Code and understand basics
+**1.3 Core Concepts** *(5-6 hours)*
+*Index: [03-00-core-concepts-index.md](./phase-1-onboarding/03-00-core-concepts-index.md)*
 
----
+| Subsection | Topic | Time |
+|-----------|-------|------|
+| 03-01 | How Claude Code Works | 30 min |
+| 03-02 | Security & Permissions | 30 min |
+| 03-03 | Memory & Context (CLAUDE.md) | 45 min |
+| 03-04 | CLI Reference | 30 min |
+| 03-05 | Project Configuration | 45 min |
+| 03-06 | Slash Commands | 45 min |
+| 03-07 | Agents & Sub-agents | 60 min |
+| 03-08 | Hooks & Automation | 60 min |
+| 03-09 | MCP Integration | 45 min |
+| 03-10 | Git Integration (Manual Policy) | 45 min |
+| 03-11 | Standards & Best Practices | 60 min |
+| 03-12 | Templates Library | 30 min |
 
-### Phase 2: Basic Usage ⏱️ Week 2-3
+**1.4 Prompt Engineering** *(4-5 hours)*
+*Index: [04-00-prompt-engineering-index.md](./phase-1-onboarding/04-00-prompt-engineering-index.md)*
 
-**Goal:** Use Claude Code for daily development
+Based on Anthropic's official interactive tutorial, adapted for data engineering:
 
-**Read:**
-- Section 3: Getting Started
-- Section 4: CLI Reference
+| Subsection | Topic | Time |
+|-----------|-------|------|
+| 04-01 | Tutorial How-To | 10 min |
+| 04-02 | Basic Prompt Structure | 30 min |
+| 04-03 | Being Clear and Direct | 30 min |
+| 04-04 | Assigning Roles | 30 min |
+| 04-05 | Separating Data/Instructions | 30 min |
+| 04-06 | Formatting Output | 30 min |
+| 04-07 | Thinking Step-by-Step | 45 min |
+| 04-08 | Using Examples | 45 min |
+| 04-09 | Avoiding Hallucinations | 30 min |
+| 04-10 | Complex Prompts | 45 min |
+| 04-11 | Chaining Prompts | 30 min |
+| 04-12 | Tool Use | 30 min |
+| 04-13 | Search & Retrieval | 30 min |
 
-**Do:**
-- Fix a bug with Claude
-- Refactor existing code
-- Draft commit messages with Claude (execute git commands manually)
-- Explore Sonnet model capabilities
+**1.5 Assessment** *(2-3 hours)*
+*File: [05-assessment.md](./phase-1-onboarding/05-assessment.md)*
 
-**Outcome:** Comfortable using Claude Code for common tasks
+- 25 multiple choice questions
+- 5 practical exercises (settings, CLAUDE.md, commands, agents, prompts)
+- 1 hands-on project (transaction validator)
+- Complete answer key and grading rubric
+- Passing score: 70% (Proficient: 85%, Expert: 95%)
 
----
+### Learning Outcomes
 
-### Phase 3: Advanced Features ⏱️ Week 3-4
+After Phase 1, you will be able to:
+- ✅ Install and configure Claude Code for banking IT
+- ✅ Understand security model and permissions
+- ✅ Create project configurations and memory files
+- ✅ Write custom slash commands and agents
+- ✅ Implement hooks for compliance and automation
+- ✅ Craft effective prompts for data engineering tasks
+- ✅ Follow banking IT policies (manual git, PCI-DSS compliance)
 
-**Goal:** Customize Claude Code for your team
+### Getting Started with Phase 1
 
-**Read:**
-- Section 5: Project Configuration
-- Section 6: Memory Management
-- Section 7: Slash Commands
-- Section 8: Agents & Sub-agents
-
-**Do:**
-- Set up `.claude/` directory
-- Create CLAUDE.md with standards
-- Build custom slash commands
-- Create specialized agents
-
-**Outcome:** Customized Claude Code for your project
-
----
-
-### Phase 4: Enterprise & Security ⏱️ Week 4-5
-
-**Goal:** Implement enterprise security
-
-**Read:**
-- Section 9: Security & Compliance
-- Section 10: Hooks & Automation
-
-**Do:**
-- Configure permissions properly
-- Set up audit logging
-- Create compliance hooks
-- Implement security policies
-
-**Outcome:** Enterprise-ready, compliant configuration
-
----
-
-### Phase 5: Integration & Best Practices ⏱️ Week 5-6
-
-**Goal:** Integrate with existing workflow
-
-**Read:**
-- Section 11: MCP
-- Section 12: Git Integration
-- Section 13: Standards & Best Practices
-
-**Do:**
-- Connect to databases via MCP
-- Integrate with Jira
-- Establish git workflows
-- Document team standards
-
-**Outcome:** Fully integrated development workflow
+👉 **[Start Here: Introduction & Getting Started](./phase-1-onboarding/01-introduction-getting-started.md)**
 
 ---
 
-### Phase 6: Reference & Templates ⏱️ Week 6
+## Phase 2: Build (BRD → Code → Deploy)
 
-**Goal:** Access ready-to-use resources
+**📂 Location:** `/phase-2-build/`
+**⏱️ Time:** 3-4 weeks
+**🎯 Goal:** Build production data pipelines from requirements to deployment
 
-**Read:**
-- Section 14: Templates Library
-- Section 15: Troubleshooting & FAQ
+### Structure (In Development)
 
-**Do:**
-- Copy templates to projects
-- Share with team
-- Document common issues
-- Create team runbook
+**2.1 BRD Workflow** *(3 files)*
+- Understanding Business Requirements Documents (BRD)
+- Extracting technical requirements
+- Generating Data Design Templates (DDT)
 
-**Outcome:** Standardized across team/organization
+**2.2 Data Mapping** *(3 files)*
+- Source to target mapping
+- Schema design with StructType
+- Data quality rules
+
+**2.3 Code Templates** *(4 files)*
+- PySpark pipeline templates
+- Validation patterns
+- Transformation patterns
+- Error handling
+
+**2.4 Testing** *(4 files)*
+- Unit testing with pytest
+- Integration testing
+- Data quality testing
+- Performance testing
+
+**2.5 CI/CD** *(2 files)*
+- CI/CD integration patterns
+- Deployment workflows
+
+**2.6 Coding Challenge** *(1 file)*
+- Real-world scenario
+- End-to-end pipeline build
+- Assessment criteria
+
+### Status
+
+🔄 **In Progress** - Phase 2 content under development
 
 ---
 
-## Templates & References
+## Phase 3: Maintenance (Production Support)
 
-### Quick Access
+**📂 Location:** `/phase-3-maintenance/`
+**⏱️ Time:** Ongoing reference
+**🎯 Goal:** Debug, optimize, and maintain production pipelines
 
-- **[Commands Cheatsheet](./quick-reference/commands-cheatsheet.md)** - One-page reference
-- **[Dos and Don'ts Guide](./quick-reference/dos-and-donts.md)** - Banking IT guidelines (60+ items)
-- **[Settings Templates](./templates/settings/)** - Ready-to-use configurations
-- **[Memory Templates](./templates/memory/)** - CLAUDE.md examples
-- **[Slash Commands](./templates/slash-commands/)** - Custom command examples
-- **[Hook Scripts](./templates/hooks/)** - Automation scripts
-- **[Agent Configs](./templates/agents/)** - Pre-configured agents
+### Structure (Planned)
 
-### Banking-Specific Resources
+**3.1 Debugging Techniques**
+- Using Claude Code for troubleshooting
+- Reading Spark logs and error messages
+- Common PySpark issues and fixes
 
-Throughout the documentation, look for:
-- 🏦 Banking examples
-- 🔒 Security considerations
-- ✅ Compliance checkpoints
-- 📋 Templates for banking IT
+**3.2 Performance Optimization**
+- Identifying bottlenecks
+- Optimizing DataFrame operations
+- Partition tuning and caching strategies
+
+**3.3 Incident Response**
+- Production issue workflows
+- Root cause analysis with Claude Code
+- Postmortem documentation
+
+**3.4 Monitoring & Alerting**
+- Data quality monitoring
+- Pipeline health checks
+- Alert configuration
+
+### Status
+
+📝 **Planned** - Phase 3 content to be developed
+
+---
+
+## Quick Reference
+
+### One-Page Resources
+
+📖 **[Commands Cheatsheet](./quick-reference/commands-cheatsheet.md)**
+- All Claude Code commands in one place
+- Keyboard shortcuts
+- Common workflows
+- Quick setup guide
+
+🚦 **[Dos and Don'ts for Banking IT](./quick-reference/dos-and-donts.md)**
+- Security & compliance guidelines (60+ items)
+- Git operations (manual only)
+- Data protection best practices
+- Quick decision trees
+
+### Templates
+
+📁 **Location:** `/templates/`
+
+Ready-to-use configurations organized by category:
+
+- **`settings/`** - Development, production, security configurations
+- **`memory/`** - CLAUDE.md examples for different project types
+- **`slash-commands/`** - Custom command templates
+- **`hooks/`** - Audit logging, secrets detection, compliance checks
+- **`agents/`** - Pre-configured specialized agents
+- **`prompts/`** - Security review, compliance check prompts
+- **`pyspark/`** - Data pipeline code templates
+- **`brd/`** - Business requirements templates
+- **`ddt/`** - Data design templates
+- **`cicd/`** - CI/CD configuration examples
 
 ---
 
 ## Additional Resources
 
-### Official Documentation
+### Official Anthropic Resources
 
 - **Claude Code Docs**: https://docs.claude.com/en/docs/claude-code/overview
 - **Quickstart Guide**: https://docs.claude.com/en/docs/claude-code/quickstart
 - **CLI Reference**: https://docs.claude.com/en/docs/claude-code/cli-reference
-- **Security Guide**: https://docs.claude.com/en/docs/claude-code/security
+- **Prompt Engineering Tutorial**: https://github.com/anthropics/prompt-eng-interactive-tutorial
+- **Prompt Library**: https://docs.anthropic.com/en/prompt-library/library
+
+### Data Engineering Resources
+
+- **PySpark Documentation**: https://spark.apache.org/docs/latest/api/python/
+- **Delta Lake Guide**: https://docs.delta.io/latest/index.html
+- **Great Expectations** (Data Quality): https://docs.greatexpectations.io/
+- **pytest-spark**: https://github.com/malexer/pytest-spark
+
+### Compliance Standards
+
+- **PCI-DSS**: https://www.pcisecuritystandards.org/
+- **SOX Compliance**: https://www.sec.gov/sox
+- **GDPR**: https://gdpr.eu/
 
 ### Support
 
 - **GitHub Issues**: https://github.com/anthropics/claude-code/issues
 - **Anthropic Support**: https://support.anthropic.com
-- **Community**: https://community.anthropic.com
+- **Community Discord**: https://discord.gg/anthropic
 
-### Internal Resources
+### Internal Resources (Banking IT)
 
+- **Internal Wiki**: [Link to your internal documentation]
 - **Slack Channel**: #claude-code (if available)
-- **Internal Wiki**: [Link to your internal wiki]
-- **Training Sessions**: [Schedule for live training]
+- **Training Sessions**: [Schedule for live sessions]
+- **Support Contact**: [Your team's support channel]
+
+---
+
+## Repository Structure
+
+```
+claude-code-documentation/
+├── README.md                          # This file
+├── _archive/                          # Old documentation (v1.0)
+│   ├── ARCHIVE_README.md             # Archive documentation
+│   └── old-structure/                # 6-section structure (preserved)
+│
+├── phase-1-onboarding/               # ✅ COMPLETE (19 files)
+│   ├── 01-introduction-getting-started.md
+│   ├── 02-installation.md
+│   ├── 03-00-core-concepts-index.md
+│   ├── 03-01 through 03-12           # Core concepts (12 subsections)
+│   ├── 04-00-prompt-engineering-index.md
+│   ├── 04-01 through 04-13           # Prompt engineering (13 subsections)
+│   └── 05-assessment.md              # Comprehensive evaluation
+│
+├── phase-2-build/                    # 🔄 IN PROGRESS
+│   ├── 01-brd/                       # BRD workflow (3 files)
+│   ├── 02-data-mapping/              # Data mapping (3 files)
+│   ├── 03-templates/                 # Code templates (4 files)
+│   ├── 04-testing/                   # Testing (4 files)
+│   ├── 05-cicd/                      # CI/CD (2 files)
+│   └── README.md                     # Phase 2 overview
+│
+├── phase-3-maintenance/              # 📝 PLANNED
+│   ├── 01-debugging.md
+│   ├── 02-optimization.md
+│   ├── 03-incident-response.md
+│   ├── 04-monitoring.md
+│   └── README.md
+│
+├── quick-reference/                  # One-page guides
+│   ├── commands-cheatsheet.md
+│   └── dos-and-donts.md
+│
+└── templates/                         # Ready-to-use templates
+    ├── settings/
+    ├── memory/
+    ├── slash-commands/
+    ├── hooks/
+    ├── agents/
+    ├── prompts/
+    ├── pyspark/
+    ├── brd/
+    ├── ddt/
+    └── cicd/
+```
+
+---
+
+## Progress Tracking
+
+### Phase 1: Onboarding
+- ✅ 1.1 Introduction & Getting Started
+- ✅ 1.2 Installation
+- ✅ 1.3 Core Concepts (index + 12 subsections)
+- 🔄 1.4 Prompt Engineering (index + 2/13 subsections complete)
+- ✅ 1.5 Assessment
+
+**Status:** ~90% complete (11 prompt engineering subsections remaining)
+
+### Phase 2: Build
+- 📝 2.1 BRD Workflow (planned)
+- 📝 2.2 Data Mapping (planned)
+- 📝 2.3 Code Templates (planned)
+- 📝 2.4 Testing (planned)
+- 📝 2.5 CI/CD (planned)
+- 📝 2.6 Coding Challenge (planned)
+
+**Status:** 0% complete (structure created, content pending)
+
+### Phase 3: Maintenance
+- 📝 3.1 Debugging (planned)
+- 📝 3.2 Optimization (planned)
+- 📝 3.3 Incident Response (planned)
+- 📝 3.4 Monitoring (planned)
+
+**Status:** 0% complete (content pending)
 
 ---
 
 ## Contributing
 
-This documentation is maintained by the Lead AI Engineer for the Banking IT Data Chapter.
+This documentation is maintained by the **Banking IT Data Engineering Chapter**.
 
-**To suggest improvements:**
-1. Create issue in [internal issue tracker]
-2. Submit PR with changes
-3. Contact maintainer directly
+### How to Contribute
 
-**Document standards:**
-- Clear, concise language
-- Banking IT context
-- Practical examples
-- Security considerations
+1. **Report Issues**: Create an issue in the internal tracker
+2. **Suggest Improvements**: Submit pull requests with changes
+3. **Share Examples**: Contribute real-world use cases
+4. **Update Templates**: Improve existing templates
+
+### Documentation Standards
+
+- ✅ Clear, concise language
+- ✅ Banking IT context and compliance focus
+- ✅ Practical, production-ready examples
+- ✅ PySpark code (Python 3.10+, PySpark 3.5+)
+- ✅ Security considerations highlighted
+- ✅ Step-by-step instructions with expected outcomes
 
 ---
 
@@ -483,16 +522,36 @@ This documentation is maintained by the Lead AI Engineer for the Banking IT Data
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2025-10-19 | Initial comprehensive documentation |
+| **2.0** | 2025-10-24 | Major restructuring to 3-phase learning path<br>• Migrated to Phase 1/2/3 structure<br>• Converted all examples to Python/PySpark<br>• Added comprehensive Phase 1 (19 files)<br>• Created assessment with 25 MCQ + exercises<br>• Archived old 6-section structure |
+| 1.0 | 2025-10-19 | Initial comprehensive documentation<br>• 6-section structure<br>• JavaScript/TypeScript examples<br>• Reference-manual style |
 
 ---
 
 ## License
 
-Internal use only - Banking IT Department
+**Internal Use Only** - Banking IT Department
+
+This documentation contains proprietary information and is intended solely for use by authorized personnel within the Banking IT organization.
 
 ---
 
-**For questions or support, contact:** [Your Contact Information]
+## Contact & Support
 
-**Last reviewed:** 2025-10-19
+**Documentation Maintainer:** Technology - Data Chapter
+**Last Reviewed:** 2025-10-24
+**Next Review:** 2025-11-24
+
+**For questions or support:**
+- Internal wiki: [Your internal documentation link]
+- Slack: #claude-code
+- Email: [Your support email]
+
+---
+
+## Getting Started
+
+👉 **[Begin Your Journey: Phase 1 - Introduction & Getting Started](./phase-1-onboarding/01-introduction-getting-started.md)**
+
+---
+
+**Made with ❤️ by the ENBD IT Data Engineering Team**
