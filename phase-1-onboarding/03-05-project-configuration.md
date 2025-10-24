@@ -13,6 +13,43 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Set up a complete .claude directory in 5 minutes.
+
+### Try This Right Now
+
+```bash
+# 1. Create a new project
+mkdir -p ~/my-banking-project
+cd ~/my-banking-project
+
+# 2. One-command setup
+mkdir -p .claude/{commands,scripts}
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write", "Bash"]
+  }
+}
+EOF
+
+# 3. Test it
+claude
+> /config
+# You'll see your new configuration!
+```
+
+**What just happened?**
+- Created `.claude/` directory structure
+- Set up team-shared configuration
+- Configured safe permissions (read allowed, changes require approval)
+
+**Next:** Let's understand the complete configuration system...
+
+---
+
 ## Table of Contents
 1. [The .claude Directory](#the-claude-directory)
 2. [Settings Hierarchy](#settings-hierarchy)
@@ -65,6 +102,255 @@ touch .claude/CLAUDE.md
 # Add to .gitignore
 echo ".claude/settings.local.json" >> .gitignore
 ```
+
+---
+
+## 🔨 Exercise 1: Complete .claude Directory Setup (20 minutes)
+
+**Goal:** Build a production-ready .claude configuration for a banking project.
+
+### Step 1: Create comprehensive directory structure
+
+```bash
+cd ~/banking-etl-project
+mkdir -p .claude/{commands,scripts,output-styles}
+mkdir -p {pipelines,tests,schemas,config}
+```
+
+### Step 2: Create settings.json (Team Configuration)
+
+```bash
+cat > .claude/settings.json << 'EOF'
+{
+  "$schema": "https://claude.ai/schemas/settings.json",
+  "_comment": "Banking ETL Project - Team Configuration",
+  "_lastUpdated": "2025-10-24",
+
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob", "Task", "TodoWrite"],
+    "requireApproval": ["Edit", "Write", "Bash"],
+    "deny": ["WebSearch", "WebFetch"]
+  },
+
+  "defaultModel": "sonnet",
+
+  "env": {
+    "ENVIRONMENT": "development",
+    "LOG_LEVEL": "debug",
+    "SPARK_HOME": "/opt/spark",
+    "PYSPARK_PYTHON": "python3"
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/pre-edit-check.sh",
+            "description": "Run linter before file changes"
+          }
+        ]
+      }
+    ]
+  },
+
+  "outputStyle": "default"
+}
+EOF
+```
+
+### Step 3: Create settings.local.json (Personal Overrides)
+
+```bash
+cat > .claude/settings.local.json << 'EOF'
+{
+  "_comment": "Personal settings - NOT committed to git",
+
+  "env": {
+    "MY_DEV_API_KEY": "dev-key-placeholder"
+  },
+
+  "outputStyle": "detailed"
+}
+EOF
+```
+
+### Step 4: Create CLAUDE.md
+
+```bash
+cat > .claude/CLAUDE.md << 'EOF'
+# Banking ETL Project
+
+## Tech Stack
+- Python 3.10+
+- PySpark 3.5+
+- Delta Lake
+
+## Coding Standards
+- Use type hints
+- Follow PEP 8
+- Use Decimal for money amounts
+- Mask PII in logs
+
+## Security
+- No hardcoded secrets
+- All transactions must have audit trail
+EOF
+```
+
+### Step 5: Create a pre-edit check script
+
+```bash
+cat > .claude/scripts/pre-edit-check.sh << 'EOF'
+#!/bin/bash
+# Pre-edit validation script
+
+echo "Running pre-edit checks..."
+
+# Check if ruff is available
+if command -v ruff &> /dev/null; then
+    echo "✓ Linter available"
+else
+    echo "⚠ Warning: ruff not installed"
+fi
+
+# Check for common issues
+if grep -r "password\s*=" . 2>/dev/null | grep -v ".git" | grep -v "scripts" >/dev/null; then
+    echo "❌ Warning: Possible hardcoded password detected"
+fi
+
+exit 0
+EOF
+
+chmod +x .claude/scripts/pre-edit-check.sh
+```
+
+### Step 6: Configure .gitignore
+
+```bash
+cat >> .gitignore << 'EOF'
+
+# Claude Code
+.claude/settings.local.json
+.claude/.sessions/
+.claude/logs/
+EOF
+```
+
+### Step 7: Test your configuration
+
+```bash
+claude
+
+> /config
+```
+
+**You should see:**
+- Your permissions configuration
+- Environment variables
+- Hook configuration
+- Default model setting
+
+### Step 8: Test the hooks
+
+```
+> Create a file called test.py with a simple function
+```
+
+**Expected:** You'll see "Running pre-edit checks..." from your hook!
+
+### ✅ Checkpoint
+- [ ] Created complete .claude/ directory structure
+- [ ] Configured team settings (settings.json)
+- [ ] Configured personal settings (settings.local.json)
+- [ ] Created CLAUDE.md for project standards
+- [ ] Set up pre-edit hook script
+- [ ] Configured .gitignore properly
+- [ ] Tested configuration with /config
+- [ ] Verified hooks run before file changes
+
+### 💻 Verify Your Setup
+
+**Check file structure:**
+```bash
+tree .claude
+```
+
+**Expected output:**
+```
+.claude/
+├── CLAUDE.md
+├── commands/
+├── output-styles/
+├── scripts/
+│   └── pre-edit-check.sh
+├── settings.json
+└── settings.local.json
+```
+
+**Check what's in git:**
+```bash
+git status
+```
+
+**Should show:**
+- ✅ `.claude/settings.json` (tracked)
+- ✅ `.claude/CLAUDE.md` (tracked)
+- ✅ `.claude/scripts/` (tracked)
+- ❌ `.claude/settings.local.json` (ignored)
+
+### 🎯 Challenge: Add Environment-Specific Configs
+
+Create separate configs for dev/staging/prod:
+
+<details>
+<summary>💡 Solution</summary>
+
+```bash
+# Development (current settings.json is dev)
+cp .claude/settings.json .claude/settings.dev.json
+
+# Staging
+cat > .claude/settings.staging.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write"],
+    "deny": ["Bash", "WebFetch"]
+  },
+  "env": {
+    "ENVIRONMENT": "staging",
+    "LOG_LEVEL": "info"
+  }
+}
+EOF
+
+# Production (read-only)
+cat > .claude/settings.prod.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "deny": ["Edit", "Write", "Bash", "WebFetch"]
+  },
+  "env": {
+    "ENVIRONMENT": "production",
+    "LOG_LEVEL": "warning"
+  }
+}
+EOF
+
+# Use with:
+# export CLAUDE_CONFIG=".claude/settings.prod.json"
+# claude
+```
+
+</details>
+
+**Key Insight:** Proper .claude configuration is like CI/CD for AI assistance - it ensures consistency, security, and compliance across your team.
+
+---
 
 ### What to Commit vs Ignore
 

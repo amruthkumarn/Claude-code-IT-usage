@@ -12,6 +12,31 @@
 
 ---
 
+## ⚡ Quick Start (3 minutes)
+
+**Goal:** See how roles instantly improve output quality.
+
+### Try This Right Now
+
+```bash
+claude
+
+# WITHOUT ROLE: Generic response
+> Review this code for issues
+
+# WITH ROLE: Expert, focused response
+> You are a banking security compliance expert specializing in PCI-DSS and SOX regulations.
+> Review pipelines/payment_processor.py for compliance violations and security issues.
+```
+
+**Compare the outputs:**
+- Generic: Surface-level review
+- With role: Deep compliance-focused analysis with specific regulations cited
+
+**Key Insight:** Roles activate specialized knowledge and perspective!
+
+---
+
 ## Table of Contents
 1. [What is Role Prompting?](#what-is-role-prompting)
 2. [Why Roles Matter](#why-roles-matter)
@@ -677,6 +702,35 @@ Write a prompt that temporarily assigns a performance specialist role while ackn
 - ✅ Assigns specialized role for specific task
 - ✅ Provides complete context
 - ✅ Specifies detailed output requirements
+
+---
+
+## 💡 Try This: Role Experimentation
+
+Test how different roles change the output:
+
+```bash
+claude
+
+# Test 1: Data Engineer Role
+> You are a PySpark data engineer.
+> Create a function to calculate daily transaction totals.
+
+# Test 2: Performance Engineer Role
+> You are a PySpark performance optimization specialist.
+> Create a function to calculate daily transaction totals.
+
+# Test 3: Security Engineer Role
+> You are a banking security engineer specializing in data protection.
+> Create a function to calculate daily transaction totals.
+```
+
+**Compare outputs:**
+- Data Engineer: Functional, correct code
+- Performance Engineer: Optimized code with caching, partitioning
+- Security Engineer: Secure code with PII masking, audit logging
+
+**Key Takeaway:** Same task, different role = different solution approach and priorities!
 
 ---
 

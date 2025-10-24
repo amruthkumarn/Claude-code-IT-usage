@@ -12,6 +12,30 @@
 
 ---
 
+## ⚡ Quick Start (3 minutes)
+
+**Goal:** See how prompt structure dramatically improves results.
+
+### Try This Right Now
+
+```bash
+claude
+
+# BAD: Vague prompt
+> Make a function
+
+# GOOD: Structured prompt (Task + Context + Format)
+> Task: Create a PySpark function to validate transaction amounts
+> Context: Banking pipeline, amounts are Decimal(18,2), must be positive and under $10,000
+> Format: Return tuple of (valid_df, invalid_df) with proper type hints
+```
+
+**Compare the results!** The structured prompt gives you exactly what you need on the first try.
+
+**Key Insight:** Task + Context + Format = Perfect output, every time.
+
+---
+
 ## Table of Contents
 1. [The Golden Formula](#the-golden-formula)
 2. [Task: What to Do](#task-what-to-do)
@@ -193,6 +217,58 @@ Include:
 | **StructType** | Schema definition | `StructType([StructField(...)])` |
 | **Markdown** | Documentation | Table, list, code blocks |
 | **JSON** | Configuration | `{"validation_rules": [...]}` |
+
+---
+
+## 💡 Try This: Practice the Task + Context + Format Formula
+
+**Exercise 1: Build a complete structured prompt**
+
+```bash
+claude
+
+> Task: Generate a PySpark function to read customer data from S3
+>
+> Context:
+> - File format: Parquet
+> - Schema: customer_id (string), name (string), account_balance (decimal)
+> - Location: s3://banking-data/customers/
+> - Need explicit schema definition (no inference)
+>
+> Format:
+> - Function signature: def read_customers(spark: SparkSession) -> DataFrame:
+> - Include type hints
+> - Add docstring
+> - Use StructType for schema
+> - Return DataFrame
+```
+
+**Expected Result:** Complete, production-ready function with all your requirements!
+
+---
+
+## 💡 Try This: Test Different Task Verbs
+
+Try each of these and see how the output changes:
+
+```bash
+# 1. Generate
+> Generate a function to validate account numbers
+
+# 2. Debug
+> Debug the null pointer exception in pipelines/validator.py line 42
+
+# 3. Optimize
+> Optimize the join operation in pipelines/reporting.py for better performance
+
+# 4. Refactor
+> Refactor pipelines/legacy_etl.py to use DataFrame API instead of RDDs
+
+# 5. Document
+> Document the data flow in pipelines/payment_processing.py
+```
+
+**Notice:** Each verb gives you a different type of response!
 
 ---
 
@@ -412,6 +488,71 @@ def aggregate_daily_totals(df: DataFrame) -> DataFrame:
 
     return result_df
 ```
+
+---
+
+## 💡 Try This: More Format Examples
+
+Test how specifying output format changes the result:
+
+```bash
+claude
+
+# 1. Default (no format specified)
+> Create a function to calculate account balance
+
+# 2. Specify pytest test format
+> Create pytest tests for the balance calculation function
+> Format: Use pytest fixtures, Arrange-Act-Assert pattern, include docstrings
+
+# 3. Specify documentation format
+> Document the balance calculation logic
+> Format: Markdown with tables for inputs/outputs, code examples, business rules section
+
+# 4. Specify JSON configuration format
+> Create configuration for the balance calculation pipeline
+> Format: JSON with data_sources, transformations, outputs sections
+```
+
+**Observe:** Same concept, completely different outputs based on format specification!
+
+---
+
+## 💡 Try This: Context Layering
+
+See how adding more context improves quality:
+
+```bash
+# Level 1: No context
+> Validate customer data
+
+# Level 2: Basic context
+> Validate customer DataFrame with schema (id, name, balance)
+
+# Level 3: Business context
+> Validate customer DataFrame
+> Business rules: balance must be positive, name required, id must be unique
+
+# Level 4: Full context (best!)
+> Validate customer DataFrame in a banking pipeline
+>
+> Schema:
+> - customer_id: StringType, not null
+> - name: StringType, not null
+> - account_balance: DecimalType(18,2), not null
+>
+> Business rules:
+> - account_balance must be >= 0 (no negative balances)
+> - customer_id must be unique
+> - name must not be empty string
+>
+> Banking compliance:
+> - Log all validation failures to audit table
+> - Mask customer PII in logs
+> - Return invalid records separately for manual review
+```
+
+**Compare outputs:** More context = better, more complete code!
 
 ---
 

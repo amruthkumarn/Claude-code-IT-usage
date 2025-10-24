@@ -13,6 +13,60 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Create your first hook in 5 minutes.
+
+### Try This Right Now
+
+```bash
+# 1. Create scripts directory
+mkdir -p .claude/scripts
+cd .claude/scripts
+
+# 2. Create a simple audit log hook
+cat > audit-log.sh << 'EOF'
+#!/bin/bash
+# Simple audit logging hook
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') | $(whoami) | ${TOOL_NAME:-UNKNOWN}" >> .claude/logs/audit.log
+exit 0
+EOF
+
+chmod +x audit-log.sh
+mkdir -p .claude/logs
+
+# 3. Add hook to settings.json
+cat >> ../.claude/settings.json << 'EOF'
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/audit-log.sh",
+            "description": "Log all tool usage"
+          }
+        ]
+      }
+    ]
+  }
+EOF
+
+# 4. Test it
+claude
+> Read the README.md file
+# Then check: cat .claude/logs/audit.log
+```
+
+**What you'll see:**
+Every tool use is logged to `.claude/logs/audit.log`!
+
+**Key Insight:** Hooks automate compliance and safety checks without manual intervention.
+
+---
+
 ## Table of Contents
 1. [Understanding Hooks](#understanding-hooks)
 2. [Hook Types](#hook-types)
@@ -397,6 +451,326 @@ if __name__ == "__main__":
   }
 }
 ```
+
+---
+
+## 🔨 Exercise 1: Build Complete Banking Hooks Suite (30 minutes)
+
+**Goal:** Create a production-ready hooks system for banking compliance.
+
+### Step 1: Create hooks directory structure
+
+```bash
+cd ~/banking-pipeline-project
+mkdir -p .claude/scripts .claude/logs
+```
+
+### Step 2: Create audit logging hook
+
+```bash
+cat > .claude/scripts/audit-log.sh << 'EOF'
+#!/bin/bash
+# Banking audit logging hook (SOX compliance)
+
+LOGDIR=".claude/logs"
+LOGFILE="$LOGDIR/audit.log"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+USER=$(whoami)
+HOST=$(hostname)
+TOOL="${TOOL_NAME:-unknown}"
+FILE="${FILE_PATH:-N/A}"
+PROJECT=$(basename "$PWD")
+
+mkdir -p "$LOGDIR"
+
+# JSON format for structured logging
+cat >> "$LOGFILE" << EOFLOG
+{"timestamp":"$TIMESTAMP","user":"$USER","host":"$HOST","project":"$PROJECT","tool":"$TOOL","file":"$FILE"}
+EOFLOG
+
+# Also log to syslog for centralized collection
+logger -t claude-code -p user.info "USER=$USER TOOL=$TOOL FILE=$FILE PROJECT=$PROJECT"
+
+exit 0
+EOF
+
+chmod +x .claude/scripts/audit-log.sh
+```
+
+### Step 3: Create secrets detection hook
+
+```bash
+cat > .claude/scripts/detect-secrets.sh << 'EOF'
+#!/bin/bash
+# Pre-commit secrets detection
+
+FILE_PATH="${FILE_PATH:-$1}"
+
+if [[ -z "$FILE_PATH" || ! -f "$FILE_PATH" ]]; then
+    exit 0
+fi
+
+# Check for common secrets
+if grep -qiE "(password|secret|api_key)\s*=\s*['\"][^'\"]{8,}['\"]" "$FILE_PATH"; then
+    echo "❌ CRITICAL: Hardcoded secret detected in $FILE_PATH"
+    echo "Use environment variables instead: os.getenv('SECRET_NAME')"
+    exit 1
+fi
+
+# Check for AWS keys
+if grep -qE "AKIA[0-9A-Z]{16}" "$FILE_PATH"; then
+    echo "❌ CRITICAL: AWS Access Key detected in $FILE_PATH"
+    exit 1
+fi
+
+# Check for private keys
+if grep -q "BEGIN.*PRIVATE KEY" "$FILE_PATH"; then
+    echo "❌ CRITICAL: Private key detected in $FILE_PATH"
+    exit 1
+fi
+
+echo "✓ No secrets detected"
+exit 0
+EOF
+
+chmod +x .claude/scripts/detect-secrets.sh
+```
+
+### Step 4: Create PCI-DSS compliance hook
+
+```bash
+cat > .claude/scripts/pci-compliance.sh << 'EOF'
+#!/bin/bash
+# PCI-DSS compliance checker
+
+FILE_PATH="${FILE_PATH:-$1}"
+
+if [[ -z "$FILE_PATH" || ! -f "$FILE_PATH" ]]; then
+    exit 0
+fi
+
+# Check for CVV storage (NEVER allowed)
+if grep -qiE "(cvv|cvc).*(save|store|insert|persist)" "$FILE_PATH"; then
+    echo "❌ CRITICAL: CVV storage detected in $FILE_PATH"
+    echo "PCI-DSS Requirement 3.2: CVV must NEVER be stored"
+    exit 1
+fi
+
+# Check for credit card numbers in logs
+if grep -qiE "(log|print|logger).*[0-9]{4}[-\s]?[0-9]{4}[-\s]?[0-9]{4}[-\s]?[0-9]{4}" "$FILE_PATH"; then
+    echo "❌ CRITICAL: Possible credit card number in logging"
+    echo "PCI-DSS Requirement 3.3: Mask PAN in logs"
+    exit 1
+fi
+
+# Check for .show() on sensitive DataFrames
+if [[ "$FILE_PATH" == *.py ]]; then
+    if grep -qE "\.select\([^)]*(?:card|account|ssn)[^)]*\)\.show\(" "$FILE_PATH"; then
+        echo "⚠️  WARNING: Sensitive data displayed with .show()"
+        echo "Use .show(truncate=True) or mask sensitive columns"
+        exit 0  # Warning, not blocking
+    fi
+fi
+
+echo "✓ PCI-DSS check passed"
+exit 0
+EOF
+
+chmod +x .claude/scripts/pci-compliance.sh
+```
+
+### Step 5: Create code quality hook
+
+```bash
+cat > .claude/scripts/quality-check.sh << 'EOF'
+#!/bin/bash
+# Code quality checker
+
+FILE_PATH="${FILE_PATH:-$1}"
+
+if [[ ! -f "$FILE_PATH" || "$FILE_PATH" != *.py ]]; then
+    exit 0
+fi
+
+# Check if ruff is available
+if ! command -v ruff &> /dev/null; then
+    echo "⚠️  ruff not installed, skipping linter"
+    exit 0
+fi
+
+# Run ruff on the file
+if ! ruff check "$FILE_PATH" 2>/dev/null; then
+    echo "⚠️  WARNING: Code quality issues detected in $FILE_PATH"
+    echo "Run: ruff check --fix $FILE_PATH"
+    exit 0  # Don't block, just warn
+fi
+
+echo "✓ Code quality check passed"
+exit 0
+EOF
+
+chmod +x .claude/scripts/quality-check.sh
+```
+
+### Step 6: Configure all hooks in settings.json
+
+```bash
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write", "Bash"]
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/audit-log.sh",
+            "description": "Audit logging (SOX compliance)"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/detect-secrets.sh",
+            "description": "Secrets detection"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/scripts/pci-compliance.sh",
+            "description": "PCI-DSS compliance check"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/scripts/quality-check.sh",
+            "description": "Code quality validation"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+```
+
+### Step 7: Test your hooks
+
+```bash
+claude
+
+# Test audit logging
+> Read the README.md file
+# Check audit log: cat .claude/logs/audit.log
+
+# Test secrets detection (should BLOCK)
+> Create a file test_secret.py with: password = "hardcoded123"
+# Expected: ❌ Blocked by secrets detection hook
+
+# Test PCI-DSS compliance (should BLOCK)
+> Create a file test_pci.py with: df.withColumn("cvv", F.col("card_cvv")).write.save()
+# Expected: ❌ Blocked by PCI-DSS hook
+
+# Test valid file (should PASS)
+> Create a file test_valid.py with: import os\ndb_pass = os.getenv("DB_PASSWORD")
+# Expected: ✓ All hooks pass, file created
+```
+
+### ✅ Checkpoint
+- [ ] Created audit logging hook (SOX compliance)
+- [ ] Created secrets detection hook
+- [ ] Created PCI-DSS compliance hook
+- [ ] Created code quality hook
+- [ ] Configured all hooks in settings.json
+- [ ] Tested hooks successfully block violations
+- [ ] Tested hooks allow compliant code
+- [ ] Verified audit log is being written
+
+### 💻 Terminal Session Example
+
+```bash
+$ claude
+
+> Create a file payment_processor.py with password = "secret123"
+
+🔧 Tool Use: Write
+File: payment_processor.py
+
+🪝 Running PreToolUse hooks...
+
+[audit-log.sh]
+✓ Logged to audit.log
+
+[detect-secrets.sh]
+❌ CRITICAL: Hardcoded secret detected in payment_processor.py
+Use environment variables instead: os.getenv('SECRET_NAME')
+
+❌ Hook failed! Operation blocked.
+
+> Create a file payment_processor.py with password = os.getenv("DB_PASSWORD")
+
+🔧 Tool Use: Write
+File: payment_processor.py
+
+🪝 Running PreToolUse hooks...
+
+[audit-log.sh]
+✓ Logged to audit.log
+
+[detect-secrets.sh]
+✓ No secrets detected
+
+[pci-compliance.sh]
+✓ PCI-DSS check passed
+
+[quality-check.sh]
+✓ Code quality check passed
+
+✅ All hooks passed!
+✅ Created: payment_processor.py
+```
+
+### 🎯 Challenge: Add More Hooks
+
+Try creating these additional hooks:
+1. **data-retention-check.sh**: Ensure DELETE operations have retention policy
+2. **sox-audit-trail.sh**: Verify financial data changes have audit metadata
+3. **test-coverage.sh**: Block commits if test coverage < 80%
+
+<details>
+<summary>💡 Example: test-coverage hook</summary>
+
+```bash
+#!/bin/bash
+# Test coverage validation
+
+FILE_PATH="${FILE_PATH:-$1}"
+
+if [[ "$FILE_PATH" != */tests/*.py && "$FILE_PATH" == *.py ]]; then
+    # Check if corresponding test file exists
+    BASENAME=$(basename "$FILE_PATH" .py)
+    TESTFILE="tests/test_${BASENAME}.py"
+
+    if [[ ! -f "$TESTFILE" ]]; then
+        echo "⚠️  WARNING: No test file found for $FILE_PATH"
+        echo "Expected: $TESTFILE"
+        echo "Create tests to maintain quality standards"
+        exit 0  # Warning, not blocking
+    fi
+fi
+
+exit 0
+```
+
+</details>
+
+**Key Insight:** Hooks automate banking compliance requirements. Once configured, they run on every operation - no human intervention needed, no compliance violations possible!
 
 ---
 

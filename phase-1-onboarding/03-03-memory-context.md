@@ -12,6 +12,46 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Create your first CLAUDE.md and watch Claude use it automatically.
+
+### Try This Right Now
+
+```bash
+# 1. Create a simple CLAUDE.md
+cd ~/practice-project
+cat > CLAUDE.md << 'EOF'
+# My Practice Project
+
+## Coding Standards
+- Use descriptive variable names
+- Add comments for complex logic
+- Follow PEP 8 style guide
+EOF
+
+# 2. Start Claude Code
+claude
+
+# 3. Test if Claude reads it
+> Generate a Python function to calculate the sum of two numbers
+```
+
+**What you'll see:**
+- Claude generates code with **descriptive variable names** ✅
+- Claude adds **comments** ✅
+- Claude follows **PEP 8** ✅
+- All without you mentioning these requirements!
+
+**What just happened?**
+- Claude automatically read CLAUDE.md at startup
+- Your standards are now embedded in Claude's context
+- Every code generation follows your rules
+
+**Next:** Let's understand how memory works in detail...
+
+---
+
 ## Table of Contents
 1. [What is Memory in Claude Code?](#what-is-memory-in-claude-code)
 2. [Memory Hierarchy](#memory-hierarchy)
@@ -378,6 +418,211 @@ result = df.repartition("merchant") \
 
 ---
 
+## 🔨 Exercise 1: Create Your Banking IT CLAUDE.md (15 minutes)
+
+**Goal:** Build a complete CLAUDE.md for a banking data engineering project.
+
+### Step 1: Create the project structure
+
+```bash
+mkdir -p ~/banking-pipeline-project/{pipelines,tests,schemas,config}
+cd ~/banking-pipeline-project
+```
+
+### Step 2: Create your CLAUDE.md
+
+```bash
+cat > CLAUDE.md << 'EOF'
+# Banking Transaction Pipeline
+
+## Project Overview
+PySpark-based ETL pipeline for processing daily banking transactions.
+Handles 500K+ transactions/day with PCI-DSS and SOX compliance.
+
+**Tech Stack:**
+- Python 3.10+
+- PySpark 3.5+
+- Delta Lake 2.4+
+- pytest, pytest-spark
+
+## Coding Standards
+
+### Type Hints Required
+```python
+# Always use type hints
+def process_transaction(amount: Decimal, account_id: str) -> bool:
+    pass
+```
+
+### Naming Conventions
+- Functions: `snake_case` (e.g., `validate_account`)
+- Classes: `PascalCase` (e.g., `TransactionProcessor`)
+- Constants: `UPPER_SNAKE_CASE` (e.g., `MAX_AMOUNT`)
+
+### Money Handling
+```python
+# ALWAYS use Decimal for money
+from decimal import Decimal
+amount = Decimal("100.50")  # ✅ Correct
+amount = 100.50  # ❌ NEVER use float for money
+```
+
+## Security Requirements
+
+### PII Masking
+```python
+# Mask account numbers in logs
+def mask_account(account: str) -> str:
+    return f"****{account[-4:]}"
+```
+
+### No Hardcoded Secrets
+```python
+# ✅ Correct
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
+# ❌ NEVER do this
+DB_PASSWORD = "password123"
+```
+
+## Testing Standards
+- Minimum 80% code coverage
+- Use pytest with SparkSession fixtures
+- Test happy path, edge cases, and error conditions
+
+## Banking-Specific Rules
+1. All transactions must have audit trail
+2. Amounts validated before processing
+3. Failed transactions logged separately
+4. Data retention: 7 years (SOX requirement)
+EOF
+```
+
+### Step 3: Test it with Claude
+
+```bash
+claude
+
+> Generate a PySpark function to validate transaction amounts
+```
+
+### Step 4: Verify Claude follows your standards
+
+**Check the generated code for:**
+- ✅ Type hints present?
+- ✅ Uses `Decimal` for amounts?
+- ✅ Function name in snake_case?
+- ✅ Has proper docstring?
+- ✅ Includes validation logic?
+
+### Step 5: Test banking-specific requirements
+
+```
+> Generate a function to log a transaction to an audit table
+
+Requirements:
+- Include timestamp
+- Include user information
+- Mask sensitive PII
+```
+
+**Expected:** Claude should automatically:
+- Mask account numbers (from PII Masking section)
+- Include audit trail logic (from Banking-Specific Rules)
+- Use proper naming conventions
+
+### ✅ Checkpoint
+- [ ] You created a comprehensive CLAUDE.md
+- [ ] Claude automatically followed your standards
+- [ ] Generated code used Decimal for money
+- [ ] Generated code included PII masking
+- [ ] All without explicitly mentioning these in your prompt
+
+### 💻 Terminal Session Example
+
+```bash
+$ claude
+
+> Generate a function to validate transaction amounts
+
+🤖 I'll create a validation function following your project standards.
+
+🔧 Tool Use: Write
+File: pipelines/validators/transaction_validator.py
+
+```python
+from decimal import Decimal
+from typing import Tuple
+from pyspark.sql import DataFrame
+import pyspark.sql.functions as F
+
+def validate_transaction_amount(df: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    """
+    Validate transaction amounts according to banking rules.
+
+    Args:
+        df: Input DataFrame with 'amount' column (DecimalType)
+
+    Returns:
+        Tuple of (valid_df, invalid_df)
+
+    Banking Rules:
+    - Amount must be positive (> 0)
+    - Amount must not exceed daily limit
+    - Proper decimal precision
+    """
+    # Validate positive amounts
+    valid_df = df.filter(F.col("amount") > Decimal("0"))
+    invalid_df = df.filter(F.col("amount") <= Decimal("0"))
+
+    return valid_df, invalid_df
+```
+
+Approve this write? (yes/no) yes
+
+✅ Created: pipelines/validators/transaction_validator.py
+```
+
+**Notice:**
+- Uses `Decimal` (from your standards) ✅
+- Type hints present ✅
+- snake_case naming ✅
+- Comprehensive docstring ✅
+- Banking-specific validation ✅
+
+### 🎯 Challenge: Add More Standards
+
+Try adding these to your CLAUDE.md:
+1. Logging format requirements
+2. Error handling patterns
+3. Performance optimization rules
+
+Then ask Claude to generate code and see if it follows them!
+
+<details>
+<summary>💡 Example Addition</summary>
+
+```markdown
+## Logging Standards
+```python
+import logging
+logger = logging.getLogger(__name__)
+
+# Always use structured logging
+logger.info("Processing transaction", extra={
+    "transaction_id": txn_id,
+    "amount": str(amount),  # Convert Decimal to string
+    "account_id": mask_account(account_id)  # Mask PII
+})
+```
+```
+
+</details>
+
+**Key Insight:** CLAUDE.md is your "always-on" project documentation. Claude reads it automatically and follows every rule, every time.
+
+---
+
 ## How Claude Uses CLAUDE.md
 
 ### Automatic Reading
@@ -509,6 +754,105 @@ claude  # New session, fresh context
 ```
 
 **Best Practice:** Chain related tasks in one session
+
+---
+
+## 🔨 Exercise 2: Test Session Memory (10 minutes)
+
+**Goal:** Understand how Claude remembers context within a session.
+
+### Step 1: Start a fresh Claude Code session
+
+```bash
+cd ~/banking-pipeline-project
+claude
+```
+
+### Step 2: Establish context
+
+```
+> Read the file pipelines/validators/transaction_validator.py
+```
+
+**Claude reads the file and now has it in session memory.**
+
+### Step 3: Test implicit references
+
+```
+> Add a function to that file to validate account IDs
+```
+
+**Expected:** Claude knows "that file" = transaction_validator.py (from Step 2)
+
+### Step 4: Test chained context
+
+```
+> Now generate tests for both functions in that file
+```
+
+**Expected:** Claude remembers:
+- "that file" = transaction_validator.py
+- "both functions" = validate_transaction_amount + validate_account_id
+
+### Step 5: Test context limits
+
+```
+> Tell me about the payment processing module
+```
+
+**Expected:** Claude will search for it (not in session memory yet)
+
+```
+> Now optimize that module
+```
+
+**Expected:** Claude knows "that module" = the payment processing file it just found
+
+### ✅ Checkpoint
+- [ ] You established context with Read
+- [ ] You used implicit references ("that file")
+- [ ] You chained multiple related tasks
+- [ ] Claude remembered context throughout the session
+
+### 💡 Session Memory Best Practices
+
+**✅ Do: Chain related tasks**
+```
+> Read pipeline.py
+> Add error handling to that pipeline
+> Generate tests for it
+> Run the tests
+```
+All in one session - Claude maintains context.
+
+**❌ Don't: Mix unrelated tasks**
+```
+> Read pipeline.py
+> Create a new schema for customers  # Unrelated!
+> Update that pipeline  # Which one? Context lost!
+```
+
+### 🎯 Challenge: Test Context Boundaries
+
+Exit Claude (`Ctrl+D`) and restart. Then try:
+```
+> Update that file
+```
+
+**Question:** What happens?
+
+<details>
+<summary>💡 Answer</summary>
+
+Claude will ask **"Which file?"** because session memory was cleared when you exited.
+
+**Lesson:** Session memory is temporary. Use CLAUDE.md for persistent knowledge.
+
+</details>
+
+**Key Insight:** Session memory is powerful for focused workflows but doesn't persist across restarts. Use CLAUDE.md for long-term project knowledge.
+
+---
 
 ### 5. Update CLAUDE.md Regularly
 

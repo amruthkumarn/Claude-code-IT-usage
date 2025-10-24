@@ -13,6 +13,44 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Create and use your first specialized agent.
+
+### Try This Right Now
+
+```bash
+# 1. Create agents directory
+mkdir -p .claude/agents
+cd .claude/agents
+
+# 2. Create a security auditor agent
+cat > security-auditor.json << 'EOF'
+{
+  "name": "security-auditor",
+  "description": "Banking security and compliance auditor",
+  "instructions": "You are a banking security expert. Review code for:\n- PCI-DSS compliance\n- Hardcoded secrets\n- PII data exposure\n- SQL injection vulnerabilities\nProvide severity ratings and remediation steps.",
+  "tools": {
+    "allow": ["Read", "Grep", "Glob"],
+    "deny": ["Edit", "Write", "Bash"]
+  }
+}
+EOF
+
+# 3. Use it
+claude
+> Use the security-auditor agent to review this project for security issues
+```
+
+**What you'll see:**
+- Claude launches the security-auditor agent
+- Agent scans files with read-only access
+- Provides security findings with severity ratings
+
+**Key Insight:** Agents are task-specific versions of Claude with focused expertise and restricted permissions.
+
+---
+
 ## Table of Contents
 1. [Understanding Agents](#understanding-agents)
 2. [When to Use Agents](#when-to-use-agents)
@@ -300,6 +338,216 @@ claude --agents '{
 ```bash
 > @data-quality-validator create validation suite for transactions pipeline
 ```
+
+---
+
+## 🔨 Exercise 1: Create Your Banking Agent Team (25 minutes)
+
+**Goal:** Build a complete set of specialized agents for banking data engineering.
+
+### Step 1: Set up agents configuration
+
+```bash
+cd ~/banking-pipeline-project
+mkdir -p .claude/agents
+```
+
+### Step 2: Create .claude/agents.json
+
+```bash
+cat > .claude/agents.json << 'EOF'
+{
+  "agents": {
+    "compliance-checker": {
+      "description": "Banking compliance auditor (PCI-DSS, SOX, GDPR)",
+      "prompt": "You are a banking compliance expert. Review code for:\n- PCI-DSS: Credit card data exposure, CVV storage\n- SOX: Audit trails, transaction logging\n- GDPR: PII handling, data retention\n\nProvide severity ratings and remediation steps with code examples.",
+      "tools": ["Read", "Grep", "Glob"]
+    },
+
+    "security-auditor": {
+      "description": "Security vulnerability scanner",
+      "prompt": "You are a security expert. Scan for:\n- Hardcoded secrets and credentials\n- SQL injection vulnerabilities\n- Insecure data access patterns\n- Missing encryption\n- PII exposure in logs\n\nProvide file:line references and secure code examples.",
+      "tools": ["Read", "Grep", "Glob"]
+    },
+
+    "test-generator": {
+      "description": "PySpark test specialist",
+      "prompt": "You are a testing expert. Generate comprehensive pytest tests for PySpark pipelines.\n\nInclude:\n- Happy path tests with sample DataFrames\n- Edge cases (nulls, empty data, duplicates)\n- Banking scenarios (overdrafts, invalid amounts)\n- Use pytest fixtures and chispa for DataFrame assertions\n\nFollow Arrange-Act-Assert pattern.",
+      "tools": ["Read", "Write", "Grep"]
+    },
+
+    "doc-generator": {
+      "description": "Pipeline documentation specialist",
+      "prompt": "You generate comprehensive Markdown documentation for data pipelines.\n\nInclude:\n- Pipeline purpose and business logic\n- Input/output schemas\n- Transformation steps\n- Data quality checks\n- Banking compliance notes\n- Example queries\n\nFormat in clear Markdown with code blocks.",
+      "tools": ["Read", "Write", "Grep", "Glob"]
+    },
+
+    "performance-optimizer": {
+      "description": "PySpark performance expert",
+      "prompt": "You are a PySpark optimization specialist. Analyze for:\n- Inefficient joins and aggregations\n- Missing caching and partitioning\n- Excessive shuffles\n- Small files in Delta Lake\n- Column pruning opportunities\n\nProvide optimized PySpark code with performance estimates.",
+      "tools": ["Read", "Grep", "Glob"]
+    }
+  }
+}
+EOF
+```
+
+### Step 3: Add to settings.json
+
+```bash
+# Edit .claude/settings.json to reference agents.json
+cat >> .claude/settings.json << 'EOF'
+  "agentsFile": ".claude/agents.json"
+EOF
+```
+
+### Step 4: Test each agent
+
+```bash
+claude
+
+# Test compliance checker
+> Use compliance-checker agent to audit this project for PCI-DSS compliance
+
+# Test security auditor
+> Use security-auditor agent to scan for hardcoded secrets
+
+# Test test generator
+> Use test-generator agent to create tests for pipelines/transaction_validator.py
+
+# Test doc generator
+> Use doc-generator agent to document the payment processing pipeline
+
+# Test performance optimizer
+> Use performance-optimizer agent to analyze pipelines/reporting/monthly_summary.py
+```
+
+### Step 5: Verify agent isolation
+
+**Test 1: Verify read-only agents can't modify code**
+```
+> Use compliance-checker agent to fix the compliance issues it found
+```
+
+**Expected:** Agent will say it cannot modify files (only has Read, Grep, Glob)
+
+**Test 2: Verify test-generator can write**
+```
+> Use test-generator agent to create tests for validators/amount_validator.py
+```
+
+**Expected:** Agent creates test file successfully (has Write permission)
+
+### ✅ Checkpoint
+- [ ] Created agents.json with 5 specialized agents
+- [ ] Configured proper tool restrictions for each agent
+- [ ] Tested each agent with appropriate tasks
+- [ ] Verified read-only agents cannot modify code
+- [ ] Verified write-enabled agents can create files
+
+### 💻 Terminal Session Example
+
+```bash
+$ claude
+
+> Use compliance-checker agent to audit pipelines/payment_processor.py
+
+🤖 Launching compliance-checker agent...
+
+═══════════════════════════════════════════════════
+ COMPLIANCE CHECKER AGENT
+═══════════════════════════════════════════════════
+
+Analyzing: pipelines/payment_processor.py
+
+🔧 Tool Use: Read
+File: pipelines/payment_processor.py
+[Reading file...]
+
+🔧 Tool Use: Grep
+Pattern: "card_number|cvv|password"
+[Searching for sensitive data...]
+
+📋 COMPLIANCE AUDIT REPORT
+
+## PCI-DSS Findings
+
+### CRITICAL: CVV Storage Detected
+**File:** pipelines/payment_processor.py:42
+**Issue:** CVV is being stored in transaction_data DataFrame
+```python
+# VIOLATION:
+transaction_df.withColumn("cvv", F.col("card_cvv"))
+```
+
+**Regulation:** PCI-DSS Requirement 3.2
+**Remediation:**
+```python
+# CORRECT: Never store CVV
+transaction_df = transaction_df.drop("card_cvv")  # Drop before persisting
+```
+
+### HIGH: Insufficient PII Masking
+**File:** pipelines/payment_processor.py:87
+**Issue:** Account numbers logged without masking
+```python
+# VIOLATION:
+logger.info(f"Processing account {account_number}")
+```
+
+**Regulation:** PCI-DSS Requirement 3.3
+**Remediation:**
+```python
+# CORRECT: Mask account number
+def mask_account(account: str) -> str:
+    return f"****{account[-4:]}"
+
+logger.info(f"Processing account {mask_account(account_number)}")
+```
+
+## SOX Findings
+
+### MEDIUM: Missing Audit Trail
+**File:** pipelines/payment_processor.py:120
+**Issue:** Transaction updates lack audit logging
+**Regulation:** SOX Section 404
+**Remediation:** Add audit log table with user, timestamp, before/after values
+
+═══════════════════════════════════════════════════
+ SUMMARY
+═══════════════════════════════════════════════════
+
+Critical: 1
+High: 1
+Medium: 1
+Low: 0
+
+Agent completed successfully ✓
+```
+
+### 🎯 Challenge: Create More Agents
+
+Try creating these additional agents:
+1. **data-profiler**: Analyzes data distributions and quality
+2. **schema-validator**: Validates DataFrame schemas match specifications
+3. **cost-optimizer**: Suggests ways to reduce Spark cluster costs
+
+<details>
+<summary>💡 Example: data-profiler agent</summary>
+
+```json
+{
+  "data-profiler": {
+    "description": "Data profiling and statistics specialist",
+    "prompt": "You analyze data quality and generate profiling reports.\n\nGenerate:\n- Row counts and null percentages\n- Value distributions for key columns\n- Duplicate detection\n- Data type mismatches\n- Outlier detection for numeric columns\n- Cardinality analysis\n\nFor banking data, focus on:\n- Transaction amount distributions\n- Account balance ranges\n- Date coverage gaps\n- Currency code frequencies",
+    "tools": ["Read", "Grep", "Glob"]
+  }
+}
+```
+
+</details>
+
+**Key Insight:** Agents enable you to build a "team of specialists" where each agent has focused expertise and appropriate permissions - just like a real data engineering team!
 
 ---
 

@@ -12,6 +12,30 @@
 
 ---
 
+## ⚡ Quick Start (3 minutes)
+
+**Goal:** Experience the power of clarity immediately.
+
+### Try This Right Now
+
+```bash
+claude
+
+# ❌ UNCLEAR: Too vague
+> Fix the pipeline
+
+# ✅ CLEAR: Specific and direct
+> Fix the null pointer exception in pipelines/payment_processor.py at line 145
+> The error occurs when processing transactions with missing merchant_id field
+> Add a null check before accessing merchant_id
+```
+
+**Compare:** The clear prompt gets you a precise fix. The vague one gets you questions.
+
+**Key Insight:** Clarity = Speed. Vague prompts waste time with back-and-forth clarifications.
+
+---
+
 ## Table of Contents
 1. [Why Clarity Matters](#why-clarity-matters)
 2. [The Clarity Principle](#the-clarity-principle)
@@ -672,6 +696,187 @@ Testing: Add pytest test cases for:
 - ✅ Includes implementation details
 - ✅ Defines test cases
 - ✅ Much shorter and clearer
+
+---
+
+## 💡 Try This: Fix These Vague Prompts
+
+**Exercise:** Rewrite each vague prompt to be clear and direct.
+
+### Prompt 1 (Vague)
+```
+> Make it better
+```
+
+**Your turn:** Rewrite this to be clear.
+
+<details>
+<summary>💡 Solution</summary>
+
+```
+> Optimize the join operation in pipelines/reporting/monthly_summary.py
+>
+> Current issue: Takes 45 minutes to process 10M records
+> Target: Under 15 minutes
+>
+> Suggestions to try:
+> - Use broadcast join for small lookup tables (< 100MB)
+> - Add partitioning by date column
+> - Cache frequently accessed DataFrames
+>
+> Provide code changes with before/after performance estimates
+```
+
+</details>
+
+### Prompt 2 (Vague)
+```
+> Handle errors
+```
+
+**Your turn:** Make it specific.
+
+<details>
+<summary>💡 Solution</summary>
+
+```
+> Add error handling to pipelines/transaction_processor.py
+>
+> Scenarios to handle:
+> 1. Missing merchant_id field → Log warning, skip record
+> 2. Invalid amount (negative or > $1M) → Move to quarantine table
+> 3. Database connection failure → Retry 3 times with exponential backoff
+> 4. Schema mismatch → Fail pipeline with clear error message
+>
+> Use try/except blocks with proper logging
+> Return tuple of (processed_df, failed_df, error_count)
+```
+
+</details>
+
+### Prompt 3 (Vague)
+```
+> Add validation
+```
+
+**Your turn:** Be explicit.
+
+<details>
+<summary>💡 Solution</summary>
+
+```
+> Add PCI-DSS validation to pipelines/payment_data_loader.py
+>
+> Validation rules:
+> 1. CVV must NOT be in DataFrame (reject if found)
+> 2. Card numbers must be masked (show only last 4 digits)
+> 3. Expiry dates must be valid (MM/YY format, not expired)
+> 4. Card holder name must not be empty
+>
+> If validation fails:
+> - Log to compliance_violations table
+> - Block pipeline execution
+> - Alert security team
+>
+> Return validation report with field-level details
+```
+
+</details>
+
+### Prompt 4 (Vague)
+```
+> The function doesn't work
+```
+
+**Your turn:** Add specifics.
+
+<details>
+<summary>💡 Solution</summary>
+
+```
+> Debug validate_transaction_amount() in validators/transaction.py
+>
+> Problem:
+> - Function returns empty DataFrame for valid transactions
+> - Test case: amount = Decimal("100.50") should be valid but gets filtered out
+> - Error occurs at line 42: df.filter(F.col("amount") > 0)
+>
+> Expected behavior:
+> - Amounts > 0 and <= 10000 should be valid
+> - Function should return (valid_df, invalid_df) tuple
+>
+> Check if Decimal comparison is working correctly with PySpark
+```
+
+</details>
+
+### Prompt 5 (Vague)
+```
+> Generate tests
+```
+
+**Your turn:** Specify requirements.
+
+<details>
+<summary>💡 Solution</summary>
+
+```
+> Generate pytest tests for pipelines/customer_enrichment.py
+>
+> Test coverage needed:
+> 1. Happy path: Valid customer data with all fields
+> 2. Edge case: Customer with NULL email (should use default)
+> 3. Edge case: Duplicate customer_id (should deduplicate)
+> 4. Error case: Invalid customer_id format (should reject)
+> 5. Banking scenario: Account balance = $0.00 (valid but boundary)
+> 6. Banking scenario: Negative balance for savings account (invalid)
+>
+> Test requirements:
+> - Use SparkSession fixture
+> - Create sample DataFrames with chispa
+> - Arrange-Act-Assert pattern
+> - Descriptive test names (test_rejects_invalid_customer_id_format)
+> - Include docstrings explaining what each test validates
+>
+> Save to: tests/test_customer_enrichment.py
+```
+
+</details>
+
+---
+
+## 💡 Try This: Practice Direct Communication
+
+Run these prompts and see the difference:
+
+```bash
+claude
+
+# ❌ Indirect (polite but unclear)
+> Could you possibly help me with optimizing this code if you have time?
+
+# ✅ Direct (polite AND clear)
+> Optimize the aggregation in pipelines/daily_summary.py to run in under 10 minutes
+
+# ❌ Assumes context
+> Now add error handling
+
+# ✅ Explicit context
+> Add error handling to the validate_transaction_amount() function we just created
+> Handle: null amounts, negative amounts, amounts > $10,000
+
+# ❌ Vague scope
+> Review the code
+
+# ✅ Clear scope
+> Review pipelines/payment_processor.py for:
+> - SQL injection vulnerabilities
+> - Hardcoded credentials
+> - Missing input validation
+> - PII data exposure in logs
+```
+
+**Key Takeaway:** Direct ≠ Rude. Direct = Respectful of everyone's time!
 
 ---
 

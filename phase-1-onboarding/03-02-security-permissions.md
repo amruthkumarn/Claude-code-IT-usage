@@ -13,6 +13,44 @@
 
 ---
 
+## ⚡ Quick Start (3 minutes)
+
+**Goal:** Experience different permission modes immediately.
+
+### Try This Right Now
+
+```bash
+# 1. Most restrictive (Plan Mode) - Read-only
+claude --permission-mode plan
+> What files are in this directory?
+# ✅ Works - reading allowed
+
+> Create a file called test.txt
+# ❌ Blocked - modifications denied in Plan Mode
+Ctrl+D
+
+# 2. Standard Mode - Requires approval
+claude
+> Create a file called test.txt
+# ⚠️ You'll get an approval prompt
+# Type: no (we're just testing)
+Ctrl+D
+
+# 3. Check your current permissions
+claude
+> /config
+# Shows your permission settings
+```
+
+**What just happened?**
+- **Plan Mode**: Maximum safety, read-only
+- **Standard Mode**: Balanced—modifications require your approval
+- **Config command**: Shows your current settings
+
+**Next:** Let's understand the full permission system...
+
+---
+
 ## Table of Contents
 1. [Banking IT Security Requirements](#banking-it-security-requirements)
 2. [Permission System](#permission-system)
@@ -104,6 +142,127 @@ Claude Code is designed with **security-first** principles, essential for bankin
 - Compliance: Prevent data exfiltration
 
 **Use when:** You want to completely block certain operations (e.g., web access in production)
+
+---
+
+## 🔨 Exercise 1: Test the Three Permission Levels (10 minutes)
+
+**Goal:** Experience allow, requireApproval, and deny in action.
+
+### Setup: Create a test project
+```bash
+mkdir -p ~/permission-test/.claude
+cd ~/permission-test
+```
+
+### Part A: Allow (Auto-Approved)
+
+**Step 1: Configure .claude/settings.json**
+```bash
+# Create this file with your text editor or use Claude
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "deny": []
+  }
+}
+EOF
+```
+
+**Step 2: Test it**
+```bash
+claude
+
+> Read the .claude/settings.json file
+```
+
+**Expected:** ✅ No approval prompt - Read is in the "allow" list
+
+### Part B: Require Approval (Default)
+
+**Step 1: Update .claude/settings.json**
+```bash
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read"],
+    "requireApproval": ["Write"]
+  }
+}
+EOF
+```
+
+**Step 2: Test it**
+```bash
+claude
+
+> Create a file called test.txt with content "Hello"
+```
+
+**Expected:** ⚠️ You'll get a prompt: `Approve this write? (yes/no)`
+- Try: `yes` → File is created
+- Exit and restart Claude
+- Try again: `no` → File is NOT created
+
+### Part C: Deny (Blocked)
+
+**Step 1: Update .claude/settings.json**
+```bash
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read"],
+    "deny": ["Write", "Bash"]
+  }
+}
+EOF
+```
+
+**Step 2: Test it**
+```bash
+claude
+
+> Create a file called test2.txt
+```
+
+**Expected:** ❌ Claude will say "I cannot use the Write tool (denied by permissions)"
+
+**Step 3: Try Bash (also denied)**
+```
+> Run ls command
+```
+
+**Expected:** ❌ Also blocked
+
+### ✅ Checkpoint
+- [ ] You configured allow permissions (no prompt)
+- [ ] You configured requireApproval (got prompt)
+- [ ] You configured deny (completely blocked)
+- [ ] You understand the three permission levels
+
+### 💡 Banking IT Application
+
+```json
+// Development environment
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write", "Bash"],
+    "deny": ["WebFetch", "WebSearch"]
+  }
+}
+
+// Production environment (read-only)
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "deny": ["Edit", "Write", "Bash", "WebFetch", "WebSearch"]
+  }
+}
+```
+
+**Key Insight:** Permission levels cascade: deny > allow > requireApproval. "Deny" always wins.
 
 ---
 
@@ -369,6 +528,195 @@ chmod +x .claude/hooks/audit-log.sh
 - Track all modifications
 - Identify who changed what and when
 - Support forensic analysis
+
+---
+
+## 🔨 Exercise 2: Set Up Audit Logging (15 minutes)
+
+**Goal:** Implement compliance-ready audit logging for all Claude Code operations.
+
+### Step 1: Create the audit logging script
+
+```bash
+cd ~/practice-project
+mkdir -p .claude/scripts
+
+# Create the audit logging script
+cat > .claude/scripts/audit-log.sh << 'EOF'
+#!/bin/bash
+# Audit logging for Claude Code (SOX/PCI-DSS compliance)
+
+LOGDIR=".claude/logs"
+LOGFILE="$LOGDIR/audit.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+USER=$(whoami)
+TOOL="${1:-UNKNOWN}"
+PWD_PATH=$(pwd)
+
+# Create log directory if it doesn't exist
+mkdir -p "$LOGDIR"
+
+# Log format: TIMESTAMP | USER | TOOL | WORKING_DIRECTORY
+echo "$TIMESTAMP | $USER | $TOOL | $PWD_PATH" >> "$LOGFILE"
+
+# Also log to syslog for centralized logging (optional)
+# logger -t claude-code "USER=$USER TOOL=$TOOL PWD=$PWD_PATH"
+
+exit 0
+EOF
+
+# Make it executable
+chmod +x .claude/scripts/audit-log.sh
+```
+
+### Step 2: Configure hooks in .claude/settings.json
+
+```bash
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write", "Bash"]
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/audit-log.sh \"${TOOL_NAME}\"",
+            "description": "Log all tool usage for compliance"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+```
+
+### Step 3: Test the audit logging
+
+```bash
+claude
+
+> Read the README.md file
+
+> Create a file called test.txt
+# Approve with: yes
+
+> Exit
+Ctrl+D
+```
+
+### Step 4: View the audit log
+
+```bash
+cat .claude/logs/audit.log
+```
+
+**Expected output:**
+```
+2025-10-24 14:30:15 | username | Read | /Users/username/practice-project
+2025-10-24 14:30:22 | username | Write | /Users/username/practice-project
+```
+
+### ✅ Checkpoint
+- [ ] You created the audit logging script
+- [ ] You configured PreToolUse hooks
+- [ ] You tested it with Read and Write operations
+- [ ] You viewed the audit log file
+
+### 💻 Enhanced Audit Log (Banking IT Version)
+
+For production banking environments, enhance the script:
+
+```bash
+cat > .claude/scripts/audit-log-enhanced.sh << 'EOF'
+#!/bin/bash
+# Enhanced audit logging for banking compliance
+
+LOGDIR=".claude/logs"
+LOGFILE="$LOGDIR/audit.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+ISOTIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+USER=$(whoami)
+HOSTNAME=$(hostname)
+TOOL="${1:-UNKNOWN}"
+FILE_PATH="${2:-N/A}"
+PWD_PATH=$(pwd)
+
+# Create log directory
+mkdir -p "$LOGDIR"
+
+# JSON format for structured logging
+cat >> "$LOGFILE" << EOFLOG
+{
+  "timestamp": "$ISOTIMESTAMP",
+  "user": "$USER",
+  "hostname": "$HOSTNAME",
+  "tool": "$TOOL",
+  "file": "$FILE_PATH",
+  "directory": "$PWD_PATH",
+  "session_id": "$CLAUDE_SESSION_ID"
+}
+EOFLOG
+
+# Send to centralized logging system (e.g., Splunk, ELK)
+# curl -X POST https://logging.bank.internal/api/events \
+#   -H "Content-Type: application/json" \
+#   -d "{\"timestamp\":\"$ISOTIMESTAMP\",\"user\":\"$USER\",\"tool\":\"$TOOL\"}"
+
+exit 0
+EOF
+
+chmod +x .claude/scripts/audit-log-enhanced.sh
+```
+
+**Update settings.json:**
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/audit-log-enhanced.sh \"${TOOL_NAME}\" \"${FILE_PATH}\"",
+            "description": "Enhanced audit logging for banking compliance"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### 🎯 Challenge: Add Post-Tool Logging
+
+Try adding a PostToolUse hook that logs:
+- Whether the operation succeeded or failed
+- How long the operation took
+- The size of files modified
+
+<details>
+<summary>💡 Hint</summary>
+
+Use `PostToolUse` hook type and add:
+```bash
+# Log operation result
+RESULT="${TOOL_RESULT:-UNKNOWN}"
+DURATION="${TOOL_DURATION:-0}"
+
+echo "$TIMESTAMP | PostToolUse | $TOOL | Result: $RESULT | Duration: ${DURATION}s" >> "$LOGFILE"
+```
+
+</details>
+
+**Key Insight:** Audit logging is non-negotiable for banking IT. Every file modification must be traceable for SOX/PCI-DSS compliance.
 
 ---
 
