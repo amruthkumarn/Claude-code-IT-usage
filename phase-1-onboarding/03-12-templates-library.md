@@ -264,11 +264,19 @@ perl -pi -e 's/\{\{DOMAIN\}\}/Payment Processing/' .claude/CLAUDE.md
 # Alternative for systems without perl:
 # Manually edit .claude/CLAUDE.md and replace {{PROJECT_NAME}}, {{TEAM_NAME}}, {{DOMAIN}}
 
-# Test it
+# Test the template
 claude
-> Hello, what project am I working on?
-# Claude should reference "Payment Processing Pipeline"!
+```
 
+**In the Claude REPL, test that the template works:**
+```
+> Hello, what project am I working on?
+```
+
+Expected: Claude should reference "Payment Processing Pipeline"!
+
+**Exit Claude:**
+```bash
 Ctrl+D
 ```
 

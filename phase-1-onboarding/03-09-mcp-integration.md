@@ -210,28 +210,35 @@ cat .claude/settings.json
 ### Step 4: Test MCP Connection (5 min)
 
 ```bash
-# Start Claude Code in the project directory
+# Navigate to project and start Claude
 cd ~/mcp-test
 claude
+```
 
-# Test database queries:
+**In the Claude REPL, test these database queries:**
+```
 > List all available MCP servers
+```
+Expected: Shows "banking_db" server
 
-# Expected: Shows "banking_db" server
-
+```
 > Query the transactions table and show all records
+```
+Expected: Claude executes SQL query via MCP and shows results
 
-# Expected: Claude executes SQL query via MCP and shows results
-
+```
 > How many transactions have status 'completed'?
+```
+Expected: Claude queries database and returns count
 
-# Expected: Claude queries database and returns count
-
+```
 > What is the total amount of all completed transactions?
+```
+Expected: Claude calculates sum from database
 
-# Expected: Claude calculates sum from database
-
-Ctrl+D  # Exit
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **Expected Output:**
@@ -261,21 +268,34 @@ Found 3 transactions.
 <summary>💡 Try These Queries</summary>
 
 ```bash
+# Start Claude
 claude
+```
 
-# 1. Data quality check
+**In the Claude REPL, try these queries:**
+
+**1. Data quality check:**
+```
 > Find all transactions with negative amounts in the database
+```
 
-# 2. Aggregate analysis
+**2. Aggregate analysis:**
+```
 > Calculate total transaction value grouped by status
+```
 
-# 3. Schema inspection
+**3. Schema inspection:**
+```
 > Show me the complete schema of the transactions table
+```
 
-# 4. Data validation
+**4. Data validation:**
+```
 > Which transactions violate the business rule that amounts must be positive?
+```
 
-# 5. Generate report
+**5. Generate report:**
+```
 > Create a CSV report of all completed transactions and save to /tmp/completed_txns.csv
 ```
 

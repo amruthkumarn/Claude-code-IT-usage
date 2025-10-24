@@ -217,27 +217,35 @@ echo "✅ Project memory (CLAUDE.md) created"
 ### Step 4: Test Standards Enforcement (2 min)
 
 ```bash
-# Test secrets detection
+# Create a file with a hardcoded secret (for testing)
 cat > test_secret.py <<'EOF'
 # This should be blocked
 password = "hardcoded_password123"
 EOF
 
-# Start Claude and try to commit this
+# Start Claude
 claude
+```
 
+**In the Claude REPL, test the security hook:**
+```
 > Review test_secret.py for security issues
+```
 
-# Claude should warn about hardcoded password!
+Claude should warn about the hardcoded password!
 
-# Try to edit a file (should trigger hooks)
+**Now try to edit the file (this will trigger the PreToolUse hook):**
+```
 > Add a comment to test_secret.py
+```
 
-# PreToolUse hook should detect the secret and block!
+The PreToolUse hook should detect the secret and BLOCK the operation!
 
+**Exit Claude:**
+```bash
 Ctrl+D
 
-# Remove test file
+# Clean up test file
 rm test_secret.py
 ```
 

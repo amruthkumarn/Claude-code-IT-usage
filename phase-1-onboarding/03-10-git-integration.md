@@ -86,8 +86,10 @@ echo "✅ Git repository initialized"
 ```bash
 # Start Claude Code
 claude
+```
 
-# Ask Claude to add a new validator
+**In the Claude REPL, ask Claude to create the validator:**
+```
 > Create a currency validator in pipelines/validators/currency_validator.py
 >
 > Requirements:
@@ -95,13 +97,17 @@ claude
 > - Raise ValueError for invalid currency
 > - Include type hints and docstrings
 > - Add pytest tests in tests/validators/test_currency_validator.py
+```
 
-# Review Claude's changes
-# Approve the file creations
+**Review and approve Claude's changes:**
+```
 y  # Approve currency_validator.py
 y  # Approve test_currency_validator.py
+```
 
-Ctrl+D  # Exit Claude
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **✅ Checkpoint 2:** New files created by Claude.
@@ -134,13 +140,12 @@ cat tests/validators/test_currency_validator.py
 ### Step 4: Ask Claude for Commit Message (2 min)
 
 ```bash
-# Show Claude the changes (copy git diff output)
-git diff > /tmp/changes.diff
-
 # Start Claude again
 claude
+```
 
-# Ask for commit message
+**In the Claude REPL, ask for a commit message:**
+```
 > I made these changes: added currency_validator.py and test_currency_validator.py
 > Generate a banking IT compliant commit message following conventional commits format
 >
@@ -148,18 +153,23 @@ claude
 > - Added currency validation for USD, EUR, GBP
 > - Includes comprehensive pytest tests
 > - Follows PCI-DSS compliance patterns
+```
 
-# Claude suggests something like:
-# "feat(validators): add currency validation for banking transactions
-#
-# - Add currency_validator.py with support for USD, EUR, GBP
-# - Include comprehensive pytest test coverage
-# - Implement PCI-DSS compliant validation patterns
-# - Raise ValueError for invalid currencies
-# "
+**Claude will suggest something like:**
+```
+feat(validators): add currency validation for banking transactions
 
-# Copy the commit message
-Ctrl+D  # Exit Claude
+- Add currency_validator.py with support for USD, EUR, GBP
+- Include comprehensive pytest test coverage
+- Implement PCI-DSS compliant validation patterns
+- Raise ValueError for invalid currencies
+```
+
+**Copy the commit message for use in the next step.**
+
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **✅ Checkpoint 4:** Commit message drafted by Claude.
@@ -217,8 +227,10 @@ git branch
 ```bash
 # Start Claude
 claude
+```
 
-# Ask for PR description
+**In the Claude REPL, ask for a PR description:**
+```
 > Generate a pull request description for this feature branch
 >
 > Changes:
@@ -231,10 +243,13 @@ claude
 > - Changes made
 > - Testing done
 > - Checklist
+```
 
-# Claude generates PR description:
+**Claude will generate a PR description (see below).**
 
-Ctrl+D  # Exit
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **Expected PR Description from Claude:**

@@ -123,9 +123,19 @@ Generate a PySpark validation function with:
 - pytest tests
 EOF
 
-# 6. Test
+# 6. Test the setup
 claude
+```
+
+**In the Claude REPL, type:**
+```
 > /validate
+```
+
+**Expected:** Claude generates a validation function using your custom slash command.
+
+**Exit Claude:**
+```bash
 Ctrl+D
 ```
 </details>

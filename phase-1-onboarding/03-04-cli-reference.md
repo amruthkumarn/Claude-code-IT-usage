@@ -63,19 +63,26 @@ EOF
 ### Step 2: Try Plan Mode (Read-Only)
 
 ```bash
-# Start in plan mode
+# Start Claude in plan mode
 claude --permission-mode plan
+```
 
-# Try these prompts:
+**In the Claude REPL, try these prompts:**
+```
 > List all Python files in this directory
 > What does transaction_validator.py do?
 > Add error handling to the validate_transaction function
+```
 
-# Expected: Claude PROPOSES changes but DOESN'T execute them
-# You'll see: "Here's my plan: [detailed steps]"
-# No files will be modified
+**Expected Behavior:**
+- Claude PROPOSES changes but DOESN'T execute them
+- You'll see: "Here's my plan: [detailed steps]"
+- No files will be modified
+- Safe exploration mode!
 
-Ctrl+D  # Exit
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **Question:** Did Claude modify any files? ❌ No! That's plan mode!
@@ -87,23 +94,34 @@ Ctrl+D  # Exit
 ### Step 3: Try Standard Mode (Default)
 
 ```bash
-# Start in standard mode
+# Start Claude in standard mode (default)
 claude
+```
 
-# Try the same prompt:
+**In the Claude REPL, type:**
+```
 > Add error handling to the validate_transaction function
+```
 
-# Expected: Claude PROPOSES changes and ASKS for approval
-# You'll see: "Do you want to proceed? (y/n)"
-# Type 'y' to approve or 'n' to reject
+**Expected Behavior:**
+- Claude PROPOSES changes and ASKS for approval
+- You'll see: "Do you want to proceed? (y/n)"
+- Type `y` to approve or `n` to reject
 
-# Approve one change
+**When prompted, approve the change:**
+```
 y
+```
 
-# Check the file was modified
+**Exit Claude:**
+```bash
+Ctrl+D
+```
+
+**Verify the change:**
+```bash
+# Check that the file was modified
 cat transaction_validator.py
-
-Ctrl+D  # Exit
 ```
 
 **✅ Checkpoint 3:** Standard mode tested - approval required for modifications.
@@ -115,13 +133,21 @@ Ctrl+D  # Exit
 ```bash
 # Allow only Read operations (no modifications at all)
 claude --allow Read,Grep,Glob
+```
 
+**In the Claude REPL, type:**
+```
 > Add type hints to transaction_validator.py
+```
 
-# Expected: Claude can READ the file but cannot modify it
-# You'll see an error or "I don't have permission to edit files"
+**Expected Behavior:**
+- Claude can READ the file but CANNOT modify it
+- You'll see an error or "I don't have permission to edit files"
+- Demonstrates permission restrictions working
 
-Ctrl+D  # Exit
+**Exit Claude:**
+```bash
+Ctrl+D
 ```
 
 **✅ Checkpoint 4:** Custom permissions tested - restrictions enforced.
@@ -138,13 +164,16 @@ Ctrl+D  # Exit
 ```bash
 # Use plan mode for 100% read-only analysis
 claude --permission-mode plan
+```
 
+**In the Claude REPL, ask:**
+```
 > Analyze this code for potential bugs
 > What would you optimize?
 > Explain the algorithm
-
-# All questions answered, zero risk of modification!
 ```
+
+**Result:** All questions answered, zero risk of modification!
 
 **Why Plan Mode?**
 - ✅ Cannot modify files
