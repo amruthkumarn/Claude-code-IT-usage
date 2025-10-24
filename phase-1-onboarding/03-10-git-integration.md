@@ -13,6 +13,310 @@
 
 ---
 
+## ⚡ Quick Start (3 minutes)
+
+**Goal:** Use Claude for git operations (YOU execute commands).
+
+```bash
+claude
+
+# Claude can draft git messages
+> Generate a commit message for my recent changes
+
+# Claude can review diffs
+> Review my git diff for issues
+
+# Claude can suggest PR descriptions
+> Create a pull request description based on my commits
+
+# ⚠️ BANKING IT POLICY: You execute git commands manually
+git add .
+git commit -m "$(message Claude provided)"
+git push origin feature-branch
+```
+
+**Key Insight:** Claude drafts, YOU execute (banking IT security requirement)!
+
+---
+
+## 🔨 Hands-On Exercise: Complete Git Workflow with Claude (20 minutes)
+
+**Goal:** Use Claude to assist with code changes, then manually execute all git operations.
+
+**Scenario:** Add a new transaction validator, get Claude's help drafting commits and PR, but execute all git commands manually.
+
+### Step 1: Initialize Test Repository (3 min)
+
+```bash
+# Create test project
+mkdir -p ~/git-workflow-test && cd ~/git-workflow-test
+
+# Initialize git repository
+git init
+
+# Create basic project structure
+mkdir -p pipelines/validators tests/validators
+cat > pipelines/validators/__init__.py <<'EOF'
+# Transaction validators
+EOF
+
+cat > pipelines/validators/amount_validator.py <<'EOF'
+from decimal import Decimal
+
+def validate_amount(amount):
+    """Validate transaction amount."""
+    if amount is None:
+        return False
+    return Decimal(amount) > 0
+EOF
+
+# Initial commit
+git add .
+git commit -m "Initial commit: Project structure"
+
+echo "✅ Git repository initialized"
+```
+
+**✅ Checkpoint 1:** Git repository ready.
+
+---
+
+### Step 2: Use Claude to Add New Feature (5 min)
+
+```bash
+# Start Claude Code
+claude
+
+# Ask Claude to add a new validator
+> Create a currency validator in pipelines/validators/currency_validator.py
+>
+> Requirements:
+> - Validate currency is one of: USD, EUR, GBP
+> - Raise ValueError for invalid currency
+> - Include type hints and docstrings
+> - Add pytest tests in tests/validators/test_currency_validator.py
+
+# Review Claude's changes
+# Approve the file creations
+y  # Approve currency_validator.py
+y  # Approve test_currency_validator.py
+
+Ctrl+D  # Exit Claude
+```
+
+**✅ Checkpoint 2:** New files created by Claude.
+
+---
+
+### Step 3: Manual Git Review (3 min)
+
+```bash
+# Check what changed
+git status
+# Expected: Shows new files created
+
+# Review the new files
+git diff pipelines/validators/currency_validator.py
+git diff tests/validators/test_currency_validator.py
+
+# Verify the code looks correct
+cat pipelines/validators/currency_validator.py
+```
+
+**✅ Checkpoint 3:** Changes reviewed manually.
+
+---
+
+### Step 4: Ask Claude for Commit Message (2 min)
+
+```bash
+# Show Claude the changes (copy git diff output)
+git diff > /tmp/changes.diff
+
+# Start Claude again
+claude
+
+# Ask for commit message
+> I made these changes: added currency_validator.py and test_currency_validator.py
+> Generate a banking IT compliant commit message following conventional commits format
+>
+> Details:
+> - Added currency validation for USD, EUR, GBP
+> - Includes comprehensive pytest tests
+> - Follows PCI-DSS compliance patterns
+
+# Claude suggests something like:
+# "feat(validators): add currency validation for banking transactions
+#
+# - Add currency_validator.py with support for USD, EUR, GBP
+# - Include comprehensive pytest test coverage
+# - Implement PCI-DSS compliant validation patterns
+# - Raise ValueError for invalid currencies
+# "
+
+# Copy the commit message
+Ctrl+D  # Exit Claude
+```
+
+**✅ Checkpoint 4:** Commit message drafted by Claude.
+
+---
+
+### Step 5: Manual Commit (2 min)
+
+```bash
+# Stage changes manually
+git add pipelines/validators/currency_validator.py
+git add tests/validators/test_currency_validator.py
+
+# Verify staging
+git status
+
+# Commit with Claude's suggested message
+git commit -m "feat(validators): add currency validation for banking transactions
+
+- Add currency_validator.py with support for USD, EUR, GBP
+- Include comprehensive pytest test coverage
+- Implement PCI-DSS compliant validation patterns
+- Raise ValueError for invalid currencies"
+
+# Verify commit
+git log -1
+```
+
+**✅ Checkpoint 5:** Changes committed manually.
+
+---
+
+### Step 6: Create Feature Branch for PR (2 min)
+
+```bash
+# Create feature branch (retroactively for demo)
+git checkout -b feature/currency-validator
+
+# Verify branch
+git branch
+# Expected: * feature/currency-validator
+
+# In real workflow, you'd create branch BEFORE making changes:
+# git checkout -b feature/my-feature
+# [make changes with Claude]
+# [commit manually]
+```
+
+**✅ Checkpoint 6:** Feature branch created.
+
+---
+
+### Step 7: Ask Claude for PR Description (3 min)
+
+```bash
+# Start Claude
+claude
+
+# Ask for PR description
+> Generate a pull request description for this feature branch
+>
+> Changes:
+> - Added currency validator supporting USD, EUR, GBP
+> - Added comprehensive pytest tests
+> - Follows banking IT compliance patterns
+>
+> Format: GitHub PR markdown with:
+> - Summary
+> - Changes made
+> - Testing done
+> - Checklist
+
+# Claude generates PR description:
+
+Ctrl+D  # Exit
+```
+
+**Expected PR Description from Claude:**
+```markdown
+## Summary
+Add currency validation for banking transactions supporting USD, EUR, and GBP.
+
+## Changes
+- **New validator**: `pipelines/validators/currency_validator.py`
+  - Validates currency against allowed list (USD, EUR, GBP)
+  - Raises `ValueError` for invalid currencies
+  - Includes type hints and comprehensive docstrings
+- **New tests**: `tests/validators/test_currency_validator.py`
+  - Tests valid currencies (USD, EUR, GBP)
+  - Tests invalid currency rejection
+  - Tests edge cases (None, empty string, lowercase)
+
+## Testing
+- ✅ All pytest tests pass
+- ✅ Code coverage: 100% for currency_validator.py
+- ✅ No PCI-DSS compliance violations
+
+## Checklist
+- [x] Code follows project style guide
+- [x] Tests added and passing
+- [x] Documentation updated
+- [x] No sensitive data in code or commits
+- [x] Compliant with banking IT security policies
+```
+
+**✅ Checkpoint 7:** PR description drafted by Claude.
+
+---
+
+### 🎯 Challenge: Complete the Workflow Manually
+
+**Task:** Push the branch and create PR manually (using GitHub/GitLab UI or gh CLI).
+
+<details>
+<summary>💡 Solution Steps</summary>
+
+```bash
+# 1. Push branch manually (if you have remote configured)
+# git remote add origin https://github.com/your-org/your-repo.git
+# git push -u origin feature/currency-validator
+
+# 2. Create PR manually via GitHub UI:
+# - Go to GitHub repository
+# - Click "Compare & pull request"
+# - Paste Claude's PR description
+# - Request reviewers
+# - Submit PR
+
+# OR use GitHub CLI (gh):
+# gh pr create --title "Add currency validation" --body "$(cat pr_description.md)"
+
+# 3. Link to Jira ticket (if applicable)
+# Add to PR description: Fixes: BANK-1234
+
+# 4. Wait for CI/CD and code review
+```
+
+**Manual Steps Completed:**
+- ✅ Branch pushed manually
+- ✅ PR created manually
+- ✅ Claude helped with content, not execution
+- ✅ Banking IT compliance maintained
+</details>
+
+---
+
+### ✅ Success Criteria
+
+You've successfully completed the git workflow when:
+- ✅ Git repository initialized
+- ✅ Claude helped create code changes
+- ✅ Changes reviewed manually with `git diff`
+- ✅ Commit message drafted by Claude, executed manually
+- ✅ Feature branch created manually
+- ✅ PR description drafted by Claude
+- ✅ ALL git commands executed manually by you
+
+**Key Principle:** Claude is your assistant, NOT your git automation tool!
+
+---
+
 ## Table of Contents
 1. [Banking IT Manual Git Policy](#banking-it-manual-git-policy)
 2. [Claude's Role in Git Workflow](#claudes-role-in-git-workflow)

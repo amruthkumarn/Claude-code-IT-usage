@@ -12,6 +12,28 @@
 
 ---
 
+## ⚡ Quick Start (2 minutes)
+
+**Goal:** Write your first effective prompt immediately.
+
+```bash
+claude
+
+# ❌ BAD: Vague
+> Help me
+
+# ✅ GOOD: Specific, clear, actionable
+> Generate a PySpark function to validate transaction amounts.
+> Requirements: amounts must be positive Decimals, max $10,000.
+> Return tuple of (valid_df, invalid_df).
+```
+
+**Compare the results!** Specificity = Quality.
+
+**Key Insight:** The formula is Task + Context + Format = Great output!
+
+---
+
 ## Table of Contents
 1. [About This Tutorial](#about-this-tutorial)
 2. [How to Use This Tutorial](#how-to-use-this-tutorial)

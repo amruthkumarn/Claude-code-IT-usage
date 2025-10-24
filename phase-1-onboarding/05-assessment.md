@@ -8,6 +8,122 @@
 
 ---
 
+## ⚡ Quick Self-Check (5 minutes)
+
+**Goal:** Test if you're ready for Phase 2!
+
+### Quick Check (Answer Yes/No):
+
+1. ✅ Can you start Claude Code? (`claude`)
+2. ✅ Can you create a CLAUDE.md file?
+3. ✅ Can you write a custom slash command?
+4. ✅ Can you set up permission restrictions?
+5. ✅ Can you create a hook for audit logging?
+6. ✅ Can you write an effective prompt with Task+Context+Format?
+
+**All Yes?** You're ready for Phase 2: Build!
+**Some No?** Review those sections and try the exercises.
+
+---
+
+## 🔨 Warm-Up Exercise: Complete Claude Code Setup (15 minutes)
+
+**Goal:** Demonstrate you can set up a complete Claude Code project from scratch.
+
+**This is a warm-up before the formal assessment. Use it to verify you're ready!**
+
+### Challenge: Banking IT Project Setup
+
+```bash
+# Create assessment project
+mkdir -p ~/claude-assessment && cd ~/claude-assessment
+
+# TODO: Set up EVERYTHING you learned in Phase 1:
+# 1. Create .claude directory structure
+# 2. Configure settings.json with banking IT permissions
+# 3. Create CLAUDE.md with project standards
+# 4. Add a security hook (secrets detection)
+# 5. Create a custom slash command (/validate)
+# 6. Test the complete setup with Claude Code
+
+# Start when ready!
+```
+
+**Success Criteria:**
+- ✅ Project has proper directory structure
+- ✅ Settings deny Bash, require approval for Edit/Write
+- ✅ CLAUDE.md defines banking IT standards
+- ✅ Hook prevents secrets from being committed
+- ✅ Custom slash command works
+- ✅ Claude Code starts without errors
+
+**Time Limit:** 15 minutes
+
+<details>
+<summary>💡 Solution (expand after attempting)</summary>
+
+```bash
+# Complete setup
+cd ~/claude-assessment
+
+# 1. Directory structure
+mkdir -p .claude/{commands,hooks}
+mkdir -p pipelines tests config
+
+# 2. Settings
+cat > .claude/settings.json <<'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob"],
+    "requireApproval": ["Edit", "Write"],
+    "deny": ["Bash"]
+  },
+  "defaultModel": "sonnet"
+}
+EOF
+
+# 3. Project memory
+cat > .claude/CLAUDE.md <<'EOF'
+# Assessment Project
+
+You are a banking data engineer. Follow PCI-DSS and SOX compliance.
+- Never store CVV codes
+- Mask PII in logs
+- Use type hints and docstrings
+EOF
+
+# 4. Security hook
+cat > .claude/hooks/detect-secrets.sh <<'EOF'
+#!/bin/bash
+if grep -rE "password\s*=" . 2>/dev/null; then
+    echo "Secret detected!"
+    exit 1
+fi
+exit 0
+EOF
+chmod +x .claude/hooks/detect-secrets.sh
+
+# 5. Slash command
+cat > .claude/commands/validate.md <<'EOF'
+Generate a PySpark validation function with:
+- Type hints
+- Docstring
+- Error handling
+- pytest tests
+EOF
+
+# 6. Test
+claude
+> /validate
+Ctrl+D
+```
+</details>
+
+**If you completed this in 15 minutes:** You're ready for the assessment!
+**If you needed help:** Review Phase 1.3 before continuing.
+
+---
+
 ## Table of Contents
 1. [Assessment Overview](#assessment-overview)
 2. [Knowledge Check (Multiple Choice)](#knowledge-check-multiple-choice)

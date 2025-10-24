@@ -17,6 +17,34 @@
 
 ---
 
+## ⚡ Quick Start (10 minutes)
+
+**Goal:** Install and verify Claude Code right now!
+
+```bash
+# 1. Install Claude Code
+pip install claude-code
+
+# 2. Verify installation
+claude --version
+
+# 3. Login
+claude login
+
+# 4. Test it works
+claude --permission-mode plan
+> What version of Claude Code am I using?
+Ctrl+D
+
+# 5. Success!
+```
+
+**If you hit issues:** Jump to [Troubleshooting](#troubleshooting)
+
+**Key Insight:** Installation is usually this simple. Banking IT configurations (proxies, certs) covered below.
+
+---
+
 ## Table of Contents
 1. [Pre-Installation Checklist](#pre-installation-checklist)
 2. [Installation Method 1: pip](#installation-method-1-pip-recommended)
@@ -27,6 +55,268 @@
 7. [Post-Installation Setup](#post-installation-setup)
 8. [Troubleshooting](#troubleshooting)
 9. [Success Criteria](#success-criteria)
+
+---
+
+## 🔨 Hands-On Exercise 1: Complete Installation & Verification (20 minutes)
+
+**Goal:** Install Claude Code from scratch, verify setup, and run your first session with full diagnostics.
+
+### Step 1: Pre-Installation Check (3 min)
+
+```bash
+# Check Python version (3.9+ required)
+python --version
+# Expected: Python 3.9.x or higher
+
+# Check pip version
+pip --version
+# Expected: pip 21.x or higher
+
+# Check if claude is already installed
+which claude 2>/dev/null || echo "Not installed (that's OK)"
+
+# Test network connectivity to Anthropic API
+curl -I https://api.anthropic.com 2>&1 | head -1
+# Expected: HTTP/2 200 or HTTP/1.1 301
+```
+
+**✅ Checkpoint 1:** Python 3.9+ and pip are available, network is reachable.
+
+---
+
+### Step 2: Installation (5 min)
+
+**Choose your installation method:**
+
+<details>
+<summary>💻 Option A: User Installation (Recommended for Banking IT - No Admin Required)</summary>
+
+```bash
+# Install for current user only
+pip install --user claude-code
+
+# Verify installation
+claude --version
+# Expected: claude-code version 0.x.x
+
+# If "command not found", add to PATH:
+# PowerShell:
+$pythonPath = python -c "import site; print(site.USER_BASE)"
+$env:Path += ";$pythonPath\Scripts"
+
+# WSL2/Linux:
+export PATH="$PATH:$HOME/.local/bin"
+source ~/.bashrc
+```
+</details>
+
+<details>
+<summary>💻 Option B: Virtual Environment (Best Practice)</summary>
+
+```bash
+# Create dedicated virtual environment
+python -m venv ~/.venv/claude-code
+
+# Activate (WSL2/Linux/Mac)
+source ~/.venv/claude-code/bin/activate
+
+# Activate (PowerShell)
+~\.venv\claude-code\Scripts\Activate.ps1
+
+# Install
+pip install claude-code
+
+# Verify
+claude --version
+```
+</details>
+
+<details>
+<summary>💻 Option C: Global Installation (Requires Admin/Sudo)</summary>
+
+```bash
+# PowerShell (Run as Administrator)
+pip install claude-code
+
+# Or WSL2 with sudo
+sudo pip install claude-code
+
+# Verify
+claude --version
+```
+</details>
+
+**✅ Checkpoint 2:** `claude --version` shows version number.
+
+---
+
+### Step 3: Authentication (5 min)
+
+```bash
+# Start login process
+claude login
+# Browser window opens automatically
+
+# Follow prompts:
+# 1. Sign in to Claude.ai or Console
+# 2. If using Banking IT SSO: Enter corporate credentials
+# 3. Complete MFA if required
+# 4. Authorize Claude Code
+# 5. Return to terminal
+
+# Expected output:
+# Successfully authenticated as: your-email@bank.com
+```
+
+**Troubleshooting:**
+
+<details>
+<summary>❌ Browser doesn't open automatically</summary>
+
+```bash
+# Manual login URL
+echo "Open this URL manually:"
+echo "https://claude.ai/login"
+
+# Follow authentication flow
+# Copy token from browser
+# Paste when prompted in terminal
+```
+</details>
+
+<details>
+<summary>❌ Corporate proxy blocking connection</summary>
+
+```bash
+# Set proxy environment variables BEFORE login
+# PowerShell:
+$env:HTTP_PROXY = "http://proxy.bank.com:8080"
+$env:HTTPS_PROXY = "http://proxy.bank.com:8080"
+
+# WSL2/Linux:
+export HTTP_PROXY=http://proxy.bank.com:8080
+export HTTPS_PROXY=http://proxy.bank.com:8080
+
+# Retry login
+claude login
+```
+</details>
+
+**✅ Checkpoint 3:** Successfully authenticated.
+
+---
+
+### Step 4: First Session (5 min)
+
+```bash
+# Navigate to any directory (or create test dir)
+mkdir -p ~/claude-test && cd ~/claude-test
+
+# Create a simple Python file
+cat > test.py <<'EOF'
+def calculate_total(amounts: list) -> float:
+    """Calculate sum of transaction amounts."""
+    return sum(amounts)
+
+if __name__ == "__main__":
+    transactions = [100.50, 250.00, 75.25]
+    print(f"Total: ${calculate_total(transactions):.2f}")
+EOF
+
+# Start Claude Code in plan mode (safe for first run)
+claude --permission-mode plan
+
+# Try these prompts:
+> What version of Claude Code am I running?
+> What files are in the current directory?
+> Explain what test.py does
+> Add error handling to calculate_total function
+
+# Exit when done
+Ctrl+D
+```
+
+**Expected Behavior:**
+- **Plan Mode**: Claude proposes changes but doesn't execute them automatically
+- You see: "Here's my plan: [steps listed]" then "Ready to proceed? (y/n)"
+- Safe for exploration without fear of accidental changes
+
+**✅ Checkpoint 4:** Successfully started Claude Code, asked questions, saw proposed plans, exited cleanly.
+
+---
+
+### Step 5: Configuration Verification (2 min)
+
+```bash
+# Check Claude Code directories exist
+ls -la ~/.config/claude/ 2>/dev/null || ls -la ~/AppData/Roaming/claude/ 2>/dev/null
+# Expected: settings files, credentials
+
+# Check if current project has .claude directory
+ls -la .claude/ 2>/dev/null || echo "No .claude directory (normal for first project)"
+
+# Verify Claude can be invoked from anywhere
+cd /tmp
+claude --help
+# Should show help without errors
+
+# Return to test directory
+cd ~/claude-test
+```
+
+**✅ Checkpoint 5:** Claude Code configuration directories exist and command works from any location.
+
+---
+
+### 🎯 Challenge: Banking IT Specific Setup (5 min)
+
+**If you're behind a corporate proxy/firewall, configure now:**
+
+```bash
+# 1. Set proxy environment variables
+# PowerShell (add to $PROFILE for persistence):
+$env:HTTP_PROXY = "http://proxy.bank.com:8080"
+$env:HTTPS_PROXY = "http://proxy.bank.com:8080"
+$env:NO_PROXY = "localhost,127.0.0.1,.bank.internal"
+
+# WSL2/Linux (add to ~/.bashrc for persistence):
+export HTTP_PROXY=http://proxy.bank.com:8080
+export HTTPS_PROXY=http://proxy.bank.com:8080
+export NO_PROXY=localhost,127.0.0.1,.bank.internal
+
+# 2. If using SSL inspection, set CA bundle:
+# PowerShell:
+$env:REQUESTS_CA_BUNDLE = "C:\certificates\corporate-ca-bundle.crt"
+$env:SSL_CERT_FILE = "C:\certificates\corporate-ca-bundle.crt"
+
+# WSL2/Linux:
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/corporate-ca-bundle.crt
+export SSL_CERT_FILE=/etc/ssl/certs/corporate-ca-bundle.crt
+
+# 3. Test connectivity
+claude
+> Hello, can you confirm you can connect to the API?
+Ctrl+D
+```
+
+**✅ Checkpoint 6 (Banking IT):** Proxy and SSL configured, Claude Code connects successfully.
+
+---
+
+### ✅ Success Criteria
+
+You're ready to continue when:
+- ✅ `claude --version` shows version number
+- ✅ `claude login` confirms authenticated status
+- ✅ Can start Claude Code in plan mode
+- ✅ Can ask questions and see responses
+- ✅ Can exit cleanly with Ctrl+D
+- ✅ (Banking IT only) Proxy/SSL configured and working
+
+**If all checkpoints pass:** Installation complete! 🎉
+
+**If any checkpoint fails:** See [Troubleshooting](#troubleshooting) section below.
 
 ---
 

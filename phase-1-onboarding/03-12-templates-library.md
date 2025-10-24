@@ -13,6 +13,280 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Use ready-made templates right now!
+
+```bash
+# 1. Copy template to your project
+cp templates/CLAUDE.md.template ~/my-project/CLAUDE.md
+
+# 2. Customize for your project
+# Edit CLAUDE.md with your team's standards
+
+# 3. Use it!
+cd ~/my-project
+claude
+> Generate a PySpark function to validate transactions
+# Claude follows YOUR standards from CLAUDE.md!
+```
+
+**Key Insight:** Templates ensure consistency across your team!
+
+---
+
+## 🔨 Hands-On Exercise: Create Your Team's Template Library (15 minutes)
+
+**Goal:** Build reusable templates for your banking IT team.
+
+**Scenario:** Your team needs standardized project templates to ensure consistency across all PySpark data engineering projects.
+
+### Step 1: Create Templates Directory (2 min)
+
+```bash
+# Create team templates repository
+mkdir -p ~/team-claude-templates && cd ~/team-claude-templates
+mkdir -p {settings,memory,commands,hooks,agents}
+
+# Initialize git for sharing
+git init
+echo "# Banking IT Claude Code Templates" > README.md
+```
+
+**✅ Checkpoint 1:** Templates repository created.
+
+---
+
+### Step 2: Create Settings Template (3 min)
+
+```bash
+cat > settings/banking-it-standard.json <<'EOF'
+{
+  "$schema": "https://claude.ai/schemas/settings.json",
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob", "Task", "TodoWrite"],
+    "requireApproval": ["Edit", "Write"],
+    "deny": ["Bash"]
+  },
+  "defaultModel": "sonnet",
+  "env": {
+    "SPARK_ENV": "development",
+    "PYSPARK_PYTHON": "python3",
+    "ENVIRONMENT": "{{ENVIRONMENT}}"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{
+          "type": "command",
+          "command": "bash ./.claude/hooks/detect-secrets.sh",
+          "description": "Detect hardcoded secrets"
+        }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [{
+          "type": "command",
+          "command": "bash ./.claude/hooks/audit-log.sh",
+          "description": "SOX compliance audit log"
+        }]
+      }
+    ]
+  }
+}
+EOF
+
+echo "✅ Settings template created"
+```
+
+**✅ Checkpoint 2:** Settings template ready.
+
+---
+
+### Step 3: Create Memory (CLAUDE.md) Template (5 min)
+
+```bash
+cat > memory/CLAUDE-banking-template.md <<'EOF'
+# {{PROJECT_NAME}}
+
+## Your Role
+You are a senior PySpark data engineer working in banking IT.
+
+## Project Information
+- **Team**: {{TEAM_NAME}}
+- **Domain**: {{DOMAIN}}  (e.g., Payments, Fraud Detection, Customer Data)
+- **Tech Stack**: Python 3.10+, PySpark 3.5+, pytest, Delta Lake
+- **Compliance**: PCI-DSS, SOX, GDPR
+
+## Banking IT Standards
+
+### Security (PCI-DSS)
+- **NEVER** store full credit card numbers (mask: `****-****-****-1234`)
+- **NEVER** store CVV codes
+- **ALWAYS** mask PII in logs (account_id, SSN, card numbers)
+- **USE** read-only database connections for queries
+- **ENCRYPT** sensitive data at rest and in transit
+
+### Code Quality
+- Type hints required for all functions
+- Docstrings required (Google style)
+- 100% test coverage goal
+- No hardcoded values (use config files)
+- PEP 8 compliant
+
+### File Naming
+- Pipelines: `{verb}_{noun}.py` (e.g., `validate_transactions.py`)
+- Tests: `test_{module}.py`
+- Config: `{environment}.yaml` (e.g., `dev.yaml`, `prod.yaml`)
+
+### Git Workflow
+- Feature branches: `feature/{ticket}-{description}`
+- Commit messages: Conventional Commits format
+- All git operations manual (no automation)
+- PR required for all changes
+
+## Sample Data Schema
+
+```python
+from pyspark.sql.types import *
+
+transaction_schema = StructType([
+    StructField("txn_id", StringType(), False),
+    StructField("account_id", StringType(), False),
+    StructField("amount", DecimalType(18, 2), False),
+    StructField("currency", StringType(), False),
+    StructField("timestamp", TimestampType(), False),
+    StructField("merchant_id", StringType(), True),
+    StructField("status", StringType(), False)
+])
+```
+
+## Common Patterns
+
+### Validation Function Template
+```python
+from pyspark.sql import DataFrame
+from typing import Tuple
+
+def validate_{entity}(df: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    """
+    Validate {entity} data.
+
+    Args:
+        df: Input DataFrame with {entity}_schema
+
+    Returns:
+        Tuple of (valid_df, invalid_df)
+    """
+    # Validation logic here
+    pass
+```
+
+### Test Template
+```python
+import pytest
+from pyspark.sql import SparkSession
+
+def test_{function_name}(spark: SparkSession):
+    """Test {function_name} with valid data."""
+    # Arrange
+    # Act
+    # Assert
+    pass
+```
+EOF
+
+echo "✅ Memory template created"
+```
+
+**✅ Checkpoint 3:** Memory template ready.
+
+---
+
+### Step 4: Create Quick-Start Hook Template (3 min)
+
+```bash
+cat > hooks/detect-secrets-template.sh <<'EOF'
+#!/bin/bash
+# PreToolUse hook: Detect secrets in code
+# Customize patterns for your banking IT requirements
+
+SECRETS_PATTERNS=(
+    "password\s*=\s*['\"][^'\"]*['\"]"
+    "api[_-]?key\s*=\s*['\"][^'\"]*['\"]"
+    "secret\s*=\s*['\"][^'\"]*['\"]"
+    "aws_access_key_id"
+    "sk-[a-zA-Z0-9]{20,}"
+    "[0-9]{13,19}"  # Credit card numbers
+    "[0-9]{3}-[0-9]{2}-[0-9]{4}"  # SSN format
+)
+
+for pattern in "${SECRETS_PATTERNS[@]}"; do
+    if grep -rE "$pattern" . 2>/dev/null | grep -v -E "(.claude/|test_|.git/)"; then
+        echo "❌ SECURITY VIOLATION: Potential secret detected!"
+        echo "Pattern matched: $pattern"
+        echo "BLOCKED by PreToolUse hook"
+        exit 1
+    fi
+done
+
+exit 0
+EOF
+
+chmod +x hooks/detect-secrets-template.sh
+echo "✅ Secrets detection hook template created"
+```
+
+**✅ Checkpoint 4:** Hook template ready.
+
+---
+
+### Step 5: Use Template in New Project (2 min)
+
+```bash
+# Create new project from templates
+mkdir -p ~/my-new-pipeline && cd ~/my-new-pipeline
+mkdir -p .claude/hooks
+
+# Copy templates
+cp ~/team-claude-templates/settings/banking-it-standard.json .claude/settings.json
+cp ~/team-claude-templates/memory/CLAUDE-banking-template.md .claude/CLAUDE.md
+cp ~/team-claude-templates/hooks/detect-secrets-template.sh .claude/hooks/detect-secrets.sh
+
+# Customize CLAUDE.md
+sed -i '' 's/{{PROJECT_NAME}}/Payment Processing Pipeline/' .claude/CLAUDE.md
+sed -i '' 's/{{TEAM_NAME}}/Data Engineering Team/' .claude/CLAUDE.md
+sed -i '' 's/{{DOMAIN}}/Payment Processing/' .claude/CLAUDE.md
+
+# Test it
+claude
+> Hello, what project am I working on?
+# Claude should reference "Payment Processing Pipeline"!
+
+Ctrl+D
+```
+
+**✅ Checkpoint 5:** Template successfully deployed to new project!
+
+---
+
+### ✅ Success Criteria
+
+Template library successfully created when:
+- ✅ Settings template includes banking IT permissions
+- ✅ Memory template documents standards
+- ✅ Hook templates enforce security
+- ✅ Templates can be copied to new projects
+- ✅ Placeholders ({{NAME}}) easily customizable
+- ✅ Team can share templates via git
+
+**Result:** Your team now has standardized, reusable Claude Code templates!
+
+---
+
 ## Table of Contents
 1. [Settings Templates](#settings-templates)
 2. [Memory Templates](#memory-templates)

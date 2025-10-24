@@ -14,6 +14,251 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Apply banking IT best practices immediately.
+
+```bash
+# 1. Always use Plan Mode for production code
+claude --permission-mode plan
+> Analyze production pipeline for issues
+
+# 2. Set up audit logging (SOX requirement)
+# See Phase 1.3.8 for hooks
+
+# 3. Never hardcode secrets
+> Check this code for hardcoded credentials
+
+# 4. Always mask PII in logs
+> Review logging statements for PII exposure
+
+# 5. Require approval for ALL changes
+# Default behavior - never use auto-approve in banking
+```
+
+**Key Insight:** Security and compliance first, always!
+
+---
+
+## 🔨 Hands-On Exercise: Banking IT Standards Setup (15 minutes)
+
+**Goal:** Configure a project with banking IT best practices from the start.
+
+**Scenario:** Set up a new PySpark data engineering project with all required standards and security controls.
+
+### Step 1: Create Project with Standards (5 min)
+
+```bash
+# Create banking IT compliant project
+mkdir -p ~/banking-pipeline-project && cd ~/banking-pipeline-project
+
+# Create directory structure
+mkdir -p .claude/{commands,hooks,scripts,agents}
+mkdir -p pipelines/{etl,validators,transformers}
+mkdir -p tests/{unit,integration}
+mkdir -p config schemas docs
+
+# Create comprehensive settings.json
+cat > .claude/settings.json <<'EOF'
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob", "Task", "TodoWrite"],
+    "requireApproval": ["Edit", "Write"],
+    "deny": ["Bash"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "tool": "Write",
+        "command": "bash .claude/hooks/detect-secrets.sh"
+      },
+      {
+        "tool": "Edit",
+        "command": "bash .claude/hooks/detect-secrets.sh"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "tool": "*",
+        "command": "bash .claude/hooks/audit-log.sh"
+      }
+    ]
+  },
+  "defaultModel": "sonnet"
+}
+EOF
+
+echo "✅ Banking IT settings configured"
+```
+
+**✅ Checkpoint 1:** Project structure and settings created.
+
+---
+
+### Step 2: Add Security Hooks (5 min)
+
+```bash
+# Secrets detection hook
+cat > .claude/hooks/detect-secrets.sh <<'EOF'
+#!/bin/bash
+# PreToolUse hook: Detect secrets before file operations
+
+# Patterns to detect
+SECRETS_PATTERNS=(
+    "password\s*=\s*['\"][^'\"]*['\"]"
+    "api[_-]?key\s*=\s*['\"][^'\"]*['\"]"
+    "secret\s*=\s*['\"][^'\"]*['\"]"
+    "token\s*=\s*['\"][^'\"]*['\"]"
+    "sk-[a-zA-Z0-9]{20,}"
+    "[0-9]{16}"  # Card numbers
+)
+
+# Check for secrets
+for pattern in "${SECRETS_PATTERNS[@]}"; do
+    if grep -rE "$pattern" . 2>/dev/null | grep -v ".claude/hooks"; then
+        echo "❌ BLOCKED: Potential secret detected!"
+        echo "Pattern: $pattern"
+        exit 1
+    fi
+done
+
+echo "✅ No secrets detected"
+exit 0
+EOF
+
+# Audit logging hook
+cat > .claude/hooks/audit-log.sh <<'EOF'
+#!/bin/bash
+# PostToolUse hook: Log all Claude operations (SOX compliance)
+
+LOG_FILE=".claude/audit.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+TOOL="${CLAUDE_TOOL_NAME:-unknown}"
+USER="${USER:-unknown}"
+
+# Log entry
+echo "[$TIMESTAMP] user=$USER tool=$TOOL" >> "$LOG_FILE"
+
+exit 0
+EOF
+
+# Make executable
+chmod +x .claude/hooks/*.sh
+
+echo "✅ Security hooks installed"
+```
+
+**✅ Checkpoint 2:** Hooks configured for secrets detection and audit logging.
+
+---
+
+### Step 3: Create Project Memory (CLAUDE.md) (3 min)
+
+```bash
+cat > .claude/CLAUDE.md <<'EOF'
+# Banking Data Engineering Project
+
+## Your Role
+You are a senior PySpark data engineer working in banking IT.
+
+## Banking IT Standards
+
+### Security Requirements
+- **NEVER** output credentials, API keys, or secrets
+- **ALWAYS** mask PII in logs (account numbers, SSNs, card numbers)
+- **USE** read-only database connections for analysis
+- **REQUIRE** approval for all file modifications
+- **DENY** all bash executions (manual git only)
+
+### PCI-DSS Compliance
+- Never store full credit card numbers (mask: `****-****-****-1234`)
+- Never store CVV codes (prohibited)
+- Encrypt data at rest and in transit
+- Log all data access (audit trail)
+
+### Code Standards
+- Python 3.10+ with type hints
+- PySpark 3.5+
+- pytest for all tests (100% coverage goal)
+- docstrings for all functions
+- No hardcoded values (use config files)
+
+### File Naming
+- Pipelines: `verb_noun.py` (e.g., `validate_transactions.py`)
+- Tests: `test_<module>.py`
+- Config: environment-specific (e.g., `dev.yaml`, `prod.yaml`)
+
+## Sample Data
+```python
+sample_transaction = {
+    "txn_id": "TXN001",
+    "account_id": "ACC123",
+    "amount": Decimal("100.50"),
+    "currency": "USD",
+    "timestamp": datetime.now(),
+    "status": "completed"
+}
+```
+
+## Common Tasks
+- **Data validation**: Check schema, nulls, ranges, referential integrity
+- **PII masking**: Mask account numbers, SSNs before logging
+- **Performance optimization**: Partitioning, caching, broadcast joins
+- **Testing**: Unit tests with pytest, integration tests with test data
+EOF
+
+echo "✅ Project memory (CLAUDE.md) created"
+```
+
+**✅ Checkpoint 3:** Project standards documented.
+
+---
+
+### Step 4: Test Standards Enforcement (2 min)
+
+```bash
+# Test secrets detection
+cat > test_secret.py <<'EOF'
+# This should be blocked
+password = "hardcoded_password123"
+EOF
+
+# Start Claude and try to commit this
+claude
+
+> Review test_secret.py for security issues
+
+# Claude should warn about hardcoded password!
+
+# Try to edit a file (should trigger hooks)
+> Add a comment to test_secret.py
+
+# PreToolUse hook should detect the secret and block!
+
+Ctrl+D
+
+# Remove test file
+rm test_secret.py
+```
+
+**✅ Checkpoint 4:** Security hooks working!
+
+---
+
+### ✅ Success Criteria
+
+Banking IT standards properly configured when:
+- ✅ `.claude/settings.json` denies Bash (manual git)
+- ✅ Secrets detection hook blocks hardcoded credentials
+- ✅ Audit log captures all Claude operations
+- ✅ CLAUDE.md documents banking IT requirements
+- ✅ Project structure follows organization standards
+- ✅ All file operations require approval
+
+**Result:** Your project now enforces banking IT security and compliance automatically!
+
+---
+
 ## Table of Contents
 1. [Organizational Standards](#organizational-standards)
 2. [Project Setup](#project-setup)

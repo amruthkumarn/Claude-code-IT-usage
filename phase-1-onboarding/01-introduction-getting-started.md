@@ -12,6 +12,38 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+**Goal:** Get your hands on Claude Code right now!
+
+### Try This Immediately
+
+```bash
+# 1. Verify Claude Code is installed
+claude --version
+
+# 2. Start your first session (read-only mode for safety)
+claude --permission-mode plan
+
+# 3. Try these commands
+> What can you help me with for banking data engineering?
+
+> List the Python files in this directory
+
+> Explain what PySpark is and why we use it in banking
+```
+
+**What you'll see:**
+- Claude responds with banking-specific expertise
+- Shows you files without modifying anything
+- Answers technical questions about PySpark and data engineering
+
+**Exit:** Press `Ctrl+D` when done
+
+**Key Insight:** You just used Claude Code! It's that simple. Now let's understand what just happened...
+
+---
+
 ## Table of Contents
 1. [What is Claude Code?](#what-is-claude-code)
 2. [Why Use Claude Code in Banking IT Data Engineering?](#why-use-claude-code-in-banking-it-data-engineering)
