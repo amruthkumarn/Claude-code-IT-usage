@@ -1,6 +1,6 @@
 # Security Review Prompt Template
 
-Use this template for comprehensive security audits of code.
+Use this template for comprehensive security audits of data pipelines and Python code.
 
 ## Prompt
 
@@ -9,17 +9,17 @@ Perform comprehensive security review of [FILE_OR_DIRECTORY]
 
 Check for:
 
-## Authentication & Authorization
-- All endpoints require authentication?
-- Proper role-based access control?
-- JWT validation correct?
-- Session management secure?
+## Data Access & Authorization
+- All data sources require authentication?
+- Proper role-based access control for sensitive data?
+- Service principal/IAM validation correct?
+- Spark session security configured?
 
-## Input Validation
-- SQL injection prevention?
-- XSS prevention?
-- CSRF protection?
-- Input sanitization?
+## Data Validation & Injection Prevention
+- Spark SQL injection prevention (dynamic SQL, string formatting)?
+- Schema validation on DataFrame inputs?
+- Data type validation and constraints?
+- PII detection and masking applied?
 
 ## Data Protection
 - Sensitive data encrypted at rest?
@@ -28,15 +28,18 @@ Check for:
 - Secrets managed properly?
 
 ## Logging & Monitoring
-- Security events logged?
-- PII excluded from logs?
-- Error messages don't leak info?
+- Data access events logged?
+- PII excluded from logs and error messages?
+- Pipeline failures don't leak sensitive data?
+- Audit trail for data transformations?
 
-## Banking-Specific
-- PCI-DSS: No card data in logs?
-- PCI-DSS: No CVV storage?
-- SOX: Audit trail for financial transactions?
-- GDPR: Personal data properly handled?
+## Banking-Specific Compliance
+- PCI-DSS: No card data in logs or intermediate DataFrames?
+- PCI-DSS: No CVV/CVV2 storage in any pipeline stage?
+- PCI-DSS: Encryption at rest for cardholder data?
+- SOX: Audit trail for financial data transformations?
+- GDPR: Personal data properly masked/anonymized?
+- GDPR: Data retention policies implemented?
 
 For each issue found, provide:
 - File and line number
@@ -51,7 +54,7 @@ Prioritize critical security issues.
 ## Example Usage
 
 ```bash
-> Perform comprehensive security review of src/payments/
+> Perform comprehensive security review of pipelines/payment_processing/
 
 [Claude will execute the security audit]
 ```

@@ -1,6 +1,6 @@
 # Compliance Check Prompt Template
 
-Use this template for regulatory compliance audits.
+Use this template for regulatory compliance audits of data pipelines.
 
 ## Prompt
 
@@ -10,24 +10,26 @@ Audit [FILE_OR_DIRECTORY] for regulatory compliance.
 Standards to check:
 
 ## PCI-DSS (Payment Card Industry)
-- Cardholder data storage (encrypted?)
-- CVV/CVV2 codes (must NEVER be stored)
-- Encryption at rest and in transit
-- Access controls to payment data
-- Audit logging of access to cardholder data
+- Cardholder data storage in DataFrames/Delta tables (encrypted?)
+- CVV/CVV2 codes (must NEVER be stored in any pipeline stage)
+- Encryption at rest (Delta Lake encryption) and in transit (TLS)
+- Access controls to payment data pipelines and storage
+- Audit logging of access to cardholder data (data lineage tracking)
 
 ## SOX (Sarbanes-Oxley)
-- Financial transaction audit trails
-- Change management controls
-- Separation of duties in code
-- Data integrity for financial records
+- Financial transaction data audit trails (data lineage)
+- Change management controls for pipeline code
+- Separation of duties in data access and transformations
+- Data integrity validation for financial records (checksums, row counts)
+- Immutable audit logs for data modifications
 
 ## GDPR (General Data Protection Regulation)
-- Personal data identification and classification
-- Consent tracking mechanism
-- Right to deletion implementation
-- Data retention policies
-- Cross-border data transfer handling
+- Personal data identification and classification in pipelines
+- Consent tracking in customer data tables
+- Right to deletion implementation (data purge jobs)
+- Data retention policies enforced in pipeline logic
+- Cross-border data transfer handling (data residency checks)
+- PII masking/anonymization in non-production environments
 
 Generate report with:
 
@@ -57,7 +59,7 @@ For each requirement:
 ## Example Usage
 
 ```bash
-> Audit src/transactions/ for regulatory compliance.
+> Audit pipelines/transaction_processing/ for regulatory compliance.
 
 [Claude will execute the compliance check]
 ```

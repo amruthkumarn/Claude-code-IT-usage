@@ -1,14 +1,14 @@
-# Claude Code - Dos and Don'ts for Banking IT Developers
+# Claude Code - Dos and Don'ts for Banking IT Data Engineers
 
-**Target Audience:** Banking IT - Data Chapter
-**Version:** 1.0
-**Last Updated:** 2025-10-21
+**Target Audience:** Banking IT - Data Chapter (Python/PySpark)
+**Version:** 2.0
+**Last Updated:** 2025-10-23
 
 ---
 
 ## Introduction
 
-This guide provides critical dos and don'ts for using Claude Code in banking IT environments. Following these guidelines ensures:
+This guide provides critical dos and don'ts for using Claude Code in banking IT data engineering environments. Following these guidelines ensures:
 
 - **Security**: Protect sensitive banking data and systems
 - **Compliance**: Meet SOX, PCI-DSS, and GDPR requirements
@@ -16,7 +16,7 @@ This guide provides critical dos and don'ts for using Claude Code in banking IT 
 - **Efficiency**: Use Claude Code effectively
 - **Accountability**: Maintain proper audit trails
 
-🔒 **Banking IT Context**: All guidelines prioritize security, compliance, and audit requirements specific to financial services.
+**Banking IT Context**: All guidelines prioritize security, compliance, and audit requirements specific to financial services data engineering.
 
 ---
 
@@ -42,9 +42,9 @@ This guide provides critical dos and don'ts for using Claude Code in banking IT 
 **1. Always use plan mode for unfamiliar codebases**
 ```bash
 claude --permission-mode plan
-> Analyze the payment processing system
+> Analyze the payment processing pipeline
 ```
-**Why**: Read-only exploration prevents accidental changes to critical systems.
+**Why**: Read-only exploration prevents accidental changes to critical data systems.
 
 **2. Review EVERY change before approving**
 ```bash
@@ -114,8 +114,9 @@ claude --permission-mode plan
 ## Security Requirements
 - Never commit secrets
 - All database queries must be parameterized
-- Authentication required for all endpoints
+- Use SparkSession with proper authentication
 - Audit logging for financial transactions
+- PII masking in all transformations
 ```
 **Why**: Claude follows project-specific security standards.
 
@@ -125,7 +126,7 @@ claude --permission-mode plan
 **9. Use separate environments for Claude Code**
 ```bash
 # Development only
-cd ~/dev/project
+cd ~/dev/data-pipelines
 claude
 
 # NEVER in production
@@ -157,12 +158,15 @@ claude --permission-mode auto-approve
 **Why**: May introduce vulnerabilities or violate security policies.
 
 **3. NEVER commit secrets, API keys, or credentials**
-```javascript
-// DON'T
-const API_KEY = "sk-ant-abc123...";  // Hardcoded secret
+```python
+# DON'T
+DATABRICKS_TOKEN = "dapi-abc123..."  # Hardcoded secret
+AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/..."  # Hardcoded secret
 
-// DO
-const API_KEY = process.env.ANTHROPIC_API_KEY;  // From environment
+# DO
+import os
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
+AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 ```
 **Why**: PCI-DSS violation, security breach risk.
 
@@ -206,7 +210,7 @@ sudo claude
 ```bash
 # Proper workflow
 claude
-> Fix the bug
+> Fix the pipeline bug
 
 Ctrl+D
 git diff          # Manual review
@@ -219,11 +223,11 @@ git push          # Manual push
 **2. Ask Claude for commit messages (then use manually)**
 ```bash
 claude --permission-mode plan
-> Draft commit message for login bug fix
+> Draft commit message for transaction aggregation fix
 
 # Claude suggests message
 # YOU copy and execute:
-git commit -m "fix(auth): prevent session timeout on active users"
+git commit -m "fix(pipeline): correct transaction aggregation logic in daily batch"
 ```
 **Why**: Leverages Claude's expertise while maintaining manual control.
 
@@ -237,7 +241,7 @@ git diff --staged # See staged changes
 **4. Use Claude to generate PR descriptions (paste manually)**
 ```bash
 claude --permission-mode plan
-> Generate PR description for transaction validation feature
+> Generate PR description for customer segmentation pipeline
 
 # Copy output to GitHub PR manually
 ```
@@ -276,7 +280,7 @@ git commit
 **8. Use conventional commit format (with Claude's help)**
 ```bash
 claude --permission-mode plan
-> Draft conventional commit message for payment integration
+> Draft conventional commit message for payment pipeline integration
 ```
 **Why**: Consistent commit history, easier to track changes.
 
@@ -326,20 +330,21 @@ git commit -m "fixed stuff"
 git commit -m "updates"
 
 # GOOD (with Claude's help)
-git commit -m "fix(auth): prevent session timeout on active users
+git commit -m "fix(etl): prevent duplicate records in customer dimension table
 
-- Add heartbeat mechanism to keep sessions alive
-- Update session TTL to 30 minutes
-- Add logging for timeout events
+- Add deduplication logic using window functions
+- Update watermark tracking for incremental loads
+- Add data quality checks for primary key uniqueness
 
-Compliance: SEC-4.2"
+Compliance: DATA-SEC-4.2"
 ```
 **Why**: Poor audit trail, hard to track changes.
 
 **6. NEVER commit without running tests**
 ```bash
 # Before commit
-npm test           # Or your test command
+pytest tests/              # Run unit tests
+python -m pytest -v        # Verbose output
 git add .
 git commit
 ```
@@ -361,17 +366,17 @@ git push --force origin main
 **1. Always start Claude in specific project directory**
 ```bash
 # GOOD
-cd ~/projects/payment-service
+cd ~/projects/payment-data-pipeline
 claude
 
-# Shows: Working directory: /Users/you/projects/payment-service
+# Shows: Working directory: /Users/you/projects/payment-data-pipeline
 ```
 **Why**: Limits Claude's access to relevant code only.
 
 **2. Use --add-dir for related directories only**
 ```bash
-cd ~/projects/frontend
-claude --add-dir ../backend-api --add-dir ../shared-types
+cd ~/projects/etl-pipelines
+claude --add-dir ../data-models --add-dir ../shared-utils
 ```
 **Why**: Access to necessary dependencies without full filesystem access.
 
@@ -385,11 +390,11 @@ claude
 
 **4. Use separate Claude sessions for separate projects**
 ```bash
-# Terminal 1: Payment service
-cd ~/projects/payment-service && claude
+# Terminal 1: Payment pipeline
+cd ~/projects/payment-pipeline && claude
 
-# Terminal 2: Auth service (different session)
-cd ~/projects/auth-service && claude
+# Terminal 2: Customer analytics (different session)
+cd ~/projects/customer-analytics && claude
 ```
 **Why**: Prevents context mixing, maintains isolation.
 
@@ -397,13 +402,15 @@ cd ~/projects/auth-service && claude
 ```markdown
 ## Project Scope
 This project includes:
-- src/: Application code
-- tests/: Test files
-- docs/: Documentation
+- pipelines/: PySpark ETL pipelines
+- tests/: Unit and integration tests
+- config/: Configuration files
+- sql/: Spark SQL queries
 
 Does NOT include:
 - Database credentials (use env vars)
 - Production configs
+- Raw customer data
 ```
 **Why**: Clear boundaries for Claude's awareness.
 
@@ -420,7 +427,7 @@ claude  # Can access all your files!
 **2. NEVER use Claude in directories with sensitive data**
 ```bash
 # DON'T
-cd ~/Documents/customer-data
+cd ~/Documents/customer-pii-extracts
 claude
 ```
 **Why**: Risk of PII exposure, compliance violation.
@@ -436,9 +443,9 @@ claude
 **4. NEVER use --add-dir for unrelated projects**
 ```bash
 # BAD
-claude --add-dir ~/projects/project-a \
-       --add-dir ~/projects/project-b \
-       --add-dir ~/projects/project-c
+claude --add-dir ~/projects/pipeline-a \
+       --add-dir ~/projects/pipeline-b \
+       --add-dir ~/projects/pipeline-c
 ```
 **Why**: Unnecessary context, potential for cross-contamination.
 
@@ -459,29 +466,30 @@ claude --add-dir ~/projects/project-a \
 ```
 ❌ Fix the bug
 
-✅ The login endpoint returns 500 when password is missing.
-   Add validation to check for password field.
-   Return 400 with error: "Password is required"
-   Add unit test for this case.
+✅ The transaction aggregation job fails with KeyError: 'amount'.
+   Add null checking before aggregation in pipelines/daily_batch.py.
+   Return empty DataFrame with schema if no valid records.
+   Add unit test for this edge case.
 ```
 **Why**: Specific requests get better results.
 
-**2. Provide context about your codebase**
+**2. Provide context about your data pipeline**
 ```
-✅ Add JWT authentication to API endpoints.
-   We use Express.js with TypeScript.
-   Existing auth is in src/auth/middleware.ts
-   Token expiry: 15 minutes
+✅ Add data quality checks to the customer pipeline.
+   We use PySpark 3.4 with Delta Lake on Databricks.
+   Existing DQ framework is in utils/data_quality.py
+   Check for: null customer_id, invalid email format, future dates
    Follow the pattern in that file.
 ```
 **Why**: Claude adapts to your specific setup.
 
 **3. Request structured output formats**
 ```
-✅ Scan for SQL injection vulnerabilities and return JSON:
+✅ Scan for PII leakage in pipelines and return JSON:
    {
      "findings": [
-       {"file": "path", "line": 42, "severity": "high", "description": "..."}
+       {"file": "path", "line": 42, "severity": "high",
+        "description": "Unmasked SSN in log statement"}
      ]
    }
 ```
@@ -489,20 +497,21 @@ claude --add-dir ~/projects/project-a \
 
 **4. Use chain of thought for complex problems**
 ```
-✅ Debug the transaction rollback issue.
+✅ Debug the incremental load watermark issue.
    Think step by step:
-   1. Identify where transactions start
-   2. Trace error handling
-   3. Check rollback calls
-   4. Verify database connection handling
+   1. Identify where watermark is read from Delta table
+   2. Trace how it's used in the filter condition
+   3. Check if timezone handling is correct
+   4. Verify watermark update logic after load
    5. Suggest fix with explanation
 ```
 **Why**: Better reasoning, more thorough analysis.
 
 **5. Reference specific files and line numbers**
 ```
-✅ In src/payments/processor.ts lines 45-67, the error handling
-   doesn't catch network timeouts. Please add timeout handling.
+✅ In pipelines/transform/customer_dimension.py lines 45-67,
+   the SCD Type 2 logic doesn't handle null effective_date.
+   Please add null date handling.
 ```
 **Why**: Precise location, faster resolution.
 
@@ -511,30 +520,34 @@ claude --add-dir ~/projects/project-a \
 ✅ Before you make changes, explain:
    1. What you're going to change
    2. Why this fixes the issue
-   3. Any potential side effects
+   3. Any potential side effects on downstream pipelines
    4. What tests should be added
 ```
 **Why**: Understand the changes, learn in the process.
 
 **7. Request security and compliance checks**
 ```
-✅ Implement password reset, ensuring:
-   - Tokens expire after 1 hour
-   - Rate limiting (3 attempts/hour)
-   - Audit logging of all attempts
-   - PCI-DSS compliant token generation
+✅ Implement PII masking transformation, ensuring:
+   - SSN masked to last 4 digits
+   - Email domain preserved for analysis
+   - Credit card numbers fully redacted
+   - Audit logging of all masking operations
+   - GDPR compliant anonymization
 ```
 **Why**: Bakes security into requirements.
 
 **8. Use examples to clarify intent**
 ```
-✅ Add input validation like this:
-   ```typescript
-   if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-     throw new ValidationError("Invalid email");
-   }
+✅ Add data validation like this:
+   ```python
+   from pyspark.sql import functions as F
+
+   df = df.filter(
+       (F.col("email").isNotNull()) &
+       (F.col("email").rlike(r'^[^@]+@[^@]+\.[^@]+$'))
+   )
    ```
-   Apply similar validation to all user inputs.
+   Apply similar validation to all input DataFrames.
 ```
 **Why**: Shows exact expected outcome.
 
@@ -544,51 +557,51 @@ claude --add-dir ~/projects/project-a \
 ```
 ❌ Make it better
 ❌ Fix everything
-❌ Optimize the code
+❌ Optimize the pipeline
 ```
 **Why**: Unclear intent, unpredictable results.
 
 **2. NEVER ask Claude to handle what you should review**
 ```
-❌ Figure out what's wrong and fix it
+❌ Figure out what's wrong with the pipeline and fix it
 ```
 **Why**: You should understand the problem first.
 
 **3. NEVER paste production data or PII**
 ```
 ❌ Here's a customer record with issue:
-   {id: 123, name: "John Doe", ssn: "123-45-6789", ...}
+   {"id": 12345, "name": "John Doe", "ssn": "123-45-6789", ...}
 ```
 **Why**: GDPR violation, privacy breach.
 
 **4. NEVER ask for generated secrets in production**
 ```
-❌ Generate a production API key
-❌ Create a JWT secret for production
+❌ Generate a production Databricks token
+❌ Create an AWS secret key for production
 ```
 **Why**: Secrets should be generated securely, not by AI.
 
 **5. NEVER ask Claude to make architectural decisions alone**
 ```
-❌ Decide whether we should use microservices or monolith
+❌ Decide whether we should use batch or streaming for this pipeline
 
 ✅ Here are our requirements [list]. What are pros/cons of
-   microservices vs monolith for our use case? I'll make final decision.
+   batch vs streaming for our use case? I'll make final decision.
 ```
 **Why**: Critical decisions need human judgment.
 
 **6. NEVER ignore Claude's warnings**
 ```
-Claude: "⚠️ This change might break existing functionality"
+Claude: "⚠️ This change might cause downstream pipeline failures"
 ❌ Approve anyway
 ```
 **Why**: Warnings indicate real risks.
 
 **7. NEVER ask Claude to circumvent security**
 ```
-❌ Disable authentication for testing
-❌ Skip input validation
-❌ Allow SQL queries without parameterization
+❌ Skip PII masking for testing
+❌ Disable data quality checks
+❌ Allow unparameterized SQL queries
 ```
 **Why**: Creates security vulnerabilities.
 
@@ -618,18 +631,21 @@ mkdir -p .claude/{commands,hooks,output-styles}
 
 **3. Document standards in CLAUDE.md**
 ```markdown
-# Payment Service
+# Payment Data Pipeline
 
 ## Coding Standards
-- TypeScript strict mode
-- ESLint configuration in .eslintrc
-- Prettier for formatting
+- Python 3.10+
+- Type hints required (mypy strict)
+- Ruff for linting and formatting
+- pytest for testing
 - 80% test coverage minimum
+- PySpark 3.4+ coding conventions
 
 ## Security Requirements
 - All inputs validated
-- Parameterized queries only
-- JWT tokens expire in 15 minutes
+- Parameterized Spark SQL only
+- PII masking required
+- Delta Lake with table ACLs
 ```
 **Why**: Claude follows your team's standards.
 
@@ -655,8 +671,9 @@ git commit -m "chore: Add Claude Code team configuration"
 ```markdown
 ## Claude Code Commands
 - `/compliance-check` - PCI-DSS/SOX compliance audit
-- `/security-review` - Security vulnerability scan
-- `/generate-tests` - Generate unit tests
+- `/pii-scan` - Scan for unmasked PII in code
+- `/test-coverage` - Generate pytest coverage report
+- `/pipeline-validate` - Validate pipeline dependencies
 ```
 **Why**: Team knows what commands are available.
 
@@ -670,7 +687,7 @@ git commit -m "chore: Add Claude Code team configuration"
 
 **8. Create project-specific output styles**
 ```bash
-.claude/output-styles/banking.md
+.claude/output-styles/data-pipeline-report.md
 ```
 **Why**: Consistent output formatting for reports.
 
@@ -682,7 +699,7 @@ git commit -m "chore: Add Claude Code team configuration"
 **2. NEVER skip configuration setup**
 ```bash
 # BAD
-cd new-project
+cd new-pipeline-project
 claude  # No .claude directory, no standards
 ```
 **Why**: Missing standards, inconsistent behavior.
@@ -695,7 +712,7 @@ claude  # No .claude directory, no standards
 // DON'T
 {
   "env": {
-    "DB_PATH": "/Users/john/databases/prod.db"
+    "DATA_PATH": "/Users/john/data/production.parquet"
   }
 }
 ```
@@ -728,37 +745,53 @@ claude  # No .claude directory, no standards
 - Phone numbers, SSNs
 - Credit card numbers
 - Account numbers
+- Customer IDs in logs
 ```
 **Why**: GDPR requires explicit PII handling.
 
 **2. Use environment variables for sensitive config**
-```javascript
-// DO
-const DB_PASSWORD = process.env.DB_PASSWORD;
+```python
+# DO
+import os
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
+AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
 
-// DON'T
-const DB_PASSWORD = "MySecretPassword123";
+# DON'T
+DB_PASSWORD = "MySecretPassword123"
+DATABRICKS_TOKEN = "dapi-abc123..."
 ```
 **Why**: Prevents credential exposure.
 
 **3. Mask sensitive data in examples**
 ```
 ✅ When asking Claude for help:
-"User with email us***@example.com is getting error 500"
+"Customer with ID cust_***123 has data quality issue in transaction table"
 
 Not:
-"User user@real-email.com is getting error 500"
+"Customer ID cust_12345678 has data quality issue"
 ```
-**Why**: Protects real user privacy.
+**Why**: Protects real customer privacy.
 
 **4. Use sample/synthetic data for testing**
-```javascript
-// DO - Sample data
-const testUser = {
-  email: "test@example.com",
-  name: "Test User",
-  id: "test-123"
-};
+```python
+# DO - Sample data
+from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, DecimalType
+
+test_data = [
+    ("test_001", "test@example.com", "Test User", 100.00),
+    ("test_002", "sample@example.com", "Sample Customer", 200.00)
+]
+
+schema = StructType([
+    StructField("customer_id", StringType(), True),
+    StructField("email", StringType(), True),
+    StructField("name", StringType(), True),
+    StructField("amount", DecimalType(10, 2), True)
+])
+
+test_df = spark.createDataFrame(test_data, schema)
 ```
 **Why**: No real PII exposed.
 
@@ -773,7 +806,7 @@ const testUser = {
 {
   "hooks": {
     "PreToolUse": [{
-      "matcher": "Read.*customer|Read.*payment",
+      "matcher": "Read.*(customer|payment|account)",
       "hooks": [{
         "type": "command",
         "command": "./scripts/log-data-access.sh"
@@ -787,10 +820,10 @@ const testUser = {
 **7. Classify data in CLAUDE.md**
 ```markdown
 ## Data Classification
-- Public: Documentation, public APIs
-- Internal: Business logic, internal tools
+- Public: Documentation, public schemas
+- Internal: Pipeline logic, internal tools
 - Confidential: Customer data, financial transactions
-- Restricted: Authentication credentials, encryption keys
+- Restricted: Credentials, encryption keys
 
 Claude Code should ONLY process Public and Internal data.
 ```
@@ -808,14 +841,15 @@ claude --permission-mode plan
 **1. NEVER paste real customer data into Claude**
 ```
 ❌ > Analyze this transaction:
-   {customerId: "REAL-ID", amount: 1000.00, ssn: "123-45-6789"}
+   {"customer_id": "REAL-ID", "amount": 1000.00, "ssn": "123-45-6789"}
 ```
 **Why**: Privacy violation, compliance breach.
 
 **2. NEVER use production credentials in development**
-```javascript
-// DON'T
-const PROD_API_KEY = "sk-prod-abc123...";
+```python
+# DON'T
+PROD_DATABRICKS_TOKEN = "dapi-prod-abc123..."
+PROD_AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
 ```
 **Why**: Security breach risk.
 
@@ -823,14 +857,20 @@ const PROD_API_KEY = "sk-prod-abc123...";
 ```bash
 # DON'T
 git add .env
+git add config/.env.prod
 ```
 **Why**: Contains secrets and credentials.
 
 **4. NEVER log sensitive data**
-```javascript
-// DON'T
-console.log("User password:", password);
-console.log("Credit card:", cardNumber);
+```python
+# DON'T
+print(f"Customer password: {password}")
+print(f"Credit card: {card_number}")
+logger.info(f"SSN: {ssn}")
+
+# DO
+logger.info("Authentication successful")
+logger.info(f"Transaction processed for customer: {customer_id[:4]}***")
 ```
 **Why**: Logs may be accessed, stored, or transmitted.
 
@@ -841,12 +881,12 @@ console.log("Credit card:", cardNumber);
 **Why**: May leak data to unauthorized parties.
 
 **7. NEVER use real email addresses in test data**
-```javascript
-// DON'T
-const testEmail = "john.doe@realcompany.com";
+```python
+# DON'T
+test_email = "john.doe@realbank.com"
 
-// DO
-const testEmail = "test@example.com";
+# DO
+test_email = "test.user@example.com"
 ```
 **Why**: May send emails to real people.
 
@@ -869,29 +909,29 @@ claude
 
 **2. Keep sessions focused on one task**
 ```
-✅ Session 1: Fix authentication bug
-✅ Session 2: Add payment integration
-✅ Session 3: Write tests
+✅ Session 1: Fix transaction deduplication bug
+✅ Session 2: Add customer segmentation pipeline
+✅ Session 3: Write integration tests
 
 Not:
-❌ One session: Fix bug, add feature, write docs, refactor, ...
+❌ One session: Fix bug, add pipeline, write docs, refactor, ...
 ```
 **Why**: Better performance, clearer context.
 
 **3. Be specific to reduce context needs**
 ```
-✅ Fix the validation in src/auth/validator.ts line 45
+✅ Fix the null handling in pipelines/transform/customer.py line 45
 
 Not:
-❌ Look through all files and find validation issues
+❌ Look through all pipeline files and find null handling issues
 ```
 **Why**: Less context = faster responses.
 
 **4. Use plan mode for exploration**
 ```bash
 claude --permission-mode plan
-> Analyze the codebase structure
-> Explain the payment flow
+> Analyze the data pipeline architecture
+> Explain the incremental load strategy
 ```
 **Why**: Read-only, efficient for understanding.
 
@@ -905,10 +945,10 @@ claude
 **6. Limit --add-dir usage**
 ```bash
 # GOOD: Only what's needed
-claude --add-dir ../shared-types
+claude --add-dir ../shared-data-models
 
 # BAD: Too much
-claude --add-dir ../proj1 --add-dir ../proj2 --add-dir ../proj3
+claude --add-dir ../pipeline1 --add-dir ../pipeline2 --add-dir ../pipeline3
 ```
 **Why**: More directories = more context = slower.
 
@@ -919,13 +959,13 @@ claude --add-dir ../proj1 --add-dir ../proj2 --add-dir ../proj3
 
 **2. NEVER ask Claude to analyze entire codebase at once**
 ```
-❌ Explain everything in this project
+❌ Explain everything in this data platform
 ```
 **Why**: Context overflow, slow performance.
 
 **3. NEVER repeat information unnecessarily**
 ```
-❌ Remember earlier I told you about X, then Y, then Z...
+❌ Remember earlier I told you about pipeline X, then schema Y, then Z...
    [repeating entire conversation]
 ```
 **Why**: Wastes context, start fresh instead.
@@ -949,7 +989,8 @@ If responses slow down:
 ```bash
 # When Claude proposes changes, check:
 - Input validation present?
-- SQL parameterized?
+- Spark SQL parameterized?
+- PII masking applied?
 - Error handling secure?
 - No secrets exposed?
 ```
@@ -957,39 +998,41 @@ If responses slow down:
 
 **2. Ask for tests with every feature**
 ```
-✅ Implement password reset functionality.
-   Include unit tests for:
-   - Valid reset flow
-   - Expired tokens
-   - Invalid tokens
-   - Rate limiting
+✅ Implement customer deduplication logic.
+   Include pytest tests for:
+   - Valid deduplication based on email
+   - Handling of null emails
+   - Performance with large datasets
+   - Edge case: duplicate timestamps
 ```
 **Why**: Maintains test coverage, catches bugs.
 
 **3. Request documentation updates**
 ```
-✅ Add the new /api/reset-password endpoint.
-   Update API documentation in docs/api.md
-   Add JSDoc comments to functions
+✅ Add the new aggregate_transactions() function.
+   Update pipeline documentation in docs/pipelines.md
+   Add docstrings with type hints
+   Include usage examples
 ```
 **Why**: Keeps documentation in sync.
 
 **4. Verify compliance requirements met**
 ```
-✅ Before approving payment processing code:
-   - PCI-DSS compliant?
+✅ Before approving payment pipeline code:
+   - PCI-DSS compliant data handling?
    - Audit logging present?
    - Error handling secure?
-   - Encryption used?
+   - PII masking applied?
+   - Delta Lake audit trail enabled?
 ```
 **Why**: Compliance is non-negotiable.
 
 **5. Ask Claude to explain complex changes**
 ```
-> Before I approve this refactoring, explain:
+> Before I approve this pipeline refactoring, explain:
   1. What's changing and why
-  2. How it improves the code
-  3. Any potential risks
+  2. How it improves data processing
+  3. Any potential downstream impacts
   4. How to test it
 ```
 **Why**: Understand before approving.
@@ -997,10 +1040,18 @@ If responses slow down:
 **6. Use plan mode for code review assistance**
 ```bash
 claude --permission-mode plan
-> Review src/payment.ts for security issues
-> Check for SQL injection vulnerabilities
+> Review pipelines/payment_processing.py for data quality issues
+> Check for potential PII leakage in logging
 ```
 **Why**: Get expert review without modifications.
+
+**7. Validate type hints and mypy compliance**
+```bash
+# After Claude makes changes
+mypy pipelines/
+ruff check pipelines/
+```
+**Why**: Maintains code quality standards.
 
 ### ❌ DON'T
 
@@ -1011,12 +1062,12 @@ claude --permission-mode plan
 **Why**: May introduce bugs, security issues.
 
 **2. NEVER skip testing after changes**
-```
+```bash
 # After Claude makes changes
 ❌ git add . && git commit  # Without testing!
 
-✅ npm test                 # Run tests first
-✅ Manual testing if needed
+✅ pytest tests/              # Run tests first
+✅ python -m pytest -v --cov  # With coverage
 ✅ Then commit
 ```
 **Why**: Catch bugs before they reach production.
@@ -1024,33 +1075,44 @@ claude --permission-mode plan
 **3. NEVER ignore linting/formatting errors**
 ```bash
 # After changes
-npm run lint
-npm run format
+ruff check .
+ruff format .
+mypy pipelines/
 ```
 **Why**: Maintains code quality standards.
 
 **4. NEVER accept changes without tests**
 ```
-❌ > Add feature X
-   [Claude adds feature without tests]
+❌ > Add customer aggregation pipeline
+   [Claude adds pipeline without tests]
    [You approve]
 
-✅ > Add feature X with comprehensive tests
+✅ > Add customer aggregation pipeline with comprehensive pytest tests
 ```
 **Why**: Untested code is buggy code.
 
 **5. NEVER skip security review**
 ```
 For sensitive areas:
-- Authentication
-- Authorization
+- PII handling
+- Data masking
 - Payment processing
 - Data encryption
-- API endpoints
+- External data access
 
 ALWAYS extra review!
 ```
 **Why**: Security vulnerabilities are costly.
+
+**6. NEVER skip data quality validation**
+```bash
+# Before approving pipeline changes
+- Check for null handling
+- Verify schema validation
+- Ensure duplicate detection
+- Review error handling
+```
+**Why**: Poor data quality impacts downstream systems.
 
 ---
 
@@ -1070,19 +1132,22 @@ git commit -m "chore: Add Claude Code team standards"
 **2. Document custom commands**
 ```markdown
 ## Team Commands
+- `/pii-scan` - Scan pipelines for unmasked PII
 - `/compliance-check` - Audit code for PCI-DSS/SOX
-- `/security-review` - Security vulnerability scan
-- `/api-docs` - Generate API documentation
+- `/data-quality` - Generate DQ validation report
+- `/pipeline-lineage` - Document data lineage
 ```
 **Why**: Everyone knows available tools.
 
 **3. Share best practices in CLAUDE.md**
 ```markdown
 ## Team Best Practices
-1. Always start in project directory
+1. Always start in pipeline project directory
 2. Use plan mode for exploration
 3. Manual git operations only
 4. Review all changes before approval
+5. Test locally before committing
+6. Mask PII in all examples
 ```
 **Why**: Consistent team behavior.
 
@@ -1092,17 +1157,27 @@ git commit -m "chore: Add Claude Code team standards"
 - Is .claude/settings.json appropriate?
 - Are hooks properly configured?
 - Is CLAUDE.md up to date?
+- Are PII scanning hooks enabled?
 ```
 **Why**: Maintain standards across team.
 
 **5. Hold team sessions to share learnings**
 ```
 Monthly Claude Code sharing:
-- Useful prompts discovered
+- Useful prompts for data engineering
 - Custom commands created
-- Common issues and solutions
+- Common pipeline issues and solutions
+- PySpark best practices discovered
 ```
 **Why**: Continuous improvement.
+
+**6. Create shared pipeline templates**
+```bash
+.claude/commands/create-pipeline.md
+.claude/commands/add-dq-checks.md
+.claude/commands/implement-scd2.md
+```
+**Why**: Consistent patterns across pipelines.
 
 ### ❌ DON'T
 
@@ -1114,13 +1189,16 @@ Monthly Claude Code sharing:
 
 **3. NEVER create conflicting standards**
 ```
-Bad: Different developers document different standards in CLAUDE.md
-Good: Team agrees on one standard
+Bad: Different developers document different PySpark patterns in CLAUDE.md
+Good: Team agrees on one PySpark coding standard
 ```
-**Why**: Consistency across codebase.
+**Why**: Consistency across pipelines.
 
 **4. NEVER hoard useful prompts**
 **Why**: Share to help whole team.
+
+**5. NEVER skip code reviews for Claude-generated code**
+**Why**: Same standards apply regardless of who/what wrote it.
 
 ---
 
@@ -1139,11 +1217,12 @@ claude  # Uses Sonnet by default
 **2. Understand model capabilities**
 ```
 Sonnet is suitable for:
-- All development tasks
-- Code review
-- Complex problem-solving
-- Quick queries
+- All data engineering tasks
+- PySpark code generation
+- Pipeline debugging
+- Complex data transformations
 - Security analysis
+- Code review
 ```
 **Why**: No need to wait for other models.
 
@@ -1172,11 +1251,11 @@ claude --model haiku  # Not available
 
 ## Summary: Top 10 Critical DOs and DON'Ts
 
-### 🔒 Top 10 DOs
+### Top 10 DOs
 
 1. ✅ **Review EVERY change before approval**
 2. ✅ **Execute ALL git commands manually** (banking policy)
-3. ✅ **Start Claude in specific project directory only**
+3. ✅ **Start Claude in specific pipeline directory only**
 4. ✅ **Use plan mode for unfamiliar codebases**
 5. ✅ **Deny Bash tool in .claude/settings.json**
 6. ✅ **Enable audit logging and secret detection hooks**
@@ -1185,7 +1264,7 @@ claude --model haiku  # Not available
 9. ✅ **Document standards in CLAUDE.md**
 10. ✅ **Start fresh sessions regularly**
 
-### 🚫 Top 10 DON'Ts
+### Top 10 DON'Ts
 
 1. ❌ **NEVER use auto-approve mode**
 2. ❌ **NEVER let Claude execute git commands**
@@ -1223,6 +1302,8 @@ claude --model haiku  # Not available
           │
 ┌─────────▼────────────────────┐
 │ Security requirements met?   │
+│ - PII masking applied?       │
+│ - Parameterized queries?     │
 └─────────┬────────────────────┘
           │
           ├── No ──→ [R] Reject, add security
@@ -1249,6 +1330,141 @@ claude --model haiku  # Not available
 
 ---
 
+## Data Engineering Specific Best Practices
+
+### PySpark Code Quality
+
+**DO:**
+- Use type hints with mypy validation
+- Follow PEP 8 style guide
+- Use Ruff for linting and formatting
+- Leverage DataFrame API over RDD API
+- Cache/persist DataFrames appropriately
+- Use broadcast joins for small lookup tables
+- Implement proper error handling and logging
+
+**DON'T:**
+- Use deprecated RDD-based operations
+- Collect large DataFrames to driver
+- Skip data validation at pipeline boundaries
+- Ignore data skew issues
+- Use dynamic SQL without parameterization
+
+### Delta Lake Best Practices
+
+**DO:**
+```python
+# Use Delta Lake features properly
+from delta.tables import DeltaTable
+
+# MERGE for upserts
+delta_table = DeltaTable.forPath(spark, "/path/to/delta")
+delta_table.alias("target").merge(
+    updates_df.alias("updates"),
+    "target.id = updates.id"
+).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+
+# Enable optimizations
+spark.conf.set("spark.databricks.delta.optimizeWrite.enabled", "true")
+spark.conf.set("spark.databricks.delta.autoCompact.enabled", "true")
+```
+
+**DON'T:**
+```python
+# Don't bypass Delta Lake features
+# BAD: Direct parquet writes
+df.write.parquet("/path/to/delta")  # Breaks Delta transaction log
+
+# GOOD: Use Delta format
+df.write.format("delta").save("/path/to/delta")
+```
+
+### Testing Standards
+
+**DO:**
+```python
+# Write comprehensive pytest tests
+import pytest
+from pyspark.sql import SparkSession
+from chispa.dataframe_comparer import assert_df_equality
+
+@pytest.fixture(scope="session")
+def spark():
+    return SparkSession.builder.master("local[*]").getOrCreate()
+
+def test_customer_deduplication(spark):
+    # Arrange
+    input_data = [
+        ("cust_001", "john@example.com", "2024-01-01"),
+        ("cust_001", "john@example.com", "2024-01-02"),  # Duplicate
+    ]
+    input_df = spark.createDataFrame(input_data, ["id", "email", "date"])
+
+    # Act
+    result_df = deduplicate_customers(input_df)
+
+    # Assert
+    assert result_df.count() == 1
+    expected_data = [("cust_001", "john@example.com", "2024-01-02")]
+    expected_df = spark.createDataFrame(expected_data, ["id", "email", "date"])
+    assert_df_equality(result_df, expected_df)
+```
+
+### Configuration Management
+
+**DO:**
+```python
+# Use structured configuration
+from dataclasses import dataclass
+from typing import Optional
+import os
+
+@dataclass
+class PipelineConfig:
+    """Configuration for payment processing pipeline."""
+
+    input_path: str
+    output_path: str
+    checkpoint_location: str
+    databricks_token: str = os.getenv("DATABRICKS_TOKEN", "")
+    max_records_per_file: int = 100000
+    enable_caching: bool = True
+
+    @classmethod
+    def from_env(cls) -> "PipelineConfig":
+        """Create config from environment variables."""
+        return cls(
+            input_path=os.getenv("INPUT_PATH"),
+            output_path=os.getenv("OUTPUT_PATH"),
+            checkpoint_location=os.getenv("CHECKPOINT_PATH"),
+        )
+```
+
+### Poetry/pip Package Management
+
+**DO:**
+```bash
+# Use poetry for dependency management
+poetry init
+poetry add pyspark delta-spark pydantic
+poetry add --group dev pytest mypy ruff
+
+# Or use pip with requirements files
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+**DON'T:**
+```bash
+# Don't install packages without version pinning
+pip install pyspark  # BAD: No version specified
+
+# Do specify versions
+pip install pyspark==3.4.1  # GOOD: Version pinned
+```
+
+---
+
 ## Resources
 
 - **Full Documentation**: [README.md](../README.md)
@@ -1261,6 +1477,6 @@ claude --model haiku  # Not available
 
 **Remember**: These guidelines protect you, your team, and the bank. When in doubt, err on the side of caution!
 
-**Version:** 1.0
-**Last Updated:** 2025-10-21
-**Maintained By:** Banking IT - Data Chapter
+**Version:** 2.0
+**Last Updated:** 2025-10-23
+**Maintained By:** Banking IT - Data Chapter (Python/PySpark)

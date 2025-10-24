@@ -2,9 +2,9 @@
 
 ## Installation
 
-**npm (Node.js 18+):**
+**pip (Python 3.9+):**
 ```bash
-npm install -g @anthropic-ai/claude-code
+pip install @anthropic-ai/claude-code
 ```
 
 **Native Windows:**
@@ -95,16 +95,52 @@ claude --permission-mode plan
 **Fix a bug:**
 ```bash
 claude
-> The login endpoint returns 500. Can you fix it?
+> The customer data transformation pipeline is failing with null values. Can you fix it?
 [Review changes]
 [Approve]
+```
+
+**Create PySpark pipeline:**
+```bash
+claude
+> Create a PySpark pipeline to aggregate daily transactions by account_id
+> Input: S3 path s3://banking-raw/transactions/
+> Output: S3 path s3://banking-processed/daily_aggregates/
+> Include PCI-DSS compliant logging and error handling
+[Review changes]
+[Approve]
+```
+
+**Run tests and lint:**
+```bash
+# Run pytest
+pytest tests/ -v
+
+# Run ruff for linting
+ruff check .
+
+# Format with black
+black pipelines/
+```
+
+**Submit PySpark job:**
+```bash
+# Local testing
+python pipelines/transaction_aggregator.py --env dev
+
+# Submit to cluster
+spark-submit \
+  --master yarn \
+  --deploy-mode cluster \
+  --conf spark.sql.adaptive.enabled=true \
+  pipelines/transaction_aggregator.py --env prod
 ```
 
 **🏦 Banking IT: Git Operations (Manual Only):**
 ```bash
 # 1. Make changes with Claude
 claude
-> Fix the login bug
+> Fix the transaction aggregation pipeline bug
 
 # 2. Exit and review
 Ctrl+D
@@ -112,7 +148,7 @@ git diff
 
 # 3. Ask Claude for commit message
 claude --permission-mode plan
-> Draft commit message for login bug fix
+> Draft commit message for transaction aggregation bug fix
 
 # 4. Commit MANUALLY
 git add .
@@ -149,14 +185,14 @@ git push
 
 **"command not found" (PowerShell):**
 ```powershell
-$npmPath = npm config get prefix
-$env:Path += ";$npmPath"
-Add-Content $PROFILE "`$env:Path += `";$(npm config get prefix)`""
+$pythonPath = python -c "import sys; print(sys.prefix)"
+$env:Path += ";$pythonPath\Scripts"
+Add-Content $PROFILE "`$env:Path += `";$pythonPath\Scripts`""
 ```
 
 **"command not found" (WSL2):**
 ```bash
-echo 'export PATH="$PATH:$(npm bin -g)"' >> ~/.bashrc
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -175,7 +211,8 @@ export HTTPS_PROXY="http://proxy.company.com:8080"
 
 **SSL certificate error:**
 ```bash
-export NODE_EXTRA_CA_CERTS="/path/to/ca.crt"
+export REQUESTS_CA_BUNDLE="/path/to/ca.crt"
+export SSL_CERT_FILE="/path/to/ca.crt"
 ```
 
 ## Quick Setup
@@ -202,21 +239,109 @@ echo "# Project Standards" > .claude/CLAUDE.md
 echo ".claude/settings.local.json" >> .gitignore
 ```
 
+## Python/PySpark Banking Data Engineering Examples
+
+### Create Data Validation Pipeline
+```bash
+claude
+> Create a PySpark data quality validation pipeline for customer transactions
+> Validate: account_id not null, amount > 0, transaction_date is valid
+> Write failed records to s3://banking-quarantine/ with reason codes
+> Include GDPR-compliant error logging
+```
+
+### Optimize PySpark Job
+```bash
+claude --permission-mode plan
+> Analyze pipelines/transaction_processor.py for performance bottlenecks
+> Suggest optimizations for:
+> - Partition skew
+> - Broadcast joins
+> - Memory usage
+> - Shuffle operations
+```
+
+### Add PII Masking
+```bash
+claude
+> Add PII masking to pipelines/customer_enrichment.py
+> Mask: SSN (show last 4), email (hash), phone (show last 4)
+> Use existing MaskingUtils from pipelines/utils/masking.py
+> Ensure PCI-DSS Level 1 compliance
+```
+
+### Create Unit Tests
+```bash
+claude
+> Create pytest unit tests for pipelines/transaction_aggregator.py
+> Use pytest fixtures for SparkSession
+> Mock S3 I/O operations
+> Test edge cases: null values, empty DataFrames, duplicate keys
+> Target 90% code coverage
+```
+
+### Dependency Management
+```bash
+# Install project dependencies
+pip install -r requirements.txt
+
+# Add new package
+pip install pyspark==3.4.0
+pip freeze > requirements.txt
+
+# Using poetry (recommended for banking)
+poetry add pyspark==3.4.0
+poetry lock
+```
+
+### Common PySpark Patterns
+```python
+# Read from S3 with error handling
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, when, sum as spark_sum, count
+
+spark = SparkSession.builder.appName("TransactionProcessor").getOrCreate()
+
+# Read data
+df = spark.read.parquet("s3://banking-raw/transactions/")
+
+# Data validation
+df_validated = df.filter(
+    (col("account_id").isNotNull()) &
+    (col("amount") > 0) &
+    (col("transaction_date").isNotNull())
+)
+
+# Aggregation with proper partitioning
+df_agg = df_validated.groupBy("account_id", "transaction_date") \
+    .agg(
+        spark_sum("amount").alias("daily_total"),
+        count("*").alias("transaction_count")
+    ) \
+    .repartition(200, "account_id")
+
+# Write with SOX-compliant audit trail
+df_agg.write \
+    .mode("append") \
+    .partitionBy("transaction_date") \
+    .parquet("s3://banking-processed/daily_aggregates/")
+```
+
 ## Prompt Engineering Tips
 
 ### Be Specific
 ```
 ❌ Fix the bug
-✅ The login endpoint returns 500 when password is missing.
-   Add validation and return 400 with clear error message.
+✅ The transaction aggregation pipeline fails when account_id is missing.
+   Add validation to filter null account_ids and log warnings.
 ```
 
 ### Provide Context
 ```
-✅ Add JWT authentication to API endpoints.
-   Use existing UserService for validation.
+✅ Add IAM authentication to data pipeline jobs.
+   Use existing AuthProcessor for service principal validation.
    Token expiry: 15 minutes.
-   Follow pattern in src/auth/middleware.ts
+   Follow pattern in pipelines/auth/processor.py
 ```
 
 ### Request Format
@@ -227,12 +352,12 @@ echo ".claude/settings.local.json" >> .gitignore
 
 ### Chain of Thought
 ```
-✅ Debug the transaction rollback issue.
+✅ Debug the PySpark job memory issue in transaction processing.
    Think step by step:
-   1. Identify where transactions start
-   2. Trace error handling
-   3. Check rollback calls
-   4. Suggest fix
+   1. Identify where DataFrames are cached
+   2. Trace partition sizes and skew
+   3. Check for unnecessary shuffle operations
+   4. Suggest optimization with proper partitioning
 ```
 
 ## 🏦 Banking IT: Dos and Don'ts (Quick Reference)
