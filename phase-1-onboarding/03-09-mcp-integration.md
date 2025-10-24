@@ -139,8 +139,14 @@ echo "✅ SQLite database ready at /tmp/banking_metadata.db"
 # Navigate to your project (or create test project)
 mkdir -p ~/mcp-test && cd ~/mcp-test
 mkdir -p .claude
+```
 
-# For PostgreSQL:
+**⚠️ IMPORTANT: Choose ONE of the following configurations based on your database:**
+
+<details>
+<summary>Option A: PostgreSQL Configuration (if you completed PostgreSQL setup in Step 2)</summary>
+
+```bash
 cat > .claude/settings.json <<'EOF'
 {
   "mcpServers": {
@@ -165,7 +171,14 @@ cat > .claude/settings.json <<'EOF'
 }
 EOF
 
-# For SQLite (alternative):
+echo "✅ PostgreSQL MCP configuration created"
+```
+</details>
+
+<details>
+<summary>Option B: SQLite Configuration (if you completed SQLite setup in Step 2)</summary>
+
+```bash
 cat > .claude/settings.json <<'EOF'
 {
   "mcpServers": {
@@ -181,7 +194,13 @@ cat > .claude/settings.json <<'EOF'
 }
 EOF
 
-echo "✅ MCP configuration created"
+echo "✅ SQLite MCP configuration created"
+```
+</details>
+
+```bash
+# Verify configuration was created
+cat .claude/settings.json
 ```
 
 **✅ Checkpoint 3:** Claude Code MCP configured.

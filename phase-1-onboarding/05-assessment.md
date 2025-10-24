@@ -75,8 +75,19 @@ cat > .claude/settings.json <<'EOF'
 {
   "permissions": {
     "allow": ["Read", "Grep", "Glob"],
-    "requireApproval": ["Edit", "Write"],
-    "deny": ["Bash"]
+    "requireApproval": ["Edit", "Write", "Bash"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "tool": "Write",
+        "command": "bash .claude/hooks/detect-secrets.sh"
+      },
+      {
+        "tool": "Edit",
+        "command": "bash .claude/hooks/detect-secrets.sh"
+      }
+    ]
   },
   "defaultModel": "sonnet"
 }

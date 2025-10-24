@@ -63,8 +63,7 @@ cat > .claude/settings.json <<'EOF'
 {
   "permissions": {
     "allow": ["Read", "Grep", "Glob", "Task", "TodoWrite"],
-    "requireApproval": ["Edit", "Write"],
-    "deny": ["Bash"]
+    "requireApproval": ["Edit", "Write", "Bash"]
   },
   "hooks": {
     "PreToolUse": [
@@ -84,7 +83,8 @@ cat > .claude/settings.json <<'EOF'
       }
     ]
   },
-  "defaultModel": "sonnet"
+  "defaultModel": "sonnet",
+  "comment": "Bash requires approval (not denied) because hooks need to execute bash scripts. For git operations, manually review and execute all commands yourself."
 }
 EOF
 

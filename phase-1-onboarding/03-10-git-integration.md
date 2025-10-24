@@ -113,15 +113,19 @@ Ctrl+D  # Exit Claude
 ```bash
 # Check what changed
 git status
-# Expected: Shows new files created
+# Expected: Shows new untracked files
 
-# Review the new files
-git diff pipelines/validators/currency_validator.py
-git diff tests/validators/test_currency_validator.py
+# Review the new files (use cat since they're untracked)
+cat pipelines/validators/currency_validator.py
+cat tests/validators/test_currency_validator.py
+
+# Alternatively, if you want to see them as diffs:
+# git diff --no-index /dev/null pipelines/validators/currency_validator.py
 
 # Verify the code looks correct
-cat pipelines/validators/currency_validator.py
 ```
+
+**Note:** `git diff` only works on tracked files. Use `cat` to view new files, or stage them first with `git add` then use `git diff --cached`.
 
 **✅ Checkpoint 3:** Changes reviewed manually.
 

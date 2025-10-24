@@ -256,10 +256,13 @@ cp ~/team-claude-templates/settings/banking-it-standard.json .claude/settings.js
 cp ~/team-claude-templates/memory/CLAUDE-banking-template.md .claude/CLAUDE.md
 cp ~/team-claude-templates/hooks/detect-secrets-template.sh .claude/hooks/detect-secrets.sh
 
-# Customize CLAUDE.md
-sed -i '' 's/{{PROJECT_NAME}}/Payment Processing Pipeline/' .claude/CLAUDE.md
-sed -i '' 's/{{TEAM_NAME}}/Data Engineering Team/' .claude/CLAUDE.md
-sed -i '' 's/{{DOMAIN}}/Payment Processing/' .claude/CLAUDE.md
+# Customize CLAUDE.md (cross-platform compatible)
+perl -pi -e 's/\{\{PROJECT_NAME\}\}/Payment Processing Pipeline/' .claude/CLAUDE.md
+perl -pi -e 's/\{\{TEAM_NAME\}\}/Data Engineering Team/' .claude/CLAUDE.md
+perl -pi -e 's/\{\{DOMAIN\}\}/Payment Processing/' .claude/CLAUDE.md
+
+# Alternative for systems without perl:
+# Manually edit .claude/CLAUDE.md and replace {{PROJECT_NAME}}, {{TEAM_NAME}}, {{DOMAIN}}
 
 # Test it
 claude

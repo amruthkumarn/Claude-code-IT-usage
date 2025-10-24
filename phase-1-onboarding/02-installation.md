@@ -23,13 +23,13 @@
 
 ```bash
 # 1. Install Claude Code
-pip install claude-code
+pip install anthropic-claude-code
 
 # 2. Verify installation
 claude --version
 
 # 3. Login
-claude login
+claude /login
 
 # 4. Test it works
 claude --permission-mode plan
@@ -94,7 +94,7 @@ curl -I https://api.anthropic.com 2>&1 | head -1
 
 ```bash
 # Install for current user only
-pip install --user claude-code
+pip install --user anthropic-claude-code
 
 # Verify installation
 claude --version
@@ -125,7 +125,7 @@ source ~/.venv/claude-code/bin/activate
 ~\.venv\claude-code\Scripts\Activate.ps1
 
 # Install
-pip install claude-code
+pip install anthropic-claude-code
 
 # Verify
 claude --version
@@ -137,10 +137,10 @@ claude --version
 
 ```bash
 # PowerShell (Run as Administrator)
-pip install claude-code
+pip install anthropic-claude-code
 
 # Or WSL2 with sudo
-sudo pip install claude-code
+sudo pip install anthropic-claude-code
 
 # Verify
 claude --version
@@ -155,7 +155,7 @@ claude --version
 
 ```bash
 # Start login process
-claude login
+claude /login
 # Browser window opens automatically
 
 # Follow prompts:
@@ -199,7 +199,7 @@ export HTTP_PROXY=http://proxy.bank.com:8080
 export HTTPS_PROXY=http://proxy.bank.com:8080
 
 # Retry login
-claude login
+claude /login
 ```
 </details>
 
@@ -308,7 +308,7 @@ Ctrl+D
 
 You're ready to continue when:
 - ✅ `claude --version` shows version number
-- ✅ `claude login` confirms authenticated status
+- ✅ `claude /login` confirms authenticated status
 - ✅ Can start Claude Code in plan mode
 - ✅ Can ask questions and see responses
 - ✅ Can exit cleanly with Ctrl+D
